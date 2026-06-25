@@ -957,7 +957,10 @@
       el.exportBtn.disabled = T.running || !isTrained;
     }
     if (el.setupToolsBtn) {
-      el.setupToolsBtn.disabled = T.running || !t || !t.mergedExists;
+      // Setup is only tool preparation (clone + build whisper.cpp) — it never
+      // touches the dataset, trained model, or production app model. Allow it
+      // anytime the environment has been probed, independent of Export/merge.
+      el.setupToolsBtn.disabled = T.running || !T.env;
     }
     if (el.convertBtn) {
       const ready = !!(t && t.mergedExists && t.quantizeBuilt);
@@ -1482,7 +1485,6 @@
     if (!T.running) { refreshEnv(); refreshTools(); }
   }
 
-  // ─── HTML shell ────────────────────────────────────────────────────────────
   // ─── HTML shell ────────────────────────────────────────────────────────────
   function render() {
     return `
