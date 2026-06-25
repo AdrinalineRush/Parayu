@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "updated": "2026-06-24",
+  "_comment": "SAMPLE baseline — curated via the dev-only admin panel. Both stages run on the transcription output (Whisper translates internally): stage 'pre' matches Malayalam-script text, stage 'post' matches English text. Longer 'from' values are applied first. Replace these examples with real corrections.",
+  "entries": [
+    { "from": "parayu sample", "to": "Parayu", "phrase": true, "stage": "post" },
+    { "from": "ലോൽ", "to": "lol", "phrase": false, "stage": "pre" }
+  ]
+}

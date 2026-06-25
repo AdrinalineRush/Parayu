@@ -1,0 +1,29 @@
+# --- Secrets (never commit) ---
+.env
+.env.*
+!.env.*.example
+*.pem
+
+# --- Dependencies ---
+node_modules/
+**/node_modules/
+
+# --- Build output / packaged installers ---
+dist/
+build/win-unpacked/
+build/mac-*/
+*.dmg
+*.dmg.blockmap
+*.zip
+
+# --- Caches ---
+*.tsbuildinfo
+.next/
+out/
+
+# --- OS / editor cruft ---
+.DS_Store
+**/.DS_Store
+
+# Nested project — tracked in its own git repo
+parayu-Website/

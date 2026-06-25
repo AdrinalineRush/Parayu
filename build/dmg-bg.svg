@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 540" width="540" height="540" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Base dark navy gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%"  stop-color="#141b30"/>
+      <stop offset="55%" stop-color="#0a0f1d"/>
+      <stop offset="100%" stop-color="#06080f"/>
+    </linearGradient>
+
+    <!-- Soft aurora blobs -->
+    <radialGradient id="auroraPurple" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6d4bb0" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#6d4bb0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="auroraPink" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c24a72" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#c24a72" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="auroraTeal" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2f8f86" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#2f8f86" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="auroraBlue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3a63c0" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#3a63c0" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="soften" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="glowWarm" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="9" result="b"/>
+      <feFlood flood-color="#d76a8a" flood-opacity="0.6"/>
+      <feComposite in2="b" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowCool" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="9" result="b"/>
+      <feFlood flood-color="#7fa6e8" flood-opacity="0.6"/>
+      <feComposite in2="b" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowArrow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/>
+      <feFlood flood-color="#dbe6ff" flood-opacity="0.9"/>
+      <feComposite in2="b" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <radialGradient id="boxFillWarm" cx="40%" cy="35%" r="80%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </radialGradient>
+    <radialGradient id="boxFillCool" cx="55%" cy="35%" r="80%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="540" height="540" fill="url(#bg)"/>
+  <g filter="url(#soften)">
+    <ellipse cx="120" cy="70"  rx="150" ry="120" fill="url(#auroraPink)"/>
+    <ellipse cx="300" cy="40"  rx="180" ry="130" fill="url(#auroraPurple)"/>
+    <ellipse cx="470" cy="90"  rx="160" ry="130" fill="url(#auroraBlue)"/>
+    <ellipse cx="90"  cy="300" rx="150" ry="150" fill="url(#auroraTeal)"/>
+    <ellipse cx="430" cy="260" rx="120" ry="120" fill="url(#auroraBlue)"/>
+  </g>
+
+  <!-- Title -->
+  <text x="270" y="118" text-anchor="middle"
+        font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif"
+        font-size="30" font-weight="400" fill="#ffffff" fill-opacity="0.92"
+        letter-spacing="0.3">Drag Parayu to Applications</text>
+
+  <!-- Left drop frame (app icon lands here at x:130 y:270) -->
+  <g filter="url(#glowWarm)">
+    <rect x="55" y="195" width="150" height="150" rx="34"
+          fill="url(#boxFillWarm)" stroke="#e8b8c4" stroke-opacity="0.55" stroke-width="1.5"/>
+  </g>
+
+  <!-- Right drop frame (Applications alias lands here at x:410 y:270) -->
+  <g filter="url(#glowCool)">
+    <rect x="335" y="195" width="150" height="150" rx="34"
+          fill="url(#boxFillCool)" stroke="#bcd0f5" stroke-opacity="0.6" stroke-width="1.5"/>
+  </g>
+
+  <!-- Dotted glowing arrow between the frames, centered on the icon row -->
+  <g filter="url(#glowArrow)" stroke="#eef4ff" stroke-opacity="0.95">
+    <line x1="223" y1="270" x2="300" y2="270" stroke-width="3"
+          stroke-linecap="round" stroke-dasharray="0.5 9"/>
+    <path d="M 300 256 L 318 270 L 300 284" fill="none" stroke-width="3.5"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

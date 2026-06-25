@@ -1,0 +1,44 @@
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#0A0E1A"/>
+      <stop offset="0.5" stop-color="#141B30"/>
+      <stop offset="1" stop-color="#1E2A4A"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#3DD0FF"/>
+      <stop offset="0.55" stop-color="#7C5CFF"/>
+      <stop offset="1" stop-color="#C49BFF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0" stop-color="#5B7CFF" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#5B7CFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <rect x="64" y="64" width="896" height="896" rx="210" fill="url(#bg)"/>
+  <rect x="64" y="64" width="896" height="896" rx="210" fill="url(#glow)"/>
+  <rect x="66" y="66" width="892" height="892" rx="208" fill="none" stroke="#6E7CFF" stroke-opacity="0.18" stroke-width="3"/>
+
+  <g filter="url(#soft)" opacity="0.55">
+    <g fill="url(#bar)">
+      <rect x="250" y="560" width="62" height="220" rx="31"/>
+      <rect x="372" y="430" width="62" height="350" rx="31"/>
+      <rect x="494" y="290" width="62" height="490" rx="31"/>
+      <rect x="616" y="400" width="62" height="380" rx="31"/>
+      <rect x="738" y="540" width="62" height="240" rx="31"/>
+    </g>
+  </g>
+  <g fill="url(#bar)">
+    <rect x="250" y="560" width="62" height="220" rx="31"/>
+    <rect x="372" y="430" width="62" height="350" rx="31"/>
+    <rect x="494" y="290" width="62" height="490" rx="31"/>
+    <rect x="616" y="400" width="62" height="380" rx="31"/>
+    <rect x="738" y="540" width="62" height="240" rx="31"/>
+  </g>
+
+  <path d="M430 300 L525 205 L620 300" fill="none" stroke="#EAF2FF" stroke-width="42" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+</svg>
