@@ -1,0 +1,5 @@
+torch
+transformers>=4.39,<4.46
+sentencepiece
+einops
+git+https://github.com/VarunGumma/IndicTransToolkit.git

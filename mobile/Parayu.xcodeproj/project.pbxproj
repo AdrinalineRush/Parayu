@@ -1,0 +1,790 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		079A2D7C51BBDFB906637078 /* whisper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB827875D6F0D2C7CCDA3898 /* whisper.cpp */; };
+		114F3D47012F8E869E316B89 /* ggml-threading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8B8D741E22DAC8DBBCE71FB /* ggml-threading.cpp */; };
+		14A2D0E317B84A1580795F61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F0D0DB62A6C4A6F9A3B21C8 /* Assets.xcassets */; };
+		1DA14668D825519CA428B60F /* ggml-small-q5_1.bin in Resources */ = {isa = PBXBuildFile; fileRef = 3AD9EEEDF0E4234FEE14692F /* ggml-small-q5_1.bin */; };
+		1E9CD38E1D666EB5F0E5DA02 /* hbm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 873FC62AF040848C9C19D122 /* hbm.cpp */; };
+		2AD02715F59714105CCAA87E /* ggml-quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 92F078BC8C16AB64E3993089 /* ggml-quants.c */; };
+		389799328F796E9DCEAC6A8F /* ggml-cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9975762C94BE4F6BC74B9 /* ggml-cpu.c */; };
+		3B80BBE44EE1CA0626E02B8C /* quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 96D2EB898CDC05D53C75F0B4 /* quants.c */; };
+		42EE728F90F9D559738B603F /* ParayuKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53DFE4EB0D2B6A9DD083184A /* ParayuKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		43A7FCAAFF61E301B420F486 /* unary-ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF412CFC172F9E5189B39C7D /* unary-ops.cpp */; };
+		47C9D791EC3935602685141A /* repack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 447B68D9D3A373DE0CF97856 /* repack.cpp */; };
+		49E9C23DA6C16C68DDBD9C36 /* ParayuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B4E34FFF9B9A5844427732 /* ParayuApp.swift */; };
+		508B2DD1AFF1E8094660A2C0 /* ggml-backend-dl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5898C8A45681FB12E442998E /* ggml-backend-dl.cpp */; };
+		55575B7E238D49A1B7368812 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3DD9BE74F5CD8FE4930D69B /* Accelerate.framework */; };
+		56E8340588422E1A1A2DD5C7 /* TranscribeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B979A654E2502E4418BFE /* TranscribeView.swift */; };
+		5BE4679911A768ED4F19511A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2FF297DA2ECCFD6EA23E63 /* SettingsView.swift */; };
+		5CEF0695ECB32F28E7306CB7 /* mmq.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F9C1819A55F1247C9D076AA /* mmq.cpp */; };
+		62072BEAF73214E81C9A991B /* ggml-opt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB6DC56DD15CDA1A915690B6 /* ggml-opt.cpp */; };
+		646870660EEEDB8D829919E8 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B821AE2A3F19E6D64A343D13 /* OnboardingView.swift */; };
+		6814C6010A6D4BE0A3C1E2F4 /* ParayuShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B49CB49F31278A314B09DD /* ParayuShortcuts.swift */; };
+		6881FDFC573520CA4CC04AC0 /* ggml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 894C356D8C119F762B964C0F /* ggml.cpp */; };
+		6C8911F1B0A9EDAD21A830E4 /* binary-ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD54EA4BA22D121C10EEC621 /* binary-ops.cpp */; };
+		71BDF6F98014AE5130220889 /* ggml-backend-meta.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C87DC88E1C7AFA31A6373EE7 /* ggml-backend-meta.cpp */; };
+		72DAC4B0AD9BFE1D2FCBF16A /* amx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7631BC25EDA323E99FBDBCF2 /* amx.cpp */; };
+		8147C56E32F9DD458991C9F4 /* ggml-backend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF184187D7B0352DCB288364 /* ggml-backend.cpp */; };
+		81BF4E1156EADE4FDE26FE69 /* SnippetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CADCF79D59C598D7ED93DD /* SnippetsView.swift */; };
+		8BE4F9517B2124447D0116DC /* quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C244A46B6EF018A8577955A /* quants.c */; };
+		9349C096705D90626DD4B8AE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC607ECD2C0D8D6E551CB7D0 /* HomeView.swift */; };
+		98C7CDC7BAEA6754897931B3 /* traits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A3DB0864AAED8DAFD688975 /* traits.cpp */; };
+		9D2A57F30FCB16646902C97B /* repack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 325ABA2E83948633E8481733 /* repack.cpp */; };
+		9DC74DAB9F40ED85A9D83F84 /* ggml-cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E819F32A9519404B0AD97CA2 /* ggml-cpu.cpp */; };
+		A4FA7EF2972BD583A61F96AF /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28FE88C460CFB1F0DCD29423 /* HistoryView.swift */; };
+		A8E1AB2C71811A6A9D3DD136 /* vec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D97E5229B11EB8ED16807039 /* vec.cpp */; };
+		A95BE1E3D5222FDE014E1FD6 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F79BF0362C05ADCAC72442 /* AudioRecorder.swift */; };
+		ABC93B2F9E31974D92C2D0C3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5163F4388CDD524A55B4455F /* MainView.swift */; };
+		B267DC81D28209DB7E721130 /* ggml-alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = C0835F27E682AD1934272310 /* ggml-alloc.c */; };
+		B9D900F15C7B1B897D0663D0 /* WhisperTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719438F8D8BE110961BFCCFA /* WhisperTranslator.swift */; };
+		BE7C8B233026DE57E96C638A /* KeyboardHandoffDictationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4F9594408479D7DABB9984 /* KeyboardHandoffDictationView.swift */; };
+		BF1FC810359BB243CCA32248 /* ggml.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E51B89C1DE772FD46450639 /* ggml.c */; };
+		C4710C2AF2C86226FA80EB1F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED57E98319ABBDD9EE8ADC5A /* AppState.swift */; };
+		CD30261E4C065D132ED55921 /* TextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F48FC72D8BC684BFD1247B /* TextProcessor.swift */; };
+		CFBE18566EBB2E91126269E9 /* ggml-backend-reg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD085A959283814A3FCC36 /* ggml-backend-reg.cpp */; };
+		D8B407778FDA1A40AB9E2133 /* gguf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5724DE55931DFCCD66FAEDCE /* gguf.cpp */; };
+		E1003E7E49997D9D7DA6DC74 /* ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEAFF01E4A08AB86DD226840 /* ops.cpp */; };
+		E6AB6F31B9A38359903C12B9 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5908F15E5F5813D2441512C0 /* KeyboardViewController.swift */; };
+		F8E35AFD7BF0BBE018835422 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A9FBF68A4E67B381216412 /* DictionaryView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6E6692E2DC9361FEA48D5691 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B6990EDBD40B8218EF26B14E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA8BE9420BF346C4A736F7F0;
+			remoteInfo = ParayuKeyboard;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A8A6D4DEF5A7411E1863B8B6 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				42EE728F90F9D559738B603F /* ParayuKeyboard.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		039B979A654E2502E4418BFE /* TranscribeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscribeView.swift; sourceTree = "<group>"; };
+		0F9C1819A55F1247C9D076AA /* mmq.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mmq.cpp; sourceTree = "<group>"; };
+		18CADCF79D59C598D7ED93DD /* SnippetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnippetsView.swift; sourceTree = "<group>"; };
+		1C795BB8B028870EED35B709 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1F2FF297DA2ECCFD6EA23E63 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		28FE88C460CFB1F0DCD29423 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		2E51B89C1DE772FD46450639 /* ggml.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ggml.c; sourceTree = "<group>"; };
+		325ABA2E83948633E8481733 /* repack.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = repack.cpp; sourceTree = "<group>"; };
+		38B4E34FFF9B9A5844427732 /* ParayuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParayuApp.swift; sourceTree = "<group>"; };
+		3AD9EEEDF0E4234FEE14692F /* ggml-small-q5_1.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = "ggml-small-q5_1.bin"; sourceTree = "<group>"; };
+		3AF4CF507DEFB72C2FBF023E /* Parayu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Parayu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		40F48FC72D8BC684BFD1247B /* TextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextProcessor.swift; sourceTree = "<group>"; };
+		447B68D9D3A373DE0CF97856 /* repack.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = repack.cpp; sourceTree = "<group>"; };
+		5163F4388CDD524A55B4455F /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		53DFE4EB0D2B6A9DD083184A /* ParayuKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ParayuKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		56A9FBF68A4E67B381216412 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
+		5724DE55931DFCCD66FAEDCE /* gguf.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gguf.cpp; sourceTree = "<group>"; };
+		5898C8A45681FB12E442998E /* ggml-backend-dl.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-backend-dl.cpp"; sourceTree = "<group>"; };
+		5908F15E5F5813D2441512C0 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		5DDD085A959283814A3FCC36 /* ggml-backend-reg.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-backend-reg.cpp"; sourceTree = "<group>"; };
+		5F0D0DB62A6C4A6F9A3B21C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		68B49CB49F31278A314B09DD /* ParayuShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParayuShortcuts.swift; sourceTree = "<group>"; };
+		5FA9975762C94BE4F6BC74B9 /* ggml-cpu.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "ggml-cpu.c"; sourceTree = "<group>"; };
+		6E5B0BC00F01213B1507DC1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		719438F8D8BE110961BFCCFA /* WhisperTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperTranslator.swift; sourceTree = "<group>"; };
+		7631BC25EDA323E99FBDBCF2 /* amx.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = amx.cpp; sourceTree = "<group>"; };
+		7B4F9594408479D7DABB9984 /* KeyboardHandoffDictationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHandoffDictationView.swift; sourceTree = "<group>"; };
+		873FC62AF040848C9C19D122 /* hbm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = hbm.cpp; sourceTree = "<group>"; };
+		894C356D8C119F762B964C0F /* ggml.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ggml.cpp; sourceTree = "<group>"; };
+		8C244A46B6EF018A8577955A /* quants.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = quants.c; sourceTree = "<group>"; };
+		92F078BC8C16AB64E3993089 /* ggml-quants.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "ggml-quants.c"; sourceTree = "<group>"; };
+		96D2EB898CDC05D53C75F0B4 /* quants.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = quants.c; sourceTree = "<group>"; };
+		97F79BF0362C05ADCAC72442 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		9A3DB0864AAED8DAFD688975 /* traits.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = traits.cpp; sourceTree = "<group>"; };
+		A3DD9BE74F5CD8FE4930D69B /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		A8B8D741E22DAC8DBBCE71FB /* ggml-threading.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-threading.cpp"; sourceTree = "<group>"; };
+		AE4FABAE9C041305A9B6C778 /* Parayu-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Parayu-Bridging-Header.h"; sourceTree = "<group>"; };
+		AEAFF01E4A08AB86DD226840 /* ops.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ops.cpp; sourceTree = "<group>"; };
+		B4807636D4948010BBB37CF5 /* ParayuKeyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ParayuKeyboard.entitlements; sourceTree = "<group>"; };
+		B821AE2A3F19E6D64A343D13 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		BB827875D6F0D2C7CCDA3898 /* whisper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = whisper.cpp; sourceTree = "<group>"; };
+		BD54EA4BA22D121C10EEC621 /* binary-ops.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "binary-ops.cpp"; sourceTree = "<group>"; };
+		C0835F27E682AD1934272310 /* ggml-alloc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "ggml-alloc.c"; sourceTree = "<group>"; };
+		C87DC88E1C7AFA31A6373EE7 /* ggml-backend-meta.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-backend-meta.cpp"; sourceTree = "<group>"; };
+		CC607ECD2C0D8D6E551CB7D0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		CF184187D7B0352DCB288364 /* ggml-backend.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-backend.cpp"; sourceTree = "<group>"; };
+		D97E5229B11EB8ED16807039 /* vec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = vec.cpp; sourceTree = "<group>"; };
+		E819F32A9519404B0AD97CA2 /* ggml-cpu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-cpu.cpp"; sourceTree = "<group>"; };
+		ED57E98319ABBDD9EE8ADC5A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		EF412CFC172F9E5189B39C7D /* unary-ops.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "unary-ops.cpp"; sourceTree = "<group>"; };
+		FB6DC56DD15CDA1A915690B6 /* ggml-opt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-opt.cpp"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E28F5B727180BF899B192FD1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55575B7E238D49A1B7368812 /* Accelerate.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		116EB1DD5BE4F1DAE99399FF /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				97F79BF0362C05ADCAC72442 /* AudioRecorder.swift */,
+				68B49CB49F31278A314B09DD /* ParayuShortcuts.swift */,
+				40F48FC72D8BC684BFD1247B /* TextProcessor.swift */,
+				719438F8D8BE110961BFCCFA /* WhisperTranslator.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		154CE06862D9294C4EDE8BA4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				ED57E98319ABBDD9EE8ADC5A /* AppState.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2B6239BF5E6810BE01148C53 /* amx */ = {
+			isa = PBXGroup;
+			children = (
+				7631BC25EDA323E99FBDBCF2 /* amx.cpp */,
+				0F9C1819A55F1247C9D076AA /* mmq.cpp */,
+			);
+			name = amx;
+			path = "vendor/whisper.cpp/ggml/src/ggml-cpu/amx";
+			sourceTree = "<group>";
+		};
+		58DB0CCC797AF94F21FABE05 /* arm */ = {
+			isa = PBXGroup;
+			children = (
+				8C244A46B6EF018A8577955A /* quants.c */,
+				325ABA2E83948633E8481733 /* repack.cpp */,
+			);
+			name = arm;
+			path = "vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm";
+			sourceTree = "<group>";
+		};
+		619F57A0718A9ED7E0B517D1 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				BB827875D6F0D2C7CCDA3898 /* whisper.cpp */,
+			);
+			name = src;
+			path = vendor/whisper.cpp/src;
+			sourceTree = "<group>";
+		};
+		7B39096C7FB89FE9D0246877 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				C0835F27E682AD1934272310 /* ggml-alloc.c */,
+				5898C8A45681FB12E442998E /* ggml-backend-dl.cpp */,
+				C87DC88E1C7AFA31A6373EE7 /* ggml-backend-meta.cpp */,
+				5DDD085A959283814A3FCC36 /* ggml-backend-reg.cpp */,
+				CF184187D7B0352DCB288364 /* ggml-backend.cpp */,
+				FB6DC56DD15CDA1A915690B6 /* ggml-opt.cpp */,
+				92F078BC8C16AB64E3993089 /* ggml-quants.c */,
+				A8B8D741E22DAC8DBBCE71FB /* ggml-threading.cpp */,
+				2E51B89C1DE772FD46450639 /* ggml.c */,
+				894C356D8C119F762B964C0F /* ggml.cpp */,
+				5724DE55931DFCCD66FAEDCE /* gguf.cpp */,
+			);
+			name = src;
+			path = vendor/whisper.cpp/ggml/src;
+			sourceTree = "<group>";
+		};
+		A0EB923AE90EB91E86B2CB42 /* ParayuKeyboard */ = {
+			isa = PBXGroup;
+			children = (
+				1C795BB8B028870EED35B709 /* Info.plist */,
+				5908F15E5F5813D2441512C0 /* KeyboardViewController.swift */,
+				B4807636D4948010BBB37CF5 /* ParayuKeyboard.entitlements */,
+			);
+			path = ParayuKeyboard;
+			sourceTree = "<group>";
+		};
+		A4E48CC87E2B67F37A91B4A4 = {
+			isa = PBXGroup;
+			children = (
+				2B6239BF5E6810BE01148C53 /* amx */,
+				C574E11EBA6C049BD0C11980 /* App */,
+				58DB0CCC797AF94F21FABE05 /* arm */,
+				ED44764846ED13790E6E4187 /* ggml-cpu */,
+				E6076B7D5FE4A00B3DA2C935 /* models */,
+				A0EB923AE90EB91E86B2CB42 /* ParayuKeyboard */,
+				7B39096C7FB89FE9D0246877 /* src */,
+				619F57A0718A9ED7E0B517D1 /* src */,
+				BA11606ED162F076B45D011F /* Frameworks */,
+				E0EC0F859C8235DE41A7E69B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BA11606ED162F076B45D011F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A3DD9BE74F5CD8FE4930D69B /* Accelerate.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C574E11EBA6C049BD0C11980 /* App */ = {
+			isa = PBXGroup;
+				children = (
+					5F0D0DB62A6C4A6F9A3B21C8 /* Assets.xcassets */,
+					6E5B0BC00F01213B1507DC1E /* Info.plist */,
+					AE4FABAE9C041305A9B6C778 /* Parayu-Bridging-Header.h */,
+					38B4E34FFF9B9A5844427732 /* ParayuApp.swift */,
+				154CE06862D9294C4EDE8BA4 /* Models */,
+				116EB1DD5BE4F1DAE99399FF /* Services */,
+				DDC79CBB9BF677A49768BD2A /* Views */,
+			);
+			name = App;
+			path = Parayu.swiftpm/App;
+			sourceTree = "<group>";
+		};
+		DDC79CBB9BF677A49768BD2A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				56A9FBF68A4E67B381216412 /* DictionaryView.swift */,
+				28FE88C460CFB1F0DCD29423 /* HistoryView.swift */,
+				CC607ECD2C0D8D6E551CB7D0 /* HomeView.swift */,
+				7B4F9594408479D7DABB9984 /* KeyboardHandoffDictationView.swift */,
+				5163F4388CDD524A55B4455F /* MainView.swift */,
+				B821AE2A3F19E6D64A343D13 /* OnboardingView.swift */,
+				1F2FF297DA2ECCFD6EA23E63 /* SettingsView.swift */,
+				18CADCF79D59C598D7ED93DD /* SnippetsView.swift */,
+				039B979A654E2502E4418BFE /* TranscribeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E0EC0F859C8235DE41A7E69B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3AF4CF507DEFB72C2FBF023E /* Parayu.app */,
+				53DFE4EB0D2B6A9DD083184A /* ParayuKeyboard.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E6076B7D5FE4A00B3DA2C935 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				3AD9EEEDF0E4234FEE14692F /* ggml-small-q5_1.bin */,
+			);
+			name = models;
+			path = src/assets/models;
+			sourceTree = "<group>";
+		};
+		ED44764846ED13790E6E4187 /* ggml-cpu */ = {
+			isa = PBXGroup;
+			children = (
+				BD54EA4BA22D121C10EEC621 /* binary-ops.cpp */,
+				5FA9975762C94BE4F6BC74B9 /* ggml-cpu.c */,
+				E819F32A9519404B0AD97CA2 /* ggml-cpu.cpp */,
+				873FC62AF040848C9C19D122 /* hbm.cpp */,
+				AEAFF01E4A08AB86DD226840 /* ops.cpp */,
+				96D2EB898CDC05D53C75F0B4 /* quants.c */,
+				447B68D9D3A373DE0CF97856 /* repack.cpp */,
+				9A3DB0864AAED8DAFD688975 /* traits.cpp */,
+				EF412CFC172F9E5189B39C7D /* unary-ops.cpp */,
+				D97E5229B11EB8ED16807039 /* vec.cpp */,
+			);
+			name = "ggml-cpu";
+			path = "vendor/whisper.cpp/ggml/src/ggml-cpu";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		267F5889BA8C7DE2CE073B5C /* Parayu */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F2F9C5AEF2194AFEF1C75E54 /* Build configuration list for PBXNativeTarget "Parayu" */;
+			buildPhases = (
+				875FE3F7A63658AD2C455AE2 /* Sources */,
+				4F54A265B103E2B80E116381 /* Resources */,
+				E28F5B727180BF899B192FD1 /* Frameworks */,
+				A8A6D4DEF5A7411E1863B8B6 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				514C31C3A59D004632C828AF /* PBXTargetDependency */,
+			);
+			name = Parayu;
+			packageProductDependencies = (
+			);
+			productName = Parayu;
+			productReference = 3AF4CF507DEFB72C2FBF023E /* Parayu.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CA8BE9420BF346C4A736F7F0 /* ParayuKeyboard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1054C13D02B8C3D9FAD207F2 /* Build configuration list for PBXNativeTarget "ParayuKeyboard" */;
+			buildPhases = (
+				2EC6B7C8310BA8B85805B8A9 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ParayuKeyboard;
+			packageProductDependencies = (
+			);
+			productName = ParayuKeyboard;
+			productReference = 53DFE4EB0D2B6A9DD083184A /* ParayuKeyboard.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B6990EDBD40B8218EF26B14E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					267F5889BA8C7DE2CE073B5C = {
+						ProvisioningStyle = Automatic;
+					};
+					CA8BE9420BF346C4A736F7F0 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 5005594FED3A3A6DE186A9DD /* Build configuration list for PBXProject "Parayu" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = A4E48CC87E2B67F37A91B4A4;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E0EC0F859C8235DE41A7E69B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				267F5889BA8C7DE2CE073B5C /* Parayu */,
+				CA8BE9420BF346C4A736F7F0 /* ParayuKeyboard */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4F54A265B103E2B80E116381 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+				buildActionMask = 2147483647;
+				files = (
+					14A2D0E317B84A1580795F61 /* Assets.xcassets in Resources */,
+					1DA14668D825519CA428B60F /* ggml-small-q5_1.bin in Resources */,
+				);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2EC6B7C8310BA8B85805B8A9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E6AB6F31B9A38359903C12B9 /* KeyboardViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		875FE3F7A63658AD2C455AE2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4710C2AF2C86226FA80EB1F /* AppState.swift in Sources */,
+				A95BE1E3D5222FDE014E1FD6 /* AudioRecorder.swift in Sources */,
+				F8E35AFD7BF0BBE018835422 /* DictionaryView.swift in Sources */,
+				A4FA7EF2972BD583A61F96AF /* HistoryView.swift in Sources */,
+				9349C096705D90626DD4B8AE /* HomeView.swift in Sources */,
+				BE7C8B233026DE57E96C638A /* KeyboardHandoffDictationView.swift in Sources */,
+				ABC93B2F9E31974D92C2D0C3 /* MainView.swift in Sources */,
+				646870660EEEDB8D829919E8 /* OnboardingView.swift in Sources */,
+				49E9C23DA6C16C68DDBD9C36 /* ParayuApp.swift in Sources */,
+				6814C6010A6D4BE0A3C1E2F4 /* ParayuShortcuts.swift in Sources */,
+				5BE4679911A768ED4F19511A /* SettingsView.swift in Sources */,
+				81BF4E1156EADE4FDE26FE69 /* SnippetsView.swift in Sources */,
+				CD30261E4C065D132ED55921 /* TextProcessor.swift in Sources */,
+				56E8340588422E1A1A2DD5C7 /* TranscribeView.swift in Sources */,
+				B9D900F15C7B1B897D0663D0 /* WhisperTranslator.swift in Sources */,
+				72DAC4B0AD9BFE1D2FCBF16A /* amx.cpp in Sources */,
+				6C8911F1B0A9EDAD21A830E4 /* binary-ops.cpp in Sources */,
+				B267DC81D28209DB7E721130 /* ggml-alloc.c in Sources */,
+				508B2DD1AFF1E8094660A2C0 /* ggml-backend-dl.cpp in Sources */,
+				71BDF6F98014AE5130220889 /* ggml-backend-meta.cpp in Sources */,
+				CFBE18566EBB2E91126269E9 /* ggml-backend-reg.cpp in Sources */,
+				8147C56E32F9DD458991C9F4 /* ggml-backend.cpp in Sources */,
+				389799328F796E9DCEAC6A8F /* ggml-cpu.c in Sources */,
+				9DC74DAB9F40ED85A9D83F84 /* ggml-cpu.cpp in Sources */,
+				62072BEAF73214E81C9A991B /* ggml-opt.cpp in Sources */,
+				2AD02715F59714105CCAA87E /* ggml-quants.c in Sources */,
+				114F3D47012F8E869E316B89 /* ggml-threading.cpp in Sources */,
+				BF1FC810359BB243CCA32248 /* ggml.c in Sources */,
+				6881FDFC573520CA4CC04AC0 /* ggml.cpp in Sources */,
+				D8B407778FDA1A40AB9E2133 /* gguf.cpp in Sources */,
+				1E9CD38E1D666EB5F0E5DA02 /* hbm.cpp in Sources */,
+				5CEF0695ECB32F28E7306CB7 /* mmq.cpp in Sources */,
+				E1003E7E49997D9D7DA6DC74 /* ops.cpp in Sources */,
+				3B80BBE44EE1CA0626E02B8C /* quants.c in Sources */,
+				8BE4F9517B2124447D0116DC /* quants.c in Sources */,
+				47C9D791EC3935602685141A /* repack.cpp in Sources */,
+				9D2A57F30FCB16646902C97B /* repack.cpp in Sources */,
+				98C7CDC7BAEA6754897931B3 /* traits.cpp in Sources */,
+				43A7FCAAFF61E301B420F486 /* unary-ops.cpp in Sources */,
+				A8E1AB2C71811A6A9D3DD136 /* vec.cpp in Sources */,
+				079A2D7C51BBDFB906637078 /* whisper.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		514C31C3A59D004632C828AF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA8BE9420BF346C4A736F7F0 /* ParayuKeyboard */;
+			targetProxy = 6E6692E2DC9361FEA48D5691 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		045BC1DC617F76F44EE51EA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		158C3707D9CE9E2DE287A03C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		61E52A1EAF9E0DCD2CCA2A2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_ENTITLEMENTS = Parayu.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q4283HG7BT;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_DARWIN_C_SOURCE,
+					GGML_USE_CPU,
+					GGML_USE_ACCELERATE,
+					ACCELERATE_NEW_LAPACK,
+					ACCELERATE_LAPACK_ILP64,
+					"WHISPER_VERSION=\\\"1.9.1\\\"",
+					"GGML_VERSION=\\\"0.15.3\\\"",
+					"GGML_COMMIT=\\\"vendored\\\"",
+				);
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					vendor/whisper.cpp/include,
+					vendor/whisper.cpp/ggml/include,
+					vendor/whisper.cpp/ggml/src,
+					"vendor/whisper.cpp/ggml/src/ggml-cpu",
+				);
+				INFOPLIST_FILE = Parayu.swiftpm/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-O3",
+					"-Wno-shorten-64-to-32",
+					"-Wno-implicit-int-conversion",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-unused-function",
+					"-Wno-ambiguous-macro",
+					"-Wno-unreachable-code",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-O3",
+					"-Wno-shorten-64-to-32",
+					"-Wno-implicit-int-conversion",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-unused-function",
+					"-Wno-ambiguous-macro",
+					"-Wno-unreachable-code",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.parayu.app;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Parayu.swiftpm/App/Parayu-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8CB0499A331459F1594CB609 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ParayuKeyboard/ParayuKeyboard.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q4283HG7BT;
+				INFOPLIST_FILE = ParayuKeyboard/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.parayu.app.keyboard;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		91546CB88BFE7F58588866B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_ENTITLEMENTS = Parayu.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q4283HG7BT;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_DARWIN_C_SOURCE,
+					GGML_USE_CPU,
+					GGML_USE_ACCELERATE,
+					ACCELERATE_NEW_LAPACK,
+					ACCELERATE_LAPACK_ILP64,
+					"WHISPER_VERSION=\\\"1.9.1\\\"",
+					"GGML_VERSION=\\\"0.15.3\\\"",
+					"GGML_COMMIT=\\\"vendored\\\"",
+				);
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					vendor/whisper.cpp/include,
+					vendor/whisper.cpp/ggml/include,
+					vendor/whisper.cpp/ggml/src,
+					"vendor/whisper.cpp/ggml/src/ggml-cpu",
+				);
+				INFOPLIST_FILE = Parayu.swiftpm/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-O3",
+					"-Wno-shorten-64-to-32",
+					"-Wno-implicit-int-conversion",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-unused-function",
+					"-Wno-ambiguous-macro",
+					"-Wno-unreachable-code",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-O3",
+					"-Wno-shorten-64-to-32",
+					"-Wno-implicit-int-conversion",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-unused-function",
+					"-Wno-ambiguous-macro",
+					"-Wno-unreachable-code",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.parayu.app;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Parayu.swiftpm/App/Parayu-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BCD9EA67E2C84D0D1BCDCCEE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ParayuKeyboard/ParayuKeyboard.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q4283HG7BT;
+				INFOPLIST_FILE = ParayuKeyboard/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.parayu.app.keyboard;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1054C13D02B8C3D9FAD207F2 /* Build configuration list for PBXNativeTarget "ParayuKeyboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8CB0499A331459F1594CB609 /* Debug */,
+				BCD9EA67E2C84D0D1BCDCCEE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5005594FED3A3A6DE186A9DD /* Build configuration list for PBXProject "Parayu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				158C3707D9CE9E2DE287A03C /* Debug */,
+				045BC1DC617F76F44EE51EA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F2F9C5AEF2194AFEF1C75E54 /* Build configuration list for PBXNativeTarget "Parayu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61E52A1EAF9E0DCD2CCA2A2F /* Debug */,
+				91546CB88BFE7F58588866B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B6990EDBD40B8218EF26B14E /* Project object */;
+}

@@ -1,3 +1,8 @@
+# ============================================================
+# Parayu — unified ignore
+# Covers desktop/ (Electron) · mobile/ (iOS+Android) · website/ (Next.js) · backend/ (Supabase) · tools/
+# ============================================================
+
 # --- Secrets (never commit) ---
 .env
 .env.*
@@ -10,20 +15,51 @@ node_modules/
 
 # --- Build output / packaged installers ---
 dist/
-build/win-unpacked/
-build/mac-*/
+**/dist/
+out/
+desktop/build/win-unpacked/
+desktop/build/mac-*/
 *.dmg
 *.dmg.blockmap
 *.zip
 
-# --- Caches ---
+# --- JS / Next.js caches ---
 *.tsbuildinfo
 .next/
-out/
+**/.next/
+.vercel/
+
+# --- ML model binaries (bundled at build time via extraResources, never in git) ---
+*.bin
+
+# --- Training / admin runtime artifacts (generated locally, not source) ---
+output/
+
+# --- Python byte caches & virtualenvs ---
+__pycache__/
+**/__pycache__/
+*.pyc
+.venv/
+**/.venv/
+
+# --- iOS / Xcode / SwiftPM ---
+**/.swiftpm/xcode/package.xcworkspace/xcuserdata/
+**/*.xcuserstate
+**/.build/
+DerivedData/
+
+# --- Android ---
+mobile/android/.gradle/
+mobile/android/**/build/
+mobile/android/local.properties
+mobile/android/.cxx/
+*.apk
+*.aab
+
+# --- Google OAuth credentials / upload tokens (desktop packaging) ---
+desktop/build/token.json
+desktop/build/credentials.json
 
 # --- OS / editor cruft ---
 .DS_Store
 **/.DS_Store
-
-# Nested project — tracked in its own git repo
-parayu-Website/
