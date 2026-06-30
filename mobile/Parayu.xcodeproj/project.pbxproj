@@ -9,50 +9,79 @@
 /* Begin PBXBuildFile section */
 		079A2D7C51BBDFB906637078 /* whisper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB827875D6F0D2C7CCDA3898 /* whisper.cpp */; };
 		114F3D47012F8E869E316B89 /* ggml-threading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8B8D741E22DAC8DBBCE71FB /* ggml-threading.cpp */; };
-		14A2D0E317B84A1580795F61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F0D0DB62A6C4A6F9A3B21C8 /* Assets.xcassets */; };
+		11B378E0E878B93D24628564 /* ggml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 894C356D8C119F762B964C0F /* ggml.cpp */; };
+		1749950BABDD683D14C5CE24 /* ggml-backend-meta.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C87DC88E1C7AFA31A6373EE7 /* ggml-backend-meta.cpp */; };
 		1DA14668D825519CA428B60F /* ggml-small-q5_1.bin in Resources */ = {isa = PBXBuildFile; fileRef = 3AD9EEEDF0E4234FEE14692F /* ggml-small-q5_1.bin */; };
 		1E9CD38E1D666EB5F0E5DA02 /* hbm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 873FC62AF040848C9C19D122 /* hbm.cpp */; };
 		2AD02715F59714105CCAA87E /* ggml-quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 92F078BC8C16AB64E3993089 /* ggml-quants.c */; };
+		2CF68F327EF3B2F6D34CB1C2 /* ggml-threading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8B8D741E22DAC8DBBCE71FB /* ggml-threading.cpp */; };
+		2E251E2B59B3D1FC36D6FC31 /* gguf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5724DE55931DFCCD66FAEDCE /* gguf.cpp */; };
+		3101BE5C4072B9702A240C3A /* whisper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB827875D6F0D2C7CCDA3898 /* whisper.cpp */; };
 		389799328F796E9DCEAC6A8F /* ggml-cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9975762C94BE4F6BC74B9 /* ggml-cpu.c */; };
+		39FD44A572FC50B61077221A /* ggml-alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = C0835F27E682AD1934272310 /* ggml-alloc.c */; };
+		3B58D3EB79FEF6D03AA58839 /* quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C244A46B6EF018A8577955A /* quants.c */; };
 		3B80BBE44EE1CA0626E02B8C /* quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 96D2EB898CDC05D53C75F0B4 /* quants.c */; };
+		3D357BEA9BB0350DDD361F8D /* amx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7631BC25EDA323E99FBDBCF2 /* amx.cpp */; };
 		42EE728F90F9D559738B603F /* ParayuKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53DFE4EB0D2B6A9DD083184A /* ParayuKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		43A7FCAAFF61E301B420F486 /* unary-ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF412CFC172F9E5189B39C7D /* unary-ops.cpp */; };
 		47C9D791EC3935602685141A /* repack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 447B68D9D3A373DE0CF97856 /* repack.cpp */; };
 		49E9C23DA6C16C68DDBD9C36 /* ParayuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B4E34FFF9B9A5844427732 /* ParayuApp.swift */; };
 		508B2DD1AFF1E8094660A2C0 /* ggml-backend-dl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5898C8A45681FB12E442998E /* ggml-backend-dl.cpp */; };
+		5546F397D5345EB7B7240DFB /* TextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F48FC72D8BC684BFD1247B /* TextProcessor.swift */; };
 		55575B7E238D49A1B7368812 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3DD9BE74F5CD8FE4930D69B /* Accelerate.framework */; };
 		56E8340588422E1A1A2DD5C7 /* TranscribeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B979A654E2502E4418BFE /* TranscribeView.swift */; };
 		5BE4679911A768ED4F19511A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2FF297DA2ECCFD6EA23E63 /* SettingsView.swift */; };
 		5CEF0695ECB32F28E7306CB7 /* mmq.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F9C1819A55F1247C9D076AA /* mmq.cpp */; };
 		62072BEAF73214E81C9A991B /* ggml-opt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB6DC56DD15CDA1A915690B6 /* ggml-opt.cpp */; };
 		646870660EEEDB8D829919E8 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B821AE2A3F19E6D64A343D13 /* OnboardingView.swift */; };
-		6814C6010A6D4BE0A3C1E2F4 /* ParayuShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B49CB49F31278A314B09DD /* ParayuShortcuts.swift */; };
 		6881FDFC573520CA4CC04AC0 /* ggml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 894C356D8C119F762B964C0F /* ggml.cpp */; };
+		695DFFFAA023A1C4FEA5040D /* WhisperTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719438F8D8BE110961BFCCFA /* WhisperTranslator.swift */; };
 		6C8911F1B0A9EDAD21A830E4 /* binary-ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD54EA4BA22D121C10EEC621 /* binary-ops.cpp */; };
+		7106AD67F567FDAF5469E10F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8C0C51C11DB68C110093E67 /* Assets.xcassets */; };
 		71BDF6F98014AE5130220889 /* ggml-backend-meta.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C87DC88E1C7AFA31A6373EE7 /* ggml-backend-meta.cpp */; };
+		72CBD7736F92476E608D8D3D /* repack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 447B68D9D3A373DE0CF97856 /* repack.cpp */; };
 		72DAC4B0AD9BFE1D2FCBF16A /* amx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7631BC25EDA323E99FBDBCF2 /* amx.cpp */; };
+		7BDF5F3045B6342F3544ED23 /* ggml-opt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB6DC56DD15CDA1A915690B6 /* ggml-opt.cpp */; };
 		8147C56E32F9DD458991C9F4 /* ggml-backend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF184187D7B0352DCB288364 /* ggml-backend.cpp */; };
 		81BF4E1156EADE4FDE26FE69 /* SnippetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CADCF79D59C598D7ED93DD /* SnippetsView.swift */; };
+		82F1B3F209D7A22CCE024D3B /* hbm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 873FC62AF040848C9C19D122 /* hbm.cpp */; };
 		8BE4F9517B2124447D0116DC /* quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C244A46B6EF018A8577955A /* quants.c */; };
 		9349C096705D90626DD4B8AE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC607ECD2C0D8D6E551CB7D0 /* HomeView.swift */; };
+		944796B7452252921EC74401 /* mmq.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F9C1819A55F1247C9D076AA /* mmq.cpp */; };
+		98532DB3399C091632B7F746 /* vec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D97E5229B11EB8ED16807039 /* vec.cpp */; };
 		98C7CDC7BAEA6754897931B3 /* traits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A3DB0864AAED8DAFD688975 /* traits.cpp */; };
 		9D2A57F30FCB16646902C97B /* repack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 325ABA2E83948633E8481733 /* repack.cpp */; };
 		9DC74DAB9F40ED85A9D83F84 /* ggml-cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E819F32A9519404B0AD97CA2 /* ggml-cpu.cpp */; };
+		A495C71988FB2DAF60DEBCC0 /* ggml-backend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF184187D7B0352DCB288364 /* ggml-backend.cpp */; };
+		A4EB98FDF93EB262A09E1239 /* ggml-cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9975762C94BE4F6BC74B9 /* ggml-cpu.c */; };
 		A4FA7EF2972BD583A61F96AF /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28FE88C460CFB1F0DCD29423 /* HistoryView.swift */; };
 		A8E1AB2C71811A6A9D3DD136 /* vec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D97E5229B11EB8ED16807039 /* vec.cpp */; };
 		A95BE1E3D5222FDE014E1FD6 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F79BF0362C05ADCAC72442 /* AudioRecorder.swift */; };
+		AA6954AA8716F28A078AB8D8 /* ggml-backend-reg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD085A959283814A3FCC36 /* ggml-backend-reg.cpp */; };
 		ABC93B2F9E31974D92C2D0C3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5163F4388CDD524A55B4455F /* MainView.swift */; };
+		AF28CDC53CA145DA6EA3CABE /* ggml-backend-dl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5898C8A45681FB12E442998E /* ggml-backend-dl.cpp */; };
+		B0D263AD89F19DDD8285FC77 /* ggml.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E51B89C1DE772FD46450639 /* ggml.c */; };
+		B1E64489E46B069E49B686CD /* unary-ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF412CFC172F9E5189B39C7D /* unary-ops.cpp */; };
 		B267DC81D28209DB7E721130 /* ggml-alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = C0835F27E682AD1934272310 /* ggml-alloc.c */; };
+		B94CF3CEB781A3C1E7B355CC /* traits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A3DB0864AAED8DAFD688975 /* traits.cpp */; };
 		B9D900F15C7B1B897D0663D0 /* WhisperTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719438F8D8BE110961BFCCFA /* WhisperTranslator.swift */; };
 		BE7C8B233026DE57E96C638A /* KeyboardHandoffDictationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4F9594408479D7DABB9984 /* KeyboardHandoffDictationView.swift */; };
 		BF1FC810359BB243CCA32248 /* ggml.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E51B89C1DE772FD46450639 /* ggml.c */; };
+		C21786E223A97EB59C86C25C /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3DD9BE74F5CD8FE4930D69B /* Accelerate.framework */; };
+		C46FEC20596A2291B14C3B5B /* quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 96D2EB898CDC05D53C75F0B4 /* quants.c */; };
 		C4710C2AF2C86226FA80EB1F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED57E98319ABBDD9EE8ADC5A /* AppState.swift */; };
+		CBEF6484147F614E20F6BED8 /* ParayuShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB056262BD749D2EAEDFF9 /* ParayuShortcuts.swift */; };
+		CC73B38B06B542FA357CAD85 /* ggml-quants.c in Sources */ = {isa = PBXBuildFile; fileRef = 92F078BC8C16AB64E3993089 /* ggml-quants.c */; };
 		CD30261E4C065D132ED55921 /* TextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F48FC72D8BC684BFD1247B /* TextProcessor.swift */; };
 		CFBE18566EBB2E91126269E9 /* ggml-backend-reg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD085A959283814A3FCC36 /* ggml-backend-reg.cpp */; };
 		D8B407778FDA1A40AB9E2133 /* gguf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5724DE55931DFCCD66FAEDCE /* gguf.cpp */; };
 		E1003E7E49997D9D7DA6DC74 /* ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEAFF01E4A08AB86DD226840 /* ops.cpp */; };
 		E6AB6F31B9A38359903C12B9 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5908F15E5F5813D2441512C0 /* KeyboardViewController.swift */; };
+		EC381D784F841DDD3BCF582A /* repack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 325ABA2E83948633E8481733 /* repack.cpp */; };
+		F1CE5204764093BDFCA99260 /* ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEAFF01E4A08AB86DD226840 /* ops.cpp */; };
+		F8964582C1B270BC665035C2 /* binary-ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD54EA4BA22D121C10EEC621 /* binary-ops.cpp */; };
 		F8E35AFD7BF0BBE018835422 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A9FBF68A4E67B381216412 /* DictionaryView.swift */; };
+		F9D549466C197F1226249779 /* ggml-cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E819F32A9519404B0AD97CA2 /* ggml-cpu.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +122,7 @@
 		3AF4CF507DEFB72C2FBF023E /* Parayu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Parayu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40F48FC72D8BC684BFD1247B /* TextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextProcessor.swift; sourceTree = "<group>"; };
 		447B68D9D3A373DE0CF97856 /* repack.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = repack.cpp; sourceTree = "<group>"; };
+		45DB056262BD749D2EAEDFF9 /* ParayuShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParayuShortcuts.swift; sourceTree = "<group>"; };
 		5163F4388CDD524A55B4455F /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		53DFE4EB0D2B6A9DD083184A /* ParayuKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ParayuKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A9FBF68A4E67B381216412 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
@@ -100,8 +130,6 @@
 		5898C8A45681FB12E442998E /* ggml-backend-dl.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-backend-dl.cpp"; sourceTree = "<group>"; };
 		5908F15E5F5813D2441512C0 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		5DDD085A959283814A3FCC36 /* ggml-backend-reg.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-backend-reg.cpp"; sourceTree = "<group>"; };
-		5F0D0DB62A6C4A6F9A3B21C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		68B49CB49F31278A314B09DD /* ParayuShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParayuShortcuts.swift; sourceTree = "<group>"; };
 		5FA9975762C94BE4F6BC74B9 /* ggml-cpu.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "ggml-cpu.c"; sourceTree = "<group>"; };
 		6E5B0BC00F01213B1507DC1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		719438F8D8BE110961BFCCFA /* WhisperTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperTranslator.swift; sourceTree = "<group>"; };
@@ -111,6 +139,7 @@
 		894C356D8C119F762B964C0F /* ggml.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ggml.cpp; sourceTree = "<group>"; };
 		8C244A46B6EF018A8577955A /* quants.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = quants.c; sourceTree = "<group>"; };
 		92F078BC8C16AB64E3993089 /* ggml-quants.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "ggml-quants.c"; sourceTree = "<group>"; };
+		967A218CC99343B9DCE3A007 /* ParayuKeyboard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParayuKeyboard-Bridging-Header.h"; sourceTree = "<group>"; };
 		96D2EB898CDC05D53C75F0B4 /* quants.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = quants.c; sourceTree = "<group>"; };
 		97F79BF0362C05ADCAC72442 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		9A3DB0864AAED8DAFD688975 /* traits.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = traits.cpp; sourceTree = "<group>"; };
@@ -130,10 +159,19 @@
 		E819F32A9519404B0AD97CA2 /* ggml-cpu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-cpu.cpp"; sourceTree = "<group>"; };
 		ED57E98319ABBDD9EE8ADC5A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		EF412CFC172F9E5189B39C7D /* unary-ops.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "unary-ops.cpp"; sourceTree = "<group>"; };
+		F8C0C51C11DB68C110093E67 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FB6DC56DD15CDA1A915690B6 /* ggml-opt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ggml-opt.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3499D9ED998DA2F91E31AB29 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C21786E223A97EB59C86C25C /* Accelerate.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E28F5B727180BF899B192FD1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -149,7 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				97F79BF0362C05ADCAC72442 /* AudioRecorder.swift */,
-				68B49CB49F31278A314B09DD /* ParayuShortcuts.swift */,
+				45DB056262BD749D2EAEDFF9 /* ParayuShortcuts.swift */,
 				40F48FC72D8BC684BFD1247B /* TextProcessor.swift */,
 				719438F8D8BE110961BFCCFA /* WhisperTranslator.swift */,
 			);
@@ -171,7 +209,7 @@
 				0F9C1819A55F1247C9D076AA /* mmq.cpp */,
 			);
 			name = amx;
-			path = "vendor/whisper.cpp/ggml/src/ggml-cpu/amx";
+			path = "../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/amx";
 			sourceTree = "<group>";
 		};
 		58DB0CCC797AF94F21FABE05 /* arm */ = {
@@ -181,7 +219,7 @@
 				325ABA2E83948633E8481733 /* repack.cpp */,
 			);
 			name = arm;
-			path = "vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm";
+			path = "../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm";
 			sourceTree = "<group>";
 		};
 		619F57A0718A9ED7E0B517D1 /* src */ = {
@@ -190,7 +228,7 @@
 				BB827875D6F0D2C7CCDA3898 /* whisper.cpp */,
 			);
 			name = src;
-			path = vendor/whisper.cpp/src;
+			path = ../desktop/vendor/whisper.cpp/src;
 			sourceTree = "<group>";
 		};
 		7B39096C7FB89FE9D0246877 /* src */ = {
@@ -209,7 +247,7 @@
 				5724DE55931DFCCD66FAEDCE /* gguf.cpp */,
 			);
 			name = src;
-			path = vendor/whisper.cpp/ggml/src;
+			path = ../desktop/vendor/whisper.cpp/ggml/src;
 			sourceTree = "<group>";
 		};
 		A0EB923AE90EB91E86B2CB42 /* ParayuKeyboard */ = {
@@ -217,6 +255,7 @@
 			children = (
 				1C795BB8B028870EED35B709 /* Info.plist */,
 				5908F15E5F5813D2441512C0 /* KeyboardViewController.swift */,
+				967A218CC99343B9DCE3A007 /* ParayuKeyboard-Bridging-Header.h */,
 				B4807636D4948010BBB37CF5 /* ParayuKeyboard.entitlements */,
 			);
 			path = ParayuKeyboard;
@@ -248,11 +287,11 @@
 		};
 		C574E11EBA6C049BD0C11980 /* App */ = {
 			isa = PBXGroup;
-				children = (
-					5F0D0DB62A6C4A6F9A3B21C8 /* Assets.xcassets */,
-					6E5B0BC00F01213B1507DC1E /* Info.plist */,
-					AE4FABAE9C041305A9B6C778 /* Parayu-Bridging-Header.h */,
-					38B4E34FFF9B9A5844427732 /* ParayuApp.swift */,
+			children = (
+				F8C0C51C11DB68C110093E67 /* Assets.xcassets */,
+				6E5B0BC00F01213B1507DC1E /* Info.plist */,
+				AE4FABAE9C041305A9B6C778 /* Parayu-Bridging-Header.h */,
+				38B4E34FFF9B9A5844427732 /* ParayuApp.swift */,
 				154CE06862D9294C4EDE8BA4 /* Models */,
 				116EB1DD5BE4F1DAE99399FF /* Services */,
 				DDC79CBB9BF677A49768BD2A /* Views */,
@@ -292,7 +331,7 @@
 				3AD9EEEDF0E4234FEE14692F /* ggml-small-q5_1.bin */,
 			);
 			name = models;
-			path = src/assets/models;
+			path = ../desktop/src/assets/models;
 			sourceTree = "<group>";
 		};
 		ED44764846ED13790E6E4187 /* ggml-cpu */ = {
@@ -310,7 +349,7 @@
 				D97E5229B11EB8ED16807039 /* vec.cpp */,
 			);
 			name = "ggml-cpu";
-			path = "vendor/whisper.cpp/ggml/src/ggml-cpu";
+			path = "../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -342,6 +381,7 @@
 			buildConfigurationList = 1054C13D02B8C3D9FAD207F2 /* Build configuration list for PBXNativeTarget "ParayuKeyboard" */;
 			buildPhases = (
 				2EC6B7C8310BA8B85805B8A9 /* Sources */,
+				3499D9ED998DA2F91E31AB29 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -394,11 +434,11 @@
 /* Begin PBXResourcesBuildPhase section */
 		4F54A265B103E2B80E116381 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-				buildActionMask = 2147483647;
-				files = (
-					14A2D0E317B84A1580795F61 /* Assets.xcassets in Resources */,
-					1DA14668D825519CA428B60F /* ggml-small-q5_1.bin in Resources */,
-				);
+			buildActionMask = 2147483647;
+			files = (
+				7106AD67F567FDAF5469E10F /* Assets.xcassets in Resources */,
+				1DA14668D825519CA428B60F /* ggml-small-q5_1.bin in Resources */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -409,6 +449,34 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6AB6F31B9A38359903C12B9 /* KeyboardViewController.swift in Sources */,
+				5546F397D5345EB7B7240DFB /* TextProcessor.swift in Sources */,
+				695DFFFAA023A1C4FEA5040D /* WhisperTranslator.swift in Sources */,
+				3D357BEA9BB0350DDD361F8D /* amx.cpp in Sources */,
+				F8964582C1B270BC665035C2 /* binary-ops.cpp in Sources */,
+				39FD44A572FC50B61077221A /* ggml-alloc.c in Sources */,
+				AF28CDC53CA145DA6EA3CABE /* ggml-backend-dl.cpp in Sources */,
+				1749950BABDD683D14C5CE24 /* ggml-backend-meta.cpp in Sources */,
+				AA6954AA8716F28A078AB8D8 /* ggml-backend-reg.cpp in Sources */,
+				A495C71988FB2DAF60DEBCC0 /* ggml-backend.cpp in Sources */,
+				A4EB98FDF93EB262A09E1239 /* ggml-cpu.c in Sources */,
+				F9D549466C197F1226249779 /* ggml-cpu.cpp in Sources */,
+				7BDF5F3045B6342F3544ED23 /* ggml-opt.cpp in Sources */,
+				CC73B38B06B542FA357CAD85 /* ggml-quants.c in Sources */,
+				2CF68F327EF3B2F6D34CB1C2 /* ggml-threading.cpp in Sources */,
+				B0D263AD89F19DDD8285FC77 /* ggml.c in Sources */,
+				11B378E0E878B93D24628564 /* ggml.cpp in Sources */,
+				2E251E2B59B3D1FC36D6FC31 /* gguf.cpp in Sources */,
+				82F1B3F209D7A22CCE024D3B /* hbm.cpp in Sources */,
+				944796B7452252921EC74401 /* mmq.cpp in Sources */,
+				F1CE5204764093BDFCA99260 /* ops.cpp in Sources */,
+				C46FEC20596A2291B14C3B5B /* quants.c in Sources */,
+				3B58D3EB79FEF6D03AA58839 /* quants.c in Sources */,
+				72CBD7736F92476E608D8D3D /* repack.cpp in Sources */,
+				EC381D784F841DDD3BCF582A /* repack.cpp in Sources */,
+				B94CF3CEB781A3C1E7B355CC /* traits.cpp in Sources */,
+				B1E64489E46B069E49B686CD /* unary-ops.cpp in Sources */,
+				98532DB3399C091632B7F746 /* vec.cpp in Sources */,
+				3101BE5C4072B9702A240C3A /* whisper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,7 +493,7 @@
 				ABC93B2F9E31974D92C2D0C3 /* MainView.swift in Sources */,
 				646870660EEEDB8D829919E8 /* OnboardingView.swift in Sources */,
 				49E9C23DA6C16C68DDBD9C36 /* ParayuApp.swift in Sources */,
-				6814C6010A6D4BE0A3C1E2F4 /* ParayuShortcuts.swift in Sources */,
+				CBEF6484147F614E20F6BED8 /* ParayuShortcuts.swift in Sources */,
 				5BE4679911A768ED4F19511A /* SettingsView.swift in Sources */,
 				81BF4E1156EADE4FDE26FE69 /* SnippetsView.swift in Sources */,
 				CD30261E4C065D132ED55921 /* TextProcessor.swift in Sources */,
@@ -599,6 +667,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q4283HG7BT;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					_DARWIN_C_SOURCE,
@@ -610,15 +679,14 @@
 					"GGML_VERSION=\\\"0.15.3\\\"",
 					"GGML_COMMIT=\\\"vendored\\\"",
 				);
-				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNUSED_FUNCTION = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					vendor/whisper.cpp/include,
-					vendor/whisper.cpp/ggml/include,
-					vendor/whisper.cpp/ggml/src,
-					"vendor/whisper.cpp/ggml/src/ggml-cpu",
+					../desktop/vendor/whisper.cpp/include,
+					../desktop/vendor/whisper.cpp/ggml/include,
+					../desktop/vendor/whisper.cpp/ggml/src,
+					"../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu",
 				);
 				INFOPLIST_FILE = Parayu.swiftpm/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -657,17 +725,63 @@
 		8CB0499A331459F1594CB609 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_ENTITLEMENTS = ParayuKeyboard/ParayuKeyboard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q4283HG7BT;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_DARWIN_C_SOURCE,
+					GGML_USE_CPU,
+					GGML_USE_ACCELERATE,
+					ACCELERATE_NEW_LAPACK,
+					ACCELERATE_LAPACK_ILP64,
+					"WHISPER_VERSION=\\\"1.9.1\\\"",
+					"GGML_VERSION=\\\"0.15.3\\\"",
+					"GGML_COMMIT=\\\"vendored\\\"",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../desktop/vendor/whisper.cpp/include,
+					../desktop/vendor/whisper.cpp/ggml/include,
+					../desktop/vendor/whisper.cpp/ggml/src,
+					"../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu",
+				);
 				INFOPLIST_FILE = ParayuKeyboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-O3",
+					"-Wno-shorten-64-to-32",
+					"-Wno-implicit-int-conversion",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-unused-function",
+					"-Wno-ambiguous-macro",
+					"-Wno-unreachable-code",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-O3",
+					"-Wno-shorten-64-to-32",
+					"-Wno-implicit-int-conversion",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-unused-function",
+					"-Wno-ambiguous-macro",
+					"-Wno-unreachable-code",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D KEYBOARD";
 				PRODUCT_BUNDLE_IDENTIFIER = com.parayu.app.keyboard;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "ParayuKeyboard/ParayuKeyboard-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -681,6 +795,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q4283HG7BT;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					_DARWIN_C_SOURCE,
@@ -692,15 +807,14 @@
 					"GGML_VERSION=\\\"0.15.3\\\"",
 					"GGML_COMMIT=\\\"vendored\\\"",
 				);
-				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNUSED_FUNCTION = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					vendor/whisper.cpp/include,
-					vendor/whisper.cpp/ggml/include,
-					vendor/whisper.cpp/ggml/src,
-					"vendor/whisper.cpp/ggml/src/ggml-cpu",
+					../desktop/vendor/whisper.cpp/include,
+					../desktop/vendor/whisper.cpp/ggml/include,
+					../desktop/vendor/whisper.cpp/ggml/src,
+					"../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu",
 				);
 				INFOPLIST_FILE = Parayu.swiftpm/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -739,17 +853,63 @@
 		BCD9EA67E2C84D0D1BCDCCEE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_ENTITLEMENTS = ParayuKeyboard/ParayuKeyboard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q4283HG7BT;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_DARWIN_C_SOURCE,
+					GGML_USE_CPU,
+					GGML_USE_ACCELERATE,
+					ACCELERATE_NEW_LAPACK,
+					ACCELERATE_LAPACK_ILP64,
+					"WHISPER_VERSION=\\\"1.9.1\\\"",
+					"GGML_VERSION=\\\"0.15.3\\\"",
+					"GGML_COMMIT=\\\"vendored\\\"",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../desktop/vendor/whisper.cpp/include,
+					../desktop/vendor/whisper.cpp/ggml/include,
+					../desktop/vendor/whisper.cpp/ggml/src,
+					"../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu",
+				);
 				INFOPLIST_FILE = ParayuKeyboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-O3",
+					"-Wno-shorten-64-to-32",
+					"-Wno-implicit-int-conversion",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-unused-function",
+					"-Wno-ambiguous-macro",
+					"-Wno-unreachable-code",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-O3",
+					"-Wno-shorten-64-to-32",
+					"-Wno-implicit-int-conversion",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-unused-function",
+					"-Wno-ambiguous-macro",
+					"-Wno-unreachable-code",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D KEYBOARD";
 				PRODUCT_BUNDLE_IDENTIFIER = com.parayu.app.keyboard;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "ParayuKeyboard/ParayuKeyboard-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

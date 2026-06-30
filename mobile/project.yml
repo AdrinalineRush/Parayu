@@ -9,34 +9,34 @@ targets:
     platform: iOS
     sources:
       - path: Parayu.swiftpm/App
-      - path: src/assets/models/ggml-small-q5_1.bin
+      - path: ../desktop/src/assets/models/ggml-small-q5_1.bin
         buildPhase: resources
-      - path: vendor/whisper.cpp/src/whisper.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml.c
-      - path: vendor/whisper.cpp/ggml/src/ggml.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-alloc.c
-      - path: vendor/whisper.cpp/ggml/src/ggml-backend.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-backend-meta.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-backend-dl.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-backend-reg.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-opt.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-threading.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-quants.c
-      - path: vendor/whisper.cpp/ggml/src/gguf.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/ggml-cpu.c
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/ggml-cpu.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/repack.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/hbm.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/quants.c
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/traits.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/amx/amx.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/amx/mmq.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/binary-ops.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/unary-ops.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/vec.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/ops.cpp
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/quants.c
-      - path: vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/repack.cpp
+      - path: ../desktop/vendor/whisper.cpp/src/whisper.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-alloc.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-backend.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-backend-meta.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-backend-dl.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-backend-reg.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-opt.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-threading.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-quants.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/gguf.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/ggml-cpu.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/ggml-cpu.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/repack.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/hbm.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/quants.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/traits.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/amx/amx.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/amx/mmq.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/binary-ops.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/unary-ops.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/vec.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/ops.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/quants.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/repack.cpp
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.parayu.app
       INFOPLIST_FILE: Parayu.swiftpm/App/Info.plist
@@ -70,10 +70,10 @@ targets:
         - -Wno-unreachable-code
       HEADER_SEARCH_PATHS:
         - $(inherited)
-        - vendor/whisper.cpp/include
-        - vendor/whisper.cpp/ggml/include
-        - vendor/whisper.cpp/ggml/src
-        - vendor/whisper.cpp/ggml/src/ggml-cpu
+        - ../desktop/vendor/whisper.cpp/include
+        - ../desktop/vendor/whisper.cpp/ggml/include
+        - ../desktop/vendor/whisper.cpp/ggml/src
+        - ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu
       GCC_PREPROCESSOR_DEFINITIONS:
         - $(inherited)
         - _DARWIN_C_SOURCE
@@ -93,9 +93,89 @@ targets:
     platform: iOS
     sources:
       - path: ParayuKeyboard
+      - path: Parayu.swiftpm/App/Services/TextProcessor.swift
+      - path: Parayu.swiftpm/App/Services/WhisperTranslator.swift
+      - path: ../desktop/vendor/whisper.cpp/src/whisper.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-alloc.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-backend.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-backend-meta.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-backend-dl.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-backend-reg.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-opt.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-threading.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-quants.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/gguf.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/ggml-cpu.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/ggml-cpu.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/repack.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/hbm.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/quants.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/traits.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/amx/amx.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/amx/mmq.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/binary-ops.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/unary-ops.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/vec.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/ops.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/quants.c
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/repack.cpp
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.parayu.app.keyboard
       INFOPLIST_FILE: ParayuKeyboard/Info.plist
       CODE_SIGN_STYLE: Automatic
       DEVELOPMENT_TEAM: ""
       CODE_SIGN_ENTITLEMENTS: ParayuKeyboard/ParayuKeyboard.entitlements
+      SWIFT_OBJC_BRIDGING_HEADER: ParayuKeyboard/ParayuKeyboard-Bridging-Header.h
+      CLANG_CXX_LANGUAGE_STANDARD: c++17
+      GCC_WARN_64_TO_32_BIT_CONVERSION: NO
+      GCC_WARN_UNUSED_FUNCTION: NO
+      GCC_OPTIMIZATION_LEVEL: 3
+      OTHER_SWIFT_FLAGS:
+        - $(inherited)
+        - -D KEYBOARD
+      OTHER_CFLAGS:
+        - $(inherited)
+        - -O3
+        - -Wno-shorten-64-to-32
+        - -Wno-implicit-int-conversion
+        - -Wno-sign-conversion
+        - -Wno-conversion
+        - -Wno-unused-function
+        - -Wno-ambiguous-macro
+        - -Wno-unreachable-code
+      OTHER_CPLUSPLUSFLAGS:
+        - $(inherited)
+        - -O3
+        - -Wno-shorten-64-to-32
+        - -Wno-implicit-int-conversion
+        - -Wno-sign-conversion
+        - -Wno-conversion
+        - -Wno-unused-function
+        - -Wno-ambiguous-macro
+        - -Wno-unreachable-code
+      HEADER_SEARCH_PATHS:
+        - $(inherited)
+        - ../desktop/vendor/whisper.cpp/include
+        - ../desktop/vendor/whisper.cpp/ggml/include
+        - ../desktop/vendor/whisper.cpp/ggml/src
+        - ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu
+      GCC_PREPROCESSOR_DEFINITIONS:
+        - $(inherited)
+        - _DARWIN_C_SOURCE
+        - GGML_USE_CPU
+        - GGML_USE_ACCELERATE
+        - ACCELERATE_NEW_LAPACK
+        - ACCELERATE_LAPACK_ILP64
+        - WHISPER_VERSION=\"1.9.1\"
+        - GGML_VERSION=\"0.15.3\"
+        - GGML_COMMIT=\"vendored\"
+    dependencies:
+      - sdk: Accelerate.framework
+
+schemes:
+  Parayu:
+    build:
+      targets:
+        Parayu: all

@@ -24,6 +24,8 @@
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Parayu uses your microphone to transcribe and translate your speech into English text.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Parayu uses Apple's speech recognition to transcribe your voice directly on your device.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>

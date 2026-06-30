@@ -85,7 +85,7 @@ export default async function SubscriptionPage() {
                 $0
                 <span className="text-sm font-semibold text-muted-foreground ml-1">/ forever</span>
               </div>
-              <p className="text-xs text-muted-foreground font-semibold">Basic English dictation via Tiny Brain (0.04B parameters) with system-wide paste.</p>
+              <p className="text-xs text-muted-foreground font-semibold">Basic English dictation via LOW Brain (0.07B parameters) with system-wide paste.</p>
             </div>
           )}
 
@@ -128,7 +128,7 @@ export default async function SubscriptionPage() {
             ) : planTier === "base" ? (
               [
                 "5,000 + 5,000 words English & Fluid Malayalam Vocal Support / month",
-                "Download 3 speech brains (up to 0.24B parameters)",
+                "Download 2 speech brains (up to 0.24B parameters)",
                 "Custom abbreviations & dictionary",
                 "System-wide paste (⌥ Space)",
                 "Cancel or pause anytime",
@@ -141,7 +141,7 @@ export default async function SubscriptionPage() {
             ) : (
               [
                 "1,000 English words / month",
-                "Tiny English Brain (0.04B parameters)",
+                "LOW English Brain (0.07B parameters)",
                 "System-wide paste (⌥ Space)",
                 "Custom dictionary",
                 "macOS & Windows support",

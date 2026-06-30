@@ -125,16 +125,16 @@ function allowedModelsList() {
 }
 
 function ensureAllowedSelectedModel() {
-  const current = store.get('selectedModel') || 'tiny';
+  const current = store.get('selectedModel') || 'base';
   if (featureFlag.canUseModel(current)) return current;
-  setSelectedModel('tiny');
-  return 'tiny';
+  setSelectedModel('base');
+  return 'base';
 }
 
 function ensureModelForInputLanguage() {
   const current = ensureAllowedSelectedModel();
   const inputLanguage = store.get('inputLanguage') || 'en';
-  if (inputLanguage === 'ml' && current !== 'small-q5_1' && current !== 'medium-q5_0') {
+  if (inputLanguage === 'ml' && current !== 'small-q5_1' && current !== 'medium-q4_0') {
     if (featureFlag.canUseModel('small-q5_1')) {
       setSelectedModel('small-q5_1');
       return 'small-q5_1';
@@ -159,8 +159,8 @@ function friendlyFeatureError(feature) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 680,
+    width: 1180,
+    height: 740,
     minWidth: 1100,
     minHeight: 680,
     title: 'Parayu',
@@ -178,7 +178,7 @@ function createWindow() {
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
   }
-  mainWindow.setSize(1100, 680);
+  mainWindow.setSize(1180, 740);
   mainWindow.center();
 
   // Keep the renderer (and its mic-capture JS) alive between sessions instead
@@ -407,9 +407,13 @@ const formatterAvailability = new FormatterAvailabilityService({
 });
 
 function getFormatterOutputMode() {
+  const inputLang = store.get('inputLanguage') || 'en';
+  if (inputLang === 'en') {
+    return 'transcribe';
+  }
   const mode = store.get('formatterOutputMode') || 'transcribe';
   if (mode === 'translate_to_english') return mode;
-  if ((store.get('inputLanguage') || 'en') === 'ml' && store.get('translateMalayalam') !== false) return 'translate_to_english';
+  if (inputLang === 'ml' && store.get('translateMalayalam') !== false) return 'translate_to_english';
   return 'transcribe';
 }
 
@@ -474,7 +478,7 @@ ipcMain.handle('transcribe-audio', async (_event, wavArrayBuffer) => {
     licenseManager.setDictationActive(true);
     ensureModelForInputLanguage();
     const audioStats = wavAudioStats(wavArrayBuffer);
-    if (audioStats.durationSec > 0.5 && audioStats.rms > 0 && audioStats.rms < 0.0035) {
+    if (audioStats.durationSec > 0.5 && audioStats.rms > 0 && audioStats.rms < 0.0012) {
       sendToWindow(overlayWindow, 'overlay-state', 'error');
       return { text: '', words: 0, pasteError: 'Your voice is a little low. Move closer to the mic.' };
     }
@@ -958,24 +962,42 @@ ipcMain.handle('license-activate', async (_e, payload) => {
 // --- Brain Switch: selectable Whisper models ---
 ipcMain.handle('list-models', () => allowedModelsList());
 
+let downloadingModelId = null;
+let activeDownloadPromise = null;
+
 ipcMain.handle('download-model', async (_e, id) => {
   const gate = featureFlag.modelGate(id);
   if (!gate.ok) {
     return { ok: false, error: gate.error, models: allowedModelsList() };
   }
-  try {
-    await downloadModel(id, (pct) => {
-      sendToWindow(mainWindow, 'model-download-progress', { id, pct });
-    });
-    return { ok: true, models: allowedModelsList() };
-  } catch (err) {
-    return { ok: false, error: err.message, models: allowedModelsList() };
+  if (downloadingModelId) {
+    if (downloadingModelId === id) {
+      return activeDownloadPromise;
+    }
+    return { ok: false, error: 'Another model download is already in progress.', models: allowedModelsList() };
   }
+
+  downloadingModelId = id;
+  activeDownloadPromise = (async () => {
+    try {
+      await downloadModel(id, (pct) => {
+        sendToWindow(mainWindow, 'model-download-progress', { id, pct });
+      });
+      return { ok: true, models: allowedModelsList() };
+    } catch (err) {
+      return { ok: false, error: err.message, models: allowedModelsList() };
+    } finally {
+      downloadingModelId = null;
+      activeDownloadPromise = null;
+    }
+  })();
+
+  return activeDownloadPromise;
 });
 
 ipcMain.handle('select-model', (_e, id) => {
   if (!featureFlag.canUseModel(id)) {
-    id = 'tiny';
+    id = 'base';
   }
   setSelectedModel(id);
   return allowedModelsList();
@@ -1060,7 +1082,7 @@ ipcMain.handle('set-cleanup-mode', (_e, mode) => {
   }
   if (next === 'premium') {
     store.set('formatterModel', 'quality_7b');
-    if (featureFlag.canUseModel('medium-q5_0')) setSelectedModel('medium-q5_0');
+    if (featureFlag.canUseModel('medium-q4_0')) setSelectedModel('medium-q4_0');
   } else if (next === 'smart' && store.get('formatterModel') !== 'quality_7b') {
     store.set('formatterModel', 'fast_3b');
   }

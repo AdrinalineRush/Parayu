@@ -6,6 +6,8 @@ let lastPasteError = null;
 let onbStep = 0;
 let modelsCache = null; // Brain Switch catalog, fetched lazily from the main process
 let previewModelId = null; // which model the Brain Switch detail box is showing
+let activeDownloadModelId = null; // tracks the currently downloading model ID
+let downloadProgressPct = 0; // tracks the percentage of the active download (0 to 1)
 let insightsTab = 'usage'; // 'usage' | 'voice' on the Insights home screen
 let micOutsideClick = null; // single outside-click handler for the mic dropdown (re-bound, never stacked)
 let liveClockTimer = null;
@@ -2348,245 +2350,252 @@ function renderSettings() {
       <button class="btn-ghost" id="restore-defaults" style="padding: 6px 12px; font-size: 12px;">${setIcon('refresh')} Restore defaults</button>
     </div>
 
-    <div class="settings-grid">
-      ${renderSubscriptionStatus()}
+    <div class="settings-columns">
+      <!-- Left Column: Status, Mic, Hotkey -->
+      <div class="settings-col">
+        ${renderSubscriptionStatus()}
 
-      <!-- Row 1, Column 1: Microphone -->
-      <div class="set-card" style="padding: 12px 16px; border-radius: 14px; margin-bottom: 0; display: flex; flex-direction: column; gap: 10px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('mic')}</span>
-          <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Microphone</div>
-        </div>
-        
-        <div style="display: flex; gap: 16px; align-items: stretch; margin-top: 2px;">
-          <!-- Left Column: Input device list & Test mic button / visual meter -->
-          <div style="flex: 1.1; min-width: 0; display: flex; flex-direction: column; gap: 8px; justify-content: space-between;">
-            <div class="dropdown" id="mic-dropdown" style="width: 100%;">
-              <button class="dd-trigger" id="mic-trigger" type="button" style="width: 100%; padding: 8px 12px; font-size: 12px;">
-                <span class="dd-mic-icon" style="width: 13px; height: 13px;">${micIconSvg()}</span>
-                <span class="dd-label" id="mic-current" style="font-size: 12px;">Loading microphones…</span>
-                <span class="dd-chevron" style="width: 10px; height: 10px;">${setIcon('chevron')}</span>
-              </button>
-              <div class="dd-menu" id="mic-menu" hidden></div>
-            </div>
-            
-            <div class="set-ctl-row" style="gap: 8px; display: flex; align-items: center; width: 100%;">
-              <button class="btn-soft" id="mic-test-btn" style="padding: 6px 10px; font-size: 11.5px; flex-shrink: 0;">${micIconSvg()} Test mic</button>
-              <div class="meter" id="mic-meter" style="height: 12px; gap: 2px; flex: 1;">${meterBarsHtml()}</div>
-            </div>
-            <div id="mic-status" style="font-size: 11px; margin-top: -2px;"></div>
+        <!-- Card: Microphone -->
+        <div class="set-card" style="padding: 12px 16px; border-radius: 14px; margin-bottom: 0; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('mic')}</span>
+            <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Microphone</div>
           </div>
           
-          <!-- Vertical Divider Line -->
-          <div style="width: 1px; background: var(--border); align-self: stretch; margin: 0 4px;"></div>
-          
-          <!-- Right Column: Boost quiet voices toggle & Noise suppression toggle -->
-          <div style="flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 10px; justify-content: center;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
-                <div style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Boost quiet voices</div>
-                <p style="font-size: 10px; margin: 0; color: var(--muted); line-height: 1.2;">Amplify distant/feeble speech.</p>
+          <div style="display: flex; gap: 16px; align-items: stretch; margin-top: 2px;">
+            <!-- Left Column: Input device list & Test mic button / visual meter -->
+            <div style="flex: 1.1; min-width: 0; display: flex; flex-direction: column; gap: 8px; justify-content: space-between;">
+              <div class="dropdown" id="mic-dropdown" style="width: 100%;">
+                <button class="dd-trigger" id="mic-trigger" type="button" style="width: 100%; padding: 8px 12px; font-size: 12px;">
+                  <span class="dd-mic-icon" style="width: 13px; height: 13px;">${micIconSvg()}</span>
+                  <span class="dd-label" id="mic-current" style="font-size: 12px;">Loading microphones…</span>
+                  <span class="dd-chevron" style="width: 10px; height: 10px;">${setIcon('chevron')}</span>
+                </button>
+                <div class="dd-menu" id="mic-menu" hidden></div>
               </div>
-              <label class="switch" style="width: 36px; height: 20px; flex-shrink: 0; margin-left: 8px;">
-                <input type="checkbox" id="boost-quiet-voices-toggle" ${state.boostQuietVoices !== false ? 'checked' : ''} />
-                <span class="slider" style="border-radius: 20px;"></span>
-              </label>
+              
+              <div class="set-ctl-row" style="gap: 8px; display: flex; align-items: center; width: 100%;">
+                <button class="btn-soft" id="mic-test-btn" style="padding: 6px 10px; font-size: 11.5px; flex-shrink: 0;">${micIconSvg()} Test mic</button>
+                <div class="meter" id="mic-meter" style="height: 12px; gap: 2px; flex: 1;">${meterBarsHtml()}</div>
+              </div>
+              <div id="mic-status" style="font-size: 11px; margin-top: -2px;"></div>
             </div>
             
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
-                <div style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Noise suppression</div>
-                <p style="font-size: 10px; margin: 0; color: var(--muted); line-height: 1.2;">Filter background hums & echo.</p>
-              </div>
-              <label class="switch" style="width: 36px; height: 20px; flex-shrink: 0; margin-left: 8px;">
-                <input type="checkbox" id="noise-suppression-toggle" ${state.noiseSuppression !== false ? 'checked' : ''} />
-                <span class="slider" style="border-radius: 20px;"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Row 1, Column 2: Speech Language & AI Cleanup (Moved to top right) -->
-      <div class="set-card" style="padding: 12px 16px; border-radius: 14px; margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
-        <!-- Speech Language -->
-        <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
-          <div class="set-info" style="display: flex; flex-direction: column; gap: 2px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('globe')}</span>
-              <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Speech language</div>
-            </div>
-            <p class="set-desc" style="font-size: 11px; margin: 2px 0 0; color: var(--muted);">${state.inputLanguage === 'ml' ? (state.translateMalayalam !== false ? 'Malayalam translates directly to English.' : 'Malayalam transcribes in native script.') : 'English transcribes directly.'}</p>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px;">
-            <div class="set-ctl" style="align-self: flex-start; margin-top: 2px;">
-              <div class="seg" style="padding: 3px;">
-                <button class="seg-btn ${state.inputLanguage === 'en' ? 'seg-active' : ''}" data-lang="en" style="padding: 5px 10px; font-size: 11.5px;">English</button>
-                <button class="seg-btn ${state.inputLanguage === 'ml' ? 'seg-active' : ''}" data-lang="ml" style="padding: 5px 10px; font-size: 11.5px;">Malayalam${canMalayalamPremium ? '' : ' Paid'}</button>
-              </div>
-            </div>
-            ${state.inputLanguage === 'ml' ? `
-              <div style="display: flex; align-items: center; gap: 8px; margin-top: 2px;">
-                <span class="set-desc" style="font-size: 11px; color: var(--muted); margin: 0;">Translate to English</span>
-                <label class="switch" style="width: 36px; height: 20px; margin-bottom: 0;">
-                  <input type="checkbox" id="translate-malayalam-toggle" ${state.translateMalayalam !== false && canMalayalamPremium ? 'checked' : ''} ${canMalayalamPremium ? '' : 'disabled'} />
+            <!-- Vertical Divider Line -->
+            <div style="width: 1px; background: var(--border); align-self: stretch; margin: 0 4px;"></div>
+            
+            <!-- Right Column: Boost quiet voices toggle & Noise suppression toggle -->
+            <div style="flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                  <div style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Boost quiet voices</div>
+                  <p style="font-size: 10px; margin: 0; color: var(--muted); line-height: 1.2;">Amplify speech.</p>
+                </div>
+                <label class="switch" style="width: 36px; height: 20px; flex-shrink: 0; margin-left: 8px;">
+                  <input type="checkbox" id="boost-quiet-voices-toggle" ${state.boostQuietVoices !== false ? 'checked' : ''} />
                   <span class="slider" style="border-radius: 20px;"></span>
                 </label>
               </div>
-            ` : ''}
-          </div>
-        </div>
-
-        <div class="set-divider" style="margin: 6px 0; background: var(--border); height: 1px;"></div>
-
-        <!-- AI Cleanup -->
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <div class="set-info" style="display: flex; flex-direction: column; gap: 2px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('ai')}</span>
-              <div class="set-name" style="font-size: 13.5px; font-weight: 700;">AI cleanup</div>
-            </div>
-            <p class="set-desc" style="font-size: 11px; margin: 2px 0 0; color: var(--muted);">Fixes stutters & filler words.</p>
-          </div>
-          <div class="set-ctl" style="display:flex; align-items:center;">
-            <label class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="ai-cleanup-toggle" ${state.aiCleanup ? 'checked' : ''} /><span class="slider" style="border-radius: 20px;"></span></label>
-          </div>
-        </div>
-
-        <div class="set-divider" style="margin: 6px 0; background: var(--border); height: 1px;"></div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; align-items: center;">
-          <div class="seg" style="grid-column: span 2; padding: 3px; display: grid; grid-template-columns: repeat(3, 1fr);">
-            ${[
-              ['fast', 'Fast'],
-              ['smart', 'Smart'],
-              ['premium', 'Premium']
-            ].map(([mode, label]) => `<button class="seg-btn ${state.cleanupMode === mode ? 'seg-active' : ''}" data-cleanup-mode="${mode}" style="padding: 5px 10px; font-size: 11.5px;">${label}</button>`).join('')}
-          </div>
-          <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-            Private Offline AI
-            <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="ai-formatter-toggle" ${state.aiFormatterEnabled && canFormatter ? 'checked' : ''} ${canFormatter ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></span>
-          </label>
-          <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-            Always format
-            <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="always-format-toggle" ${state.alwaysFormat ? 'checked' : ''} ${canFormatter ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></span>
-          </label>
-          <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-            Skip short
-            <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="skip-short-toggle" ${state.skipLlmForShortDictations !== false ? 'checked' : ''} /><span class="slider" style="border-radius: 20px;"></span></span>
-          </label>
-          <select id="formatter-model" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
-            <option value="fast_3b" ${state.formatterModel !== 'quality_7b' ? 'selected' : ''}>Offline AI Model: Fast</option>
-            <option value="quality_7b" ${state.formatterModel === 'quality_7b' ? 'selected' : ''}>Offline AI Model: Quality</option>
-          </select>
-          <select id="formatter-tone" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
-            ${[
-              ['natural', 'Natural'],
-              ['professional', 'Professional'],
-              ['casual', 'Casual'],
-              ['developer_prompt', canDeveloperPrompt ? 'Developer prompt' : 'Developer prompt Pro'],
-              ['short_reply', 'Short reply']
-            ].map(([value, label]) => `<option value="${value}" ${state.formatterTone === value ? 'selected' : ''} ${value === 'developer_prompt' && !canDeveloperPrompt ? 'disabled' : ''}>${label}</option>`).join('')}
-          </select>
-          <select id="formatter-output-mode" style="grid-column: span 2; width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
-            <option value="transcribe" ${state.formatterOutputMode !== 'translate_to_english' ? 'selected' : ''}>Default output: Transcription</option>
-            <option value="translate_to_english" ${state.formatterOutputMode === 'translate_to_english' ? 'selected' : ''} ${canMalayalamPremium ? '' : 'disabled'}>Default output: Malayalam to English${canMalayalamPremium ? '' : ' Paid'}</option>
-          </select>
-          <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-            Timeout
-            <input id="formatter-timeout" type="number" min="500" max="15000" step="250" value="${state.formatterTimeoutMs || 2500}" style="width: 88px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px;" />
-            <span style="color: var(--muted); font-size: 10px;">ms</span>
-          </label>
-          <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-            Min words
-            <input id="formatter-min-words" type="number" min="1" max="100" step="1" value="${state.formatterMinWords || 12}" style="width: 64px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px;" />
-          </label>
-          ${renderOfflineAISettingsUI()}
-          <p style="grid-column: span 2; font-size: 10px; margin: 0; color: var(--muted); line-height: 1.25;">Fast uses Basic Offline Mode. Smart Offline Mode formats only when useful. Premium Offline Mode can use the quality Offline AI Model.</p>
-        </div>
-      </div>
-
-      <!-- Row 2: Combined Hotkey & Dictation Mode (Spans both columns) -->
-      <div class="set-card" style="grid-column: span 2; padding: 12px 16px; border-radius: 14px; margin-bottom: 0; display: flex; flex-direction: column; gap: 10px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('keyboard')}</span>
-          <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Hotkey & Dictation Mode</div>
-        </div>
-
-        <div style="display: flex; gap: 16px; align-items: stretch; margin-top: 2px;">
-          <!-- Left Column: Global Hotkey Selection -->
-          <div style="flex: 1.1; min-width: 0; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
-            <p class="set-desc" style="font-size: 11px; margin: 0; color: var(--muted);">Select the shortcut key configuration.</p>
-            <div class="set-ctl-row" style="gap: 8px; display: flex; align-items: center; width: 100%;">
-              <div class="kbd-display" id="hotkey-input" style="padding: 6px 10px; font-size: 12px; flex: 1; text-align: center; font-weight: 600;">${hotkeyChipsHtml(state.hotkey)}</div>
-              <button class="btn-soft" id="record-hotkey" style="padding: 6px 10px; font-size: 11.5px; flex-shrink: 0;">${setIcon('record')} Record keys</button>
-            </div>
-          </div>
-
-          <!-- Vertical Divider -->
-          <div style="width: 1px; background: var(--border); align-self: stretch; margin: 0 4px;"></div>
-
-          <!-- Right Column: Dictation Mode Selector -->
-          <div style="flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
-            <p class="set-desc" style="font-size: 11px; margin: 0; color: var(--muted);">${pt ? 'Hold key to speak, release to paste.' : 'Tap shortcut to start/stop dictation.'}</p>
-            <div class="set-ctl" style="display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <div class="seg" style="padding: 3px; display: inline-flex;">
-                  <button class="seg-btn ${pt ? 'seg-active' : ''}" data-mode="pushToTalk" style="padding: 5px 10px; font-size: 11.5px;">Push to talk</button>
-                  <button class="seg-btn ${!pt ? 'seg-active' : ''}" data-mode="toggle" style="padding: 5px 10px; font-size: 11.5px;">Toggle on/off</button>
+              
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                  <div style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Noise suppression</div>
+                  <p style="font-size: 10px; margin: 0; color: var(--muted); line-height: 1.2;">Filter background hums.</p>
                 </div>
-                ${pt ? `
-                  <div class="chip-row" style="gap: 4px; display: inline-flex;">
-                    ${['Alt', 'Meta', 'Ctrl', 'Shift'].map((mod) => `
-                      <button class="chip ${state.hotkey === mod ? 'chip-active' : ''}" data-holdkey="${mod}" style="padding: 4px 8px; font-size: 10.5px;">${holdKeyLabel(mod)}</button>
-                    `).join('')}
+                <label class="switch" style="width: 36px; height: 20px; flex-shrink: 0; margin-left: 8px;">
+                  <input type="checkbox" id="noise-suppression-toggle" ${state.noiseSuppression !== false ? 'checked' : ''} />
+                  <span class="slider" style="border-radius: 20px;"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Hotkey & Dictation Mode -->
+        <div class="set-card" style="padding: 12px 16px; border-radius: 14px; margin-bottom: 0; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('keyboard')}</span>
+            <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Hotkey & Dictation Mode</div>
+          </div>
+
+          <div style="display: flex; gap: 16px; align-items: stretch; margin-top: 2px;">
+            <!-- Left Column: Global Hotkey Selection -->
+            <div style="flex: 1.1; min-width: 0; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
+              <p class="set-desc" style="font-size: 11px; margin: 0; color: var(--muted);">Select the shortcut key configuration.</p>
+              <div class="set-ctl-row" style="gap: 8px; display: flex; align-items: center; width: 100%;">
+                <div class="kbd-display" id="hotkey-input" style="padding: 6px 10px; font-size: 12px; flex: 1; text-align: center; font-weight: 600;">${hotkeyChipsHtml(state.hotkey)}</div>
+                <button class="btn-soft" id="record-hotkey" style="padding: 6px 10px; font-size: 11.5px; flex-shrink: 0;">${setIcon('record')} Record keys</button>
+              </div>
+            </div>
+
+            <!-- Vertical Divider -->
+            <div style="width: 1px; background: var(--border); align-self: stretch; margin: 0 4px;"></div>
+
+            <!-- Right Column: Dictation Mode Selector -->
+            <div style="flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
+              <p class="set-desc" style="font-size: 11px; margin: 0; color: var(--muted);">${pt ? 'Hold key to speak, release to paste.' : 'Tap shortcut to start/stop dictation.'}</p>
+              <div class="set-ctl" style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                  <div class="seg" style="padding: 3px; display: inline-flex;">
+                    <button class="seg-btn ${pt ? 'seg-active' : ''}" data-mode="pushToTalk" style="padding: 5px 10px; font-size: 11.5px;">Push to talk</button>
+                    <button class="seg-btn ${!pt ? 'seg-active' : ''}" data-mode="toggle" style="padding: 5px 10px; font-size: 11.5px;">Toggle on/off</button>
                   </div>
-                ` : ''}
+                  ${pt ? `
+                    <div class="chip-row" style="gap: 4px; display: inline-flex;">
+                      ${['Alt', 'Meta', 'Ctrl', 'Shift'].map((mod) => `
+                        <button class="chip ${state.hotkey === mod ? 'chip-active' : ''}" data-holdkey="${mod}" style="padding: 4px 8px; font-size: 10.5px;">${holdKeyLabel(mod)}</button>
+                      `).join('')}
+                    </div>
+                  ` : ''}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Row 3: Brain Switch Card (Spans both columns) -->
-      <div class="set-card" style="grid-column: span 2; padding: 12px 16px; border-radius: 14px; margin-bottom: 0;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-          <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('shield')}</span>
-          <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Safety & dictionaries</div>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; align-items: center;">
-          ${[
-            ['enable-global-dictionary-toggle', 'Global dictionary', state.enableGlobalDictionary !== false],
-            ['enable-personal-dictionary-toggle', 'Personal dictionary', state.enablePersonalDictionary !== false && canPersonalDictionary, canPersonalDictionary],
-            ['enable-text-snippets-toggle', 'Text snippets', state.enableTextSnippets !== false && canTextSnippets, canTextSnippets],
-            ['preserve-clipboard-toggle', 'Preserve clipboard', state.preserveClipboard !== false && canAdvancedClipboard, canAdvancedClipboard]
-          ].map(([id, label, checked, allowed = true]) => `
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-              <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${label}${allowed ? '' : ' Paid'}</span>
-              <span class="switch" style="width: 36px; height: 20px; flex-shrink: 0;"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''} ${allowed ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></span>
-            </label>
-          `).join('')}
-          <label style="display: flex; align-items: center; gap: 8px; grid-column: span 2; font-size: 11.5px; font-weight: 700;">
-            Restore clipboard delay
-            <input id="restore-clipboard-delay" type="number" min="0" max="5000" step="50" value="${state.restoreClipboardDelay || 600}" style="width: 92px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px;" />
-            <span style="color: var(--muted); font-size: 10px;">ms</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="set-card" style="grid-column: span 2; padding: 12px 16px; border-radius: 14px; margin-bottom: 0;">
-        <div class="set-info" style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('brain')}</span>
-            <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Brain Switch</div>
+      <!-- Right Column: Language/AI, Safety, Models -->
+      <div class="settings-col">
+        <!-- Card: Speech Language & AI Cleanup -->
+        <div class="set-card" style="padding: 12px 16px; border-radius: 14px; margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
+          <!-- Speech Language -->
+          <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+            <div class="set-info" style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('globe')}</span>
+                <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Speech language</div>
+              </div>
+              <p class="set-desc" style="font-size: 11px; margin: 2px 0 0; color: var(--muted);">${state.inputLanguage === 'ml' ? (state.translateMalayalam !== false ? 'Malayalam translates directly to English.' : 'Malayalam transcribes in native script.') : 'English transcribes directly.'}</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px;">
+              <div class="set-ctl" style="align-self: flex-start; margin-top: 2px;">
+                <div class="seg" style="padding: 3px;">
+                  <button class="seg-btn ${state.inputLanguage === 'en' ? 'seg-active' : ''}" data-lang="en" style="padding: 5px 10px; font-size: 11.5px;">English</button>
+                  <button class="seg-btn ${state.inputLanguage === 'ml' ? 'seg-active' : ''}" data-lang="ml" style="padding: 5px 10px; font-size: 11.5px;">Malayalam${canMalayalamPremium ? '' : ' Paid'}</button>
+                </div>
+              </div>
+              ${state.inputLanguage === 'ml' ? `
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 2px;">
+                  <span class="set-desc" style="font-size: 11px; color: var(--muted); margin: 0;">Translate to English</span>
+                  <label class="switch" style="width: 36px; height: 20px; margin-bottom: 0;">
+                    <input type="checkbox" id="translate-malayalam-toggle" ${state.translateMalayalam !== false && canMalayalamPremium ? 'checked' : ''} ${canMalayalamPremium ? '' : 'disabled'} />
+                    <span class="slider" style="border-radius: 20px;"></span>
+                  </label>
+                </div>
+              ` : ''}
+            </div>
           </div>
-          <p class="set-desc" style="font-size: 11px; margin: 2px 0 0; color: var(--muted);">Choose offline speech models.</p>
+
+          <div class="set-divider" style="margin: 6px 0; background: var(--border); height: 1px;"></div>
+
+          <!-- AI Cleanup -->
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div class="set-info" style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('ai')}</span>
+                <div class="set-name" style="font-size: 13.5px; font-weight: 700;">AI cleanup</div>
+              </div>
+              <p class="set-desc" style="font-size: 11px; margin: 2px 0 0; color: var(--muted);">Fixes stutters & filler words.</p>
+            </div>
+            <div class="set-ctl" style="display:flex; align-items:center;">
+              <label class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="ai-cleanup-toggle" ${state.aiCleanup ? 'checked' : ''} /><span class="slider" style="border-radius: 20px;"></span></label>
+            </div>
+          </div>
+
+          <div class="set-divider" style="margin: 6px 0; background: var(--border); height: 1px;"></div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; align-items: center;">
+            <div class="seg" style="grid-column: span 2; padding: 3px; display: grid; grid-template-columns: repeat(3, 1fr);">
+              ${[
+                ['fast', 'Fast'],
+                ['smart', 'Smart'],
+                ['premium', 'Premium']
+              ].map(([mode, label]) => `<button class="seg-btn ${state.cleanupMode === mode ? 'seg-active' : ''}" data-cleanup-mode="${mode}" style="padding: 5px 10px; font-size: 11.5px;">${label}</button>`).join('')}
+            </div>
+            <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
+              Private Offline AI
+              <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="ai-formatter-toggle" ${state.aiFormatterEnabled && canFormatter ? 'checked' : ''} ${canFormatter ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></span>
+            </label>
+            <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
+              Always format
+              <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="always-format-toggle" ${state.alwaysFormat ? 'checked' : ''} ${canFormatter ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></span>
+            </label>
+            <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
+              Skip short
+              <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="skip-short-toggle" ${state.skipLlmForShortDictations !== false ? 'checked' : ''} /><span class="slider" style="border-radius: 20px;"></span></span>
+            </label>
+            <select id="formatter-model" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
+              <option value="fast_3b" ${state.formatterModel !== 'quality_7b' ? 'selected' : ''}>Offline AI Model: Fast</option>
+              <option value="quality_7b" ${state.formatterModel === 'quality_7b' ? 'selected' : ''}>Offline AI Model: Quality</option>
+            </select>
+            <select id="formatter-tone" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
+              ${[
+                ['natural', 'Natural'],
+                ['professional', 'Professional'],
+                ['casual', 'Casual'],
+                ['developer_prompt', canDeveloperPrompt ? 'Developer prompt' : 'Developer prompt Pro'],
+                ['short_reply', 'Short reply']
+              ].map(([value, label]) => `<option value="${value}" ${state.formatterTone === value ? 'selected' : ''} ${value === 'developer_prompt' && !canDeveloperPrompt ? 'disabled' : ''}>${label}</option>`).join('')}
+            </select>
+            <select id="formatter-output-mode" style="grid-column: span 2; width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
+              <option value="transcribe" ${state.formatterOutputMode !== 'translate_to_english' ? 'selected' : ''}>Default output: Transcription</option>
+              <option value="translate_to_english" ${state.formatterOutputMode === 'translate_to_english' ? 'selected' : ''} ${canMalayalamPremium ? '' : 'disabled'}>Default output: Malayalam to English${canMalayalamPremium ? '' : ' Paid'}</option>
+            </select>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
+              Timeout
+              <input id="formatter-timeout" type="number" min="500" max="15000" step="250" value="${state.formatterTimeoutMs || 2500}" style="width: 88px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px;" />
+              <span style="color: var(--muted); font-size: 10px;">ms</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
+              Min words
+              <input id="formatter-min-words" type="number" min="1" max="100" step="1" value="${state.formatterMinWords || 12}" style="width: 64px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px;" />
+            </label>
+            ${renderOfflineAISettingsUI()}
+            <p style="grid-column: span 2; font-size: 10px; margin: 0; color: var(--muted); line-height: 1.25;">Fast uses Basic Offline Mode. Smart Offline Mode formats only when useful. Premium Offline Mode can use the quality Offline AI Model.</p>
+          </div>
         </div>
-        <div id="brain-panel">${renderBrainPanel(modelsCache)}</div>
+
+        <!-- Card: Safety & Dictionaries -->
+        <div class="set-card" style="padding: 12px 16px; border-radius: 14px; margin-bottom: 0;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('shield')}</span>
+            <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Safety & dictionaries</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; align-items: center;">
+            ${[
+              ['enable-global-dictionary-toggle', 'Global dictionary', state.enableGlobalDictionary !== false],
+              ['enable-personal-dictionary-toggle', 'Personal dictionary', state.enablePersonalDictionary !== false && canPersonalDictionary, canPersonalDictionary],
+              ['enable-text-snippets-toggle', 'Text snippets', state.enableTextSnippets !== false && canTextSnippets, canTextSnippets],
+              ['preserve-clipboard-toggle', 'Preserve clipboard', state.preserveClipboard !== false && canAdvancedClipboard, canAdvancedClipboard]
+            ].map(([id, label, checked, allowed = true]) => `
+              <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
+                <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${label}${allowed ? '' : ' Paid'}</span>
+                <span class="switch" style="width: 36px; height: 20px; flex-shrink: 0;"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''} ${allowed ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></span>
+              </label>
+            `).join('')}
+            <label style="display: flex; align-items: center; gap: 8px; grid-column: span 2; font-size: 11.5px; font-weight: 700;">
+              Restore clipboard delay
+              <input id="restore-clipboard-delay" type="number" min="0" max="5000" step="50" value="${state.restoreClipboardDelay || 600}" style="width: 92px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px;" />
+              <span style="color: var(--muted); font-size: 10px;">ms</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Card: Brain Switch -->
+        <div class="set-card" style="padding: 12px 16px; border-radius: 14px; margin-bottom: 0;">
+          <div class="set-info" style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('brain')}</span>
+              <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Brain Switch</div>
+            </div>
+            <p class="set-desc" style="font-size: 11px; margin: 2px 0 0; color: var(--muted);">Choose offline speech models.</p>
+          </div>
+          <div id="brain-panel">${renderBrainPanel(modelsCache)}</div>
+        </div>
       </div>
     </div>
   `;
 }
-
 // Compact Brain Switch panel: horizontal 2-column layout that updates on preview.
 function renderBrainPanel(models) {
   if (!models || !models.length) {
@@ -2601,6 +2610,8 @@ function renderBrainPanel(models) {
     let stateIcon = '';
     if (m.locked) {
       stateIcon = `<span style="color: var(--muted); opacity: 0.6; display: flex; align-items: center; justify-content: center; width: 14px; height: 14px;">${setIcon('shield')}</span>`;
+    } else if (m.id === activeDownloadModelId) {
+      stateIcon = `<span id="dl-left-pct-${m.id}" style="color: var(--accent); display: flex; align-items: center; justify-content: center; width: 24px; height: 14px; font-size: 10px; font-weight: 800;">${Math.round((downloadProgressPct || 0) * 100)}%</span>`;
     } else if (m.active) {
       stateIcon = `<span style="color: var(--accent); display: flex; align-items: center; justify-content: center; width: 14px; height: 14px;">${setIcon('check')}</span>`;
     } else if (m.downloaded) {
@@ -2641,6 +2652,16 @@ function renderBrainPanel(models) {
     actionHtml = `<button class="btn-soft" data-locked-model="${preview.id}" style="padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 8px;">Upgrade</button>`;
     statusText = 'Plan Required';
     borderStyle = 'border-color: var(--border); box-shadow: var(--shadow-card); background: #ffffff;';
+  } else if (preview.id === activeDownloadModelId) {
+    const p = Math.round((downloadProgressPct || 0) * 100);
+    actionHtml = `
+      <div class="model-progress" style="width: 70px; height: 5px; border-radius: 3px; background: #eceae3; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 6px;">
+        <i id="dl-bar" style="display: block; height: 100%; width: ${p}%; background: var(--accent-grad); transition: width 0.15s;"></i>
+      </div>
+      <span class="model-progress-pct" id="dl-pct" style="font-size: 11px; font-weight: 700; color: var(--muted); vertical-align: middle;">${p}%</span>
+    `;
+    statusText = 'Downloading';
+    borderStyle = 'border-color: var(--border); box-shadow: var(--shadow-card); background: #ffffff;';
   } else if (preview.active) {
     actionHtml = `<span class="model-active-pill" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 750; color: var(--accent);">${setIcon('check')} Active</span>`;
     statusText = 'Currently Active';
@@ -2650,7 +2671,12 @@ function renderBrainPanel(models) {
     statusText = 'Ready to Use';
     borderStyle = 'border-color: var(--border); box-shadow: var(--shadow-card); background: #ffffff;';
   } else {
-    actionHtml = `<button class="btn-soft model-dl" data-download-model="${preview.id}" style="padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">${setIcon('download')} Download</button>`;
+    const isDownloadingOther = activeDownloadModelId !== null && activeDownloadModelId !== preview.id;
+    if (isDownloadingOther) {
+      actionHtml = `<button class="btn-soft model-dl" disabled style="padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; opacity: 0.5; cursor: not-allowed;">${setIcon('download')} Download</button>`;
+    } else {
+      actionHtml = `<button class="btn-soft model-dl" data-download-model="${preview.id}" style="padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">${setIcon('download')} Download</button>`;
+    }
     statusText = 'Needs Download';
     borderStyle = 'border-color: var(--border); box-shadow: var(--shadow-card); background: #ffffff;';
   }
@@ -2741,36 +2767,48 @@ function bindBrainControls() {
 }
 
 async function startModelDownload(id) {
+  if (activeDownloadModelId) return; // Guard against concurrent downloads
+  activeDownloadModelId = id;
+  downloadProgressPct = 0;
   previewModelId = id;
-  const action = document.getElementById(`brain-action-${id}`);
-  if (action) {
-    action.innerHTML = `<div class="model-progress" style="width: 70px; height: 5px; border-radius: 3px; background: #eceae3; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 6px;"><i id="dl-bar" style="display: block; height: 100%; width: 0%; background: var(--accent-grad); transition: width 0.15s;"></i></div><span class="model-progress-pct" id="dl-pct" style="font-size: 11px; font-weight: 700; color: var(--muted); vertical-align: middle;">0%</span>`;
-  }
-
-  const result = await window.parayu.downloadModel(id);
-  modelsCache = result.models;
-
-  if (result.ok) {
-    // Downloaded — make it the active brain so it works offline right away.
-    modelsCache = await window.parayu.selectModel(id);
-  } else {
-    renderBrainSwitch();
-    alert('Download failed: ' + (result.error || 'unknown error') + '\nCheck your connection and try again.');
-    return;
-  }
   renderBrainSwitch();
+
+  try {
+    const result = await window.parayu.downloadModel(id);
+    modelsCache = result.models;
+
+    if (result.ok) {
+      // Downloaded — make it the active brain so it works offline right away.
+      modelsCache = await window.parayu.selectModel(id);
+    } else {
+      alert('Download failed: ' + (result.error || 'unknown error') + '\nCheck your connection and try again.');
+    }
+  } catch (err) {
+    alert('Download failed: ' + err.message + '\nCheck your connection and try again.');
+  } finally {
+    activeDownloadModelId = null;
+    downloadProgressPct = 0;
+    renderBrainSwitch();
+  }
 }
 
 // Fetch the catalog (once) and render the live panel. Registers the download
 // progress listener a single time.
 async function wireBrainSwitch() {
   if (!brainProgressBound) {
-    window.parayu.onModelDownloadProgress(({ pct }) => {
-      const p = Math.round((pct || 0) * 100);
-      const bar = document.getElementById('dl-bar');
-      const lbl = document.getElementById('dl-pct');
-      if (bar) bar.style.width = p + '%';
-      if (lbl) lbl.textContent = p + '%';
+    window.parayu.onModelDownloadProgress(({ id, pct }) => {
+      downloadProgressPct = pct || 0;
+      if (activeDownloadModelId === id) {
+        const p = Math.round(downloadProgressPct * 100);
+        const bar = document.getElementById('dl-bar');
+        const lbl = document.getElementById('dl-pct');
+        if (bar) bar.style.width = p + '%';
+        if (lbl) lbl.textContent = p + '%';
+      }
+      const leftLbl = document.getElementById(`dl-left-pct-${id}`);
+      if (leftLbl) {
+        leftLbl.textContent = Math.round(downloadProgressPct * 100) + '%';
+      }
     });
     brainProgressBound = true;
   }

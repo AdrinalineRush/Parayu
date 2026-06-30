@@ -12,13 +12,12 @@ const FREE_FEATURES = new Set([
   'basic_dictation',
   'basic_offline_cleanup',
   'clipboard_paste',
-  'whisper_tiny_model'
+  'whisper_base_model'
 ]);
 
 const BASE_FEATURES = new Set([
   ...FREE_FEATURES,
   'malayalam_to_english_premium',
-  'whisper_base_model',
   'whisper_small_model',
   'personal_dictionary',
   'text_snippets'
@@ -28,6 +27,8 @@ const PRO_FEATURES = new Set([
   ...BASE_FEATURES,
   'local_llm_formatter',
   'whisper_medium_model',
+  'whisper_large_v3_model',
+  'whisper_large_v3_unquantized_model',
   'app_aware_formatting',
   'developer_prompt_mode',
   'email_mode',
@@ -51,17 +52,18 @@ const PLAN_FEATURES = {
 };
 
 const MODEL_FEATURES = {
-  tiny: 'whisper_tiny_model',
   base: 'whisper_base_model',
   'small-q5_1': 'whisper_small_model',
-  'medium-q5_0': 'whisper_medium_model'
+  'medium-q4_0': 'whisper_medium_model',
+  'large-v3-q4_0': 'whisper_large_v3_model',
+  'large-v3': 'whisper_large_v3_unquantized_model'
 };
 
 const PLAN_MODELS = {
-  [PLAN_FREE]: ['tiny'],
-  [PLAN_BASE]: ['tiny', 'base', 'small-q5_1'],
-  [PLAN_PRO]: ['tiny', 'base', 'small-q5_1', 'medium-q5_0'],
-  [PLAN_ENTERPRISE]: ['tiny', 'base', 'small-q5_1', 'medium-q5_0']
+  [PLAN_FREE]: ['base'],
+  [PLAN_BASE]: ['base', 'small-q5_1'],
+  [PLAN_PRO]: ['base', 'small-q5_1', 'medium-q4_0', 'large-v3-q4_0', 'large-v3'],
+  [PLAN_ENTERPRISE]: ['base', 'small-q5_1', 'medium-q4_0', 'large-v3-q4_0', 'large-v3']
 };
 
 function normalizePlan(plan) {

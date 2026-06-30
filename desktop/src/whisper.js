@@ -12,16 +12,18 @@ const { store } = require('./store');
 // detected and re-fetched. `id` is what gets persisted in the store.
 const HF_BASE = 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/';
 const MODELS = [
-  { id: 'tiny', label: 'Tiny', file: 'ggml-tiny.bin', bytes: 78 * 1024 * 1024,
-    desc: 'Lightning fast, smallest download. Best for older or slower computers. Supports 99+ languages and translation.' },
-  { id: 'base', label: 'Base', file: 'ggml-base.bin', bytes: 148 * 1024 * 1024,
+  { id: 'base', label: 'LOW', file: 'ggml-base.bin', bytes: 148 * 1024 * 1024,
     desc: 'Fast with solid everyday accuracy. A good pick for casual dictation. Supports 99+ languages and translation.' },
-  { id: 'small-q5_1', label: 'Small (Q5_1)', file: 'ggml-small-q5_1.bin', bytes: 190 * 1024 * 1024,
+  { id: 'small-q5_1', label: 'MEDIUM', file: 'ggml-small-q5_1.bin', bytes: 190 * 1024 * 1024,
     desc: 'The sweet spot for most people: near top-tier accuracy and still quick. Recommended for translation.' },
-  { id: 'medium-q5_0', label: 'Medium', file: 'ggml-medium-q5_0.bin', bytes: 539 * 1024 * 1024,
-    desc: 'Highest accuracy. Best for accents, names, and complex speech. Slower and a bigger download.' }
+  { id: 'medium-q4_0', label: 'HIGH', file: 'ggml-medium-q4_0.bin', bytes: 433 * 1024 * 1024,
+    desc: 'Very high accuracy. Best for accents, names, and complex speech. Optimized 4-bit model.' },
+  { id: 'large-v3-q4_0', label: 'MAX', file: 'ggml-large-v3-q4_0.bin', bytes: 709 * 1024 * 1024,
+    desc: 'Absolute state-of-the-art accuracy. Excellent for complex specialized dictation. Optimized 4-bit model.' },
+  { id: 'large-v3', label: 'PRO', file: 'ggml-large-v3.bin', bytes: 1566376483,
+    desc: 'Absolute peak capabilities. Full 16-bit precision with zero quality loss. Slower and a bigger download.' }
 ];
-const DEFAULT_MODEL_ID = 'tiny';
+const DEFAULT_MODEL_ID = 'base';
 
 function modelById(id) {
   return MODELS.find((m) => m.id === id) || MODELS.find((m) => m.id === DEFAULT_MODEL_ID);
@@ -34,11 +36,18 @@ function selectedModelId() {
 let whisperPromise = null;
 let loadedModelId = null; // which model the cached whisperPromise was built for
 let loadingModelId = null; // which model an in-flight whisperPromise is opening
-// CPU (whisper.cpp + Accelerate + threads) is actually faster than Metal for the
-// short clips typical of dictation — Metal's per-run overhead only pays off on
-// long audio — and it avoids shipping/locating the Metal shader lib in the
-// packaged app. So default to CPU; GPU stays available behind this flag.
-let useGpu = false;
+
+// Set up Metal shader resource path for Apple Silicon GPU acceleration on macOS
+if (process.platform === 'darwin') {
+  const isPackaged = __dirname.includes('app.asar');
+  const releasePath = isPackaged
+    ? path.join(process.resourcesPath, 'app.asar.unpacked/node_modules/smart-whisper/build/Release')
+    : path.join(__dirname, '../node_modules/smart-whisper/build/Release');
+  process.env.GGML_METAL_PATH_RESOURCES = releasePath;
+}
+
+// Enable GPU by default on macOS, as Apple Silicon GPU makes larger models (HIGH, MAX, PRO) 10x faster.
+let useGpu = process.platform === 'darwin';
 let progressCb = () => {};
 let featureChecker = () => false;
 
@@ -231,11 +240,19 @@ function bestThreadCount() {
   if (process.platform === 'darwin') {
     try {
       n = parseInt(execSync('sysctl -n hw.perflevel0.physicalcpu', { encoding: 'utf8' }).trim(), 10);
-    } catch (_) { /* not Apple Silicon — fall through to heuristic */ }
+    } catch (_) {
+      try {
+        // Fallback for Intel Mac: get physical cores to avoid hyperthreading slowdowns
+        n = parseInt(execSync('sysctl -n hw.physicalcpu', { encoding: 'utf8' }).trim(), 10);
+      } catch (_) {}
+    }
   }
   if (!Number.isInteger(n) || n < 1) {
-    n = Math.max(4, Math.min(8, os.cpus().length - 1));
+    const logical = os.cpus().length;
+    n = Math.max(1, Math.floor(logical / 2));
   }
+  // Clamp thread count to 4 (the ideal sweet spot for Whisper.cpp inference speed/overhead balance)
+  n = Math.max(1, Math.min(4, n));
   cachedThreads = n;
   return n;
 }
@@ -346,9 +363,12 @@ async function transcribe(wavArrayBuffer, overrides) {
   if (audio.length < minSamples) return '';
 
   const n_threads = bestThreadCount();
-  // no_context: don't carry decoder state between segments — faster, with
-  // negligible quality loss for short dictation clips.
   const params = { language: inputLanguage, n_threads, no_context: true, suppress_non_speech_tokens: true };
+
+  const activeModelId = selectedModelId();
+  if (activeModelId === 'small-q5_1' || activeModelId === 'medium-q4_0' || activeModelId === 'large-v3-q4_0') {
+    params.speed_up = true;
+  }
 
   // Malayalam-tuned decoding profile (English stays on the fast greedy path so
   // dictation remains instant). The small model is weakest in Malayalam, so we
@@ -391,6 +411,7 @@ async function transcribe(wavArrayBuffer, overrides) {
 
   let whisper = await getWhisper();
   let task;
+  const startInference = Date.now();
   try {
     progressCb({ phase: 'transcribe' });
     task = await whisper.transcribe(audio, params);
@@ -407,9 +428,12 @@ async function transcribe(wavArrayBuffer, overrides) {
     }
   }
   const segments = await task.result;
+  const inferenceTime = Date.now() - startInference;
   const text = segments.map((s) => s.text).join('').trim();
   const cleaned = stripNonSpeechTokens(text);
   const withoutHallucinations = cleanHallucinations(cleaned);
+  
+  console.log(`[Timer] Whisper transcription took ${inferenceTime}ms. Model: "${selectedModelId()}" | Threads: ${n_threads} | Audio length: ${(audio.length / 16000).toFixed(2)}s | Result: "${withoutHallucinations}"`);
   return withoutHallucinations;
 }
 

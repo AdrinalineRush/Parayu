@@ -268,6 +268,32 @@ struct SettingsView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color.white.opacity(0.06), lineWidth: 1)
                     )
+                    
+                    // Keyboard Diagnostics
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("Diagnostics")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(.secondary)
+                            .textCase(.uppercase)
+                            .tracking(0.5)
+                        
+                        NavigationLink(destination: KeyboardLogView()) {
+                            HStack {
+                                Image(systemName: "terminal")
+                                Text("View Keyboard Debug Logs")
+                            }
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.blue)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                    .padding()
+                    .background(Color.white.opacity(0.04))
+                    .cornerRadius(16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.white.opacity(0.06), lineWidth: 1)
+                    )
                     .padding(.bottom, 24)
                 }
                 .padding()
@@ -317,5 +343,66 @@ struct SettingsView: View {
                 print("Failed to save downloaded model: \(error)")
             }
         }
+    }
+}
+
+struct KeyboardLogView: View {
+    @State private var logs: String = "No logs yet. Try using the keyboard first."
+    
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("Keyboard Diagnostic Logs")
+                        .font(.headline)
+                    Spacer()
+                    Button("Refresh") {
+                        loadLogs()
+                    }
+                }
+                
+                Text(logs)
+                    .font(.system(.footnote, design: .monospaced))
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.white.opacity(0.05))
+                    .cornerRadius(8)
+                
+                Button("Clear Logs", role: .destructive) {
+                    clearLogs()
+                }
+                .padding(.top, 8)
+            }
+            .padding()
+        }
+        .background(Color.black.ignoresSafeArea())
+        .navigationTitle("Diagnostics")
+        .foregroundColor(.white)
+        .onAppear {
+            loadLogs()
+        }
+    }
+    
+    private func loadLogs() {
+        let appGroupId = "group.com.parayu.app"
+        guard let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupId) else {
+            logs = "App Group group.com.parayu.app is not accessible."
+            return
+        }
+        let logURL = groupURL.appendingPathComponent("keyboard_log.txt")
+        if let content = try? String(contentsOf: logURL, encoding: .utf8) {
+            let lines = content.components(separatedBy: "\n").filter { !$0.isEmpty }
+            logs = lines.isEmpty ? "Log file is empty." : lines.reversed().joined(separator: "\n")
+        } else {
+            logs = "No log file found at: \(logURL.lastPathComponent)"
+        }
+    }
+    
+    private func clearLogs() {
+        let appGroupId = "group.com.parayu.app"
+        guard let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupId) else { return }
+        let logURL = groupURL.appendingPathComponent("keyboard_log.txt")
+        try? "".write(to: logURL, atomically: true, encoding: .utf8)
+        loadLogs()
     }
 }

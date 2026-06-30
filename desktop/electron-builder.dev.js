@@ -13,6 +13,21 @@
 // the same signing setup as the public build.
 
 const pkg = require('./package.json');
+const fs = require('fs');
+const path = require('path');
+
+// Ensure Metal shader is in Release directory for packaging
+try {
+  const srcShader = path.join(__dirname, 'node_modules/smart-whisper/whisper.cpp/ggml/src/ggml-metal.metal');
+  const destShader = path.join(__dirname, 'node_modules/smart-whisper/build/Release/ggml-metal.metal');
+  if (fs.existsSync(srcShader) && !fs.existsSync(destShader)) {
+    fs.mkdirSync(path.dirname(destShader), { recursive: true });
+    fs.copyFileSync(srcShader, destShader);
+    console.log('Auto-bundled ggml-metal.metal shader into build/Release for GPU support.');
+  }
+} catch (e) {
+  console.error('Warning: Failed to copy Metal shader:', e);
+}
 
 // Deep clone so we never mutate the public config object.
 const config = JSON.parse(JSON.stringify(pkg.build));

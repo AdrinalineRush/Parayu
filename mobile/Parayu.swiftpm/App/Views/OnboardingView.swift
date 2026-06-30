@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFoundation
+import Speech
 
 struct OnboardingView: View {
     @EnvironmentObject var state: AppState
@@ -79,16 +80,16 @@ struct OnboardingView: View {
                             .font(.system(size: 24, weight: .bold))
                             .foregroundColor(.white)
                         
-                        Text("Parayu requires microphone permissions to capture your voice dictation.")
+                        Text("Parayu requires microphone and speech recognition permissions to capture and transcribe your voice dictation.")
                             .font(.system(size: 14))
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color(red: 174/255, green: 182/255, blue: 204/255))
                             .padding(.horizontal, 32)
                         
-                        Button(action: requestMicPermission) {
+                        Button(action: requestPermissions) {
                             HStack {
                                 Image(systemName: micPermissionStatus == "Granted" ? "checkmark.circle.fill" : "hand.tap.fill")
-                                Text(micPermissionStatus == "Granted" ? "Permission Granted" : "Grant Microphone Access")
+                                Text(micPermissionStatus == "Granted" ? "Permissions Granted" : "Grant Voice Access")
                                     .fontWeight(.semibold)
                             }
                             .foregroundColor(.white)
@@ -283,6 +284,20 @@ struct OnboardingView: View {
                         .cornerRadius(12)
                         .padding(.horizontal, 24)
                         
+                        Button(action: openSettings) {
+                            HStack {
+                                Image(systemName: "gearshape.2.fill")
+                                Text("Open Keyboard Settings")
+                                    .fontWeight(.bold)
+                            }
+                            .foregroundColor(.white)
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 20)
+                            .background(Color(red: 124/255, green: 92/255, blue: 255/255))
+                            .cornerRadius(10)
+                        }
+                        .padding(.top, 14)
+                        
                         Spacer()
                     }
                     .tag(3)
@@ -360,11 +375,30 @@ struct OnboardingView: View {
         }
     }
     
-    private func requestMicPermission() {
-        AVAudioSession.sharedInstance().requestRecordPermission { granted in
-            DispatchQueue.main.async {
-                self.micPermissionStatus = granted ? "Granted" : "Denied"
+    private func requestPermissions() {
+        AVAudioSession.sharedInstance().requestRecordPermission { micGranted in
+            guard micGranted else {
+                DispatchQueue.main.async {
+                    self.micPermissionStatus = "Denied"
+                }
+                return
             }
+            
+            SFSpeechRecognizer.requestAuthorization { speechStatus in
+                DispatchQueue.main.async {
+                    if speechStatus == .authorized {
+                        self.micPermissionStatus = "Granted"
+                    } else {
+                        self.micPermissionStatus = "Denied"
+                    }
+                }
+            }
+        }
+    }
+    
+    private func openSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(url)
         }
     }
     

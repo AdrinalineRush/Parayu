@@ -32,8 +32,9 @@ class Recorder {
         let sumSquares = 0;
         for (let i = 0; i < channelData.length; i++) sumSquares += channelData[i] * channelData[i];
         const rms = Math.sqrt(sumSquares / channelData.length);
-        // Map RMS to a perceptually pleasing 0..1 range (speech sits low otherwise).
-        onLevel(Math.min(1, rms * 6));
+        // Compress dynamic range using square root so quiet speech is highly visible
+        const compressed = Math.sqrt(rms) * 3.5;
+        onLevel(Math.min(1, compressed));
       }
     };
 

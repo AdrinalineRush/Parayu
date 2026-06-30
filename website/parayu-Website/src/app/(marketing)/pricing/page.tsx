@@ -126,7 +126,7 @@ export default function PricingPage() {
       <ul className="space-y-4 text-sm mt-auto border-t border-border pt-6">
         {[
           { bold: "1,000 words", normal: "English dictation / mo" },
-          { bold: "Tiny English Brain (0.04B parameters)", normal: "runs locally" },
+          { bold: "LOW English Brain (0.07B parameters)", normal: "runs locally" },
           { bold: "System-wide paste", normal: "⌥ Space hotkey" },
         ].map((item, i) => (
           <li key={i} className="flex items-start gap-3">
@@ -162,7 +162,7 @@ export default function PricingPage() {
       <ul className="space-y-4 text-sm mt-auto border-t border-border pt-6">
         {[
           { bold: "5,000 + 5,000 words", normal: "English & Fluid Malayalam Vocal Support / mo" },
-          { bold: "3 speech brains (up to 0.24B parameters)", normal: "excludes Medium & Large brains" },
+          { bold: "2 speech brains (up to 0.24B parameters)", normal: "excludes Medium & Large brains" },
           { bold: "Custom dictionary", normal: "abbreviation shortcuts" },
           { bold: "System-wide paste", normal: "⌥ Space hotkey" },
         ].map((item, i) => (
@@ -203,7 +203,7 @@ export default function PricingPage() {
       <ul className="space-y-4 text-sm mt-auto border-t border-[#e01e41]/25 pt-6">
         {[
           { bold: "Unlimited dictation", normal: "in English, Malayalam, & 90+ languages" },
-          { bold: "All speech brains (up to 1.55B parameters)", normal: "includes Tiny, Base, Small, Medium, Large" },
+          { bold: "All speech brains (up to 1.55B parameters)", normal: "includes Base, Small, Medium, and Large v3 (Q4 & Unquantized)" },
           { bold: "Fluid Malayalam Vocal Support", normal: "built-in conversational intelligence" },
           { bold: "Premium AI cleanup", normal: "corrects grammar & pauses" },
           { bold: "AI tone styling", normal: "professional, casual, etc." },
@@ -429,8 +429,8 @@ export default function PricingPage() {
                     </tr>
                     <tr>
                       <td className="p-4 font-bold text-foreground">Off-line Speech Brains</td>
-                      <td className="p-4">Tiny (0.04B parameters)</td>
-                      <td className="p-4">3 Brains (up to 0.24B)</td>
+                      <td className="p-4">LOW (0.07B parameters)</td>
+                      <td className="p-4">2 Brains (up to 0.24B)</td>
                       <td className="p-4">All Brains (up to 1.55B)</td>
                       <td className="p-4">All Brains (up to 1.55B)</td>
                     </tr>

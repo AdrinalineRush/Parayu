@@ -1,10 +1,44 @@
 import UIKit
 
+public struct DictionaryRule: Codable, Identifiable {
+    public var id = UUID()
+    public var from: String
+    public var to: String
+    
+    public init(id: UUID = UUID(), from: String, to: String) {
+        self.id = id
+        self.from = from
+        self.to = to
+    }
+}
+
+public struct Snippet: Codable, Identifiable {
+    public var id = UUID()
+    public var trigger: String
+    public var expansion: String
+    
+    public init(id: UUID = UUID(), trigger: String, expansion: String) {
+        self.id = id
+        self.trigger = trigger
+        self.expansion = expansion
+    }
+}
+
 private final class KeyboardKeyButton: UIButton {
     var output: String?
 }
 
-final class KeyboardViewController: UIInputViewController {
+final class KeyboardViewController: UIInputViewController, UIInputViewAudioFeedback {
+    var enableInputClicksWhenVisible: Bool {
+        return true
+    }
+
+    private func triggerFeedback() {
+        UIDevice.current.playInputClick()
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.prepare()
+        generator.impactOccurred()
+    }
     private var heightConstraint: NSLayoutConstraint?
     private var pendingTextTimer: Timer?
     private weak var statusLabel: UILabel?
@@ -12,12 +46,25 @@ final class KeyboardViewController: UIInputViewController {
     private let pendingActionKey = "pendingShortcutAction"
     private let appGroupId = "group.com.parayu.app"
 
+    private var lettersLayoutView: UIStackView?
+    private var symbolsLayoutView: UIStackView?
+    private var letterButtons: [KeyboardKeyButton] = []
+    private weak var shiftButton: KeyboardKeyButton?
+
+    private enum KeyboardState {
+        case lowercase
+        case uppercase
+        case symbols
+    }
+
+    private var keyboardState: KeyboardState = .lowercase
+
     private let accentColor = UIColor(red: 224 / 255, green: 30 / 255, blue: 65 / 255, alpha: 1)
-    private let keyboardColor = UIColor(red: 30 / 255, green: 30 / 255, blue: 24 / 255, alpha: 1)
-    private let statusColor = UIColor(red: 55 / 255, green: 55 / 255, blue: 37 / 255, alpha: 1)
-    private let keyColor = UIColor(red: 78 / 255, green: 78 / 255, blue: 73 / 255, alpha: 1)
-    private let specialKeyColor = UIColor(red: 64 / 255, green: 64 / 255, blue: 59 / 255, alpha: 1)
-    private let disabledKeyColor = UIColor(red: 83 / 255, green: 83 / 255, blue: 77 / 255, alpha: 1)
+    private let keyboardColor = UIColor(red: 27 / 255, green: 27 / 255, blue: 27 / 255, alpha: 1)
+    private let statusColor = UIColor(red: 39 / 255, green: 39 / 255, blue: 39 / 255, alpha: 1)
+    private let keyColor = UIColor(red: 62 / 255, green: 62 / 255, blue: 62 / 255, alpha: 1)
+    private let specialKeyColor = UIColor(red: 45 / 255, green: 45 / 255, blue: 45 / 255, alpha: 1)
+    private let disabledKeyColor = UIColor(red: 35 / 255, green: 35 / 255, blue: 35 / 255, alpha: 1)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +89,25 @@ final class KeyboardViewController: UIInputViewController {
     }
 
     private func setupKeyboard() {
+        setupStandardKeyboardUI()
+    }
+
+    private func setupStandardKeyboardUI() {
+        if lettersLayoutView == nil || lettersLayoutView?.superview == nil {
+            createKeyboardLayouts()
+        }
+
+        if keyboardState == .symbols {
+            lettersLayoutView?.isHidden = true
+            symbolsLayoutView?.isHidden = false
+        } else {
+            symbolsLayoutView?.isHidden = true
+            lettersLayoutView?.isHidden = false
+            updateLetterKeysCapitalization()
+        }
+    }
+
+    private func createKeyboardLayouts() {
         view.subviews.forEach { $0.removeFromSuperview() }
         view.backgroundColor = keyboardColor
 
@@ -54,21 +120,36 @@ final class KeyboardViewController: UIInputViewController {
         root.axis = .vertical
         root.alignment = .fill
         root.distribution = .fill
-        root.spacing = 5
+        root.spacing = 6
         root.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(root)
 
         NSLayoutConstraint.activate([
             root.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 3),
             root.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -3),
-            root.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-            root.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -6)
+            root.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
+            root.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -4)
         ])
 
         root.addArrangedSubview(makeStatusStrip())
-        root.addArrangedSubview(makeControlRow())
-        addSymbolRows(to: root)
-        root.addArrangedSubview(makeGlobeRow())
+
+        // 1. Build Letters Layout
+        let lettersContainer = UIStackView()
+        lettersContainer.axis = .vertical
+        lettersContainer.spacing = 6
+        lettersContainer.distribution = .fillEqually
+        lettersLayoutView = lettersContainer
+        root.addArrangedSubview(lettersContainer)
+        buildLettersLayout(into: lettersContainer)
+
+        // 2. Build Symbols Layout
+        let symbolsContainer = UIStackView()
+        symbolsContainer.axis = .vertical
+        symbolsContainer.spacing = 6
+        symbolsContainer.distribution = .fillEqually
+        symbolsLayoutView = symbolsContainer
+        root.addArrangedSubview(symbolsContainer)
+        buildSymbolsLayout(into: symbolsContainer)
     }
 
     private func makeStatusStrip() -> UIView {
@@ -106,100 +187,215 @@ final class KeyboardViewController: UIInputViewController {
         return row
     }
 
-    private func makeControlRow() -> UIView {
-        let row = makeRow(height: 43)
-        row.isLayoutMarginsRelativeArrangement = true
-        row.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    private func buildLettersLayout(into container: UIStackView) {
+        letterButtons.removeAll()
+        
+        let row1Keys = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]
+        let row2Keys = ["a", "s", "d", "f", "g", "h", "j", "k", "l"]
+        let row3Keys = ["z", "x", "c", "v", "b", "n", "m"]
 
-        let settings = makeKey(title: nil, imageName: "slider.horizontal.3", style: .icon)
-        settings.addTarget(self, action: #selector(openDictation), for: .touchUpInside)
-        row.addArrangedSubview(settings)
-        settings.widthAnchor.constraint(equalToConstant: 47).isActive = true
-
-        let spacer = UIView()
-        row.addArrangedSubview(spacer)
-
-        let undo = makeRoundButton(imageName: "arrow.uturn.backward")
-        undo.addTarget(self, action: #selector(deleteBackward), for: .touchUpInside)
-        row.addArrangedSubview(undo)
-        undo.widthAnchor.constraint(equalToConstant: 39).isActive = true
-        undo.heightAnchor.constraint(equalToConstant: 39).isActive = true
-
-        let mic = makeRoundButton(imageName: "mic.fill")
-        mic.addTarget(self, action: #selector(openDictation), for: .touchUpInside)
-        row.addArrangedSubview(mic)
-        mic.widthAnchor.constraint(equalToConstant: 39).isActive = true
-        mic.heightAnchor.constraint(equalToConstant: 39).isActive = true
-
-        return row
-    }
-
-    private func addSymbolRows(to root: UIStackView) {
-        root.addArrangedSubview(makeEqualRow(keys: [
-            ("1", "1"), ("2", "2"), ("3", "3"), ("4", "4"), ("5", "5"),
-            ("6", "6"), ("7", "7"), ("8", "8"), ("9", "9"), ("0", "0")
-        ]))
-
-        root.addArrangedSubview(makeEqualRow(keys: [
-            ("-", "-"), ("/", "/"), (":", ":"), (";", ";"), ("(", "("),
-            (")", ")"), ("$", "$"), ("&", "&"), ("@", "@"), ("\"", "\"")
-        ]))
-
-        let third = makeRow()
-        let more = makeKey(title: "#+=", imageName: nil, style: .special)
-        more.addTarget(self, action: #selector(nextKeyboard), for: .touchUpInside)
-        third.addArrangedSubview(more)
-        more.widthAnchor.constraint(equalToConstant: 54).isActive = true
-
-        for (title, output) in [(".", "."), (",", ","), ("?", "?"), ("!", "!"), ("'", "'")] {
-            third.addArrangedSubview(makeCharacterKey(title: title, output: output))
+        // Row 1
+        let row1 = makeRow(height: 43)
+        row1.distribution = .fillEqually
+        for key in row1Keys {
+            let btn = makeCharacterKey(title: key, output: key)
+            btn.accessibilityIdentifier = key
+            letterButtons.append(btn)
+            row1.addArrangedSubview(btn)
         }
+        container.addArrangedSubview(row1)
 
-        let delete = makeKey(title: nil, imageName: "delete.left", style: .special)
-        delete.addTarget(self, action: #selector(deleteBackward), for: .touchUpInside)
-        third.addArrangedSubview(delete)
-        delete.widthAnchor.constraint(equalToConstant: 54).isActive = true
-        root.addArrangedSubview(third)
+        // Row 2
+        let row2Container = UIStackView()
+        row2Container.axis = .horizontal
+        row2Container.alignment = .fill
+        row2Container.distribution = .fill
+        row2Container.spacing = 5
+        row2Container.heightAnchor.constraint(equalToConstant: 43).isActive = true
 
-        root.addArrangedSubview(makeBottomActionRow())
+        let spacerL = UIView()
+        let spacerR = UIView()
+        row2Container.addArrangedSubview(spacerL)
+
+        let row2KeysStack = UIStackView()
+        row2KeysStack.axis = .horizontal
+        row2KeysStack.alignment = .fill
+        row2KeysStack.distribution = .fillEqually
+        row2KeysStack.spacing = 5
+        for key in row2Keys {
+            let btn = makeCharacterKey(title: key, output: key)
+            btn.accessibilityIdentifier = key
+            letterButtons.append(btn)
+            row2KeysStack.addArrangedSubview(btn)
+        }
+        row2Container.addArrangedSubview(row2KeysStack)
+        row2Container.addArrangedSubview(spacerR)
+
+        NSLayoutConstraint.activate([
+            spacerL.widthAnchor.constraint(equalTo: row2Container.widthAnchor, multiplier: 0.05),
+            spacerR.widthAnchor.constraint(equalTo: spacerL.widthAnchor)
+        ])
+        container.addArrangedSubview(row2Container)
+
+        // Row 3
+        let row3 = makeRow(height: 43)
+
+        let shiftBtn = makeKey(title: nil, imageName: "shift", style: .special)
+        shiftBtn.addTarget(self, action: #selector(toggleShift), for: .touchUpInside)
+        shiftButton = shiftBtn
+        row3.addArrangedSubview(shiftBtn)
+        shiftBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
+
+        let row3KeysStack = UIStackView()
+        row3KeysStack.axis = .horizontal
+        row3KeysStack.alignment = .fill
+        row3KeysStack.distribution = .fillEqually
+        row3KeysStack.spacing = 5
+        for key in row3Keys {
+            let btn = makeCharacterKey(title: key, output: key)
+            btn.accessibilityIdentifier = key
+            letterButtons.append(btn)
+            row3KeysStack.addArrangedSubview(btn)
+        }
+        row3.addArrangedSubview(row3KeysStack)
+
+        let deleteBtn = makeKey(title: nil, imageName: "delete.left", style: .special)
+        deleteBtn.addTarget(self, action: #selector(deleteBackward), for: .touchUpInside)
+        row3.addArrangedSubview(deleteBtn)
+        deleteBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        container.addArrangedSubview(row3)
+
+        // Row 4
+        let row4 = makeRow(height: 43)
+
+        let toggleBtn = makeKey(title: "123", imageName: nil, style: .special)
+        toggleBtn.addTarget(self, action: #selector(toggleKeyboardLayout), for: .touchUpInside)
+        row4.addArrangedSubview(toggleBtn)
+        toggleBtn.widthAnchor.constraint(equalToConstant: 54).isActive = true
+
+        let micBtn = makeKey(title: nil, imageName: "mic.fill", style: .special)
+        micBtn.addTarget(self, action: #selector(openDictation), for: .touchUpInside)
+        micBtn.tintColor = accentColor
+        row4.addArrangedSubview(micBtn)
+        micBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
+
+        let spaceBtn = makeKey(title: "space", imageName: nil, style: .character)
+        spaceBtn.addTarget(self, action: #selector(insertSpace), for: .touchUpInside)
+        row4.addArrangedSubview(spaceBtn)
+
+        let returnBtn = makeKey(title: "return", imageName: nil, style: .special)
+        returnBtn.addTarget(self, action: #selector(insertReturn), for: .touchUpInside)
+        row4.addArrangedSubview(returnBtn)
+        returnBtn.widthAnchor.constraint(equalToConstant: 76).isActive = true
+
+        container.addArrangedSubview(row4)
     }
 
-    private func makeBottomActionRow() -> UIView {
-        let row = makeRow(height: 47)
+    private func buildSymbolsLayout(into container: UIStackView) {
+        let row1Keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+        let row2Keys = ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""]
+        let row3Keys = [".", ",", "?", "!", "'"]
 
-        let left = makeKey(title: "ABC", imageName: nil, style: .special)
-        left.addTarget(self, action: #selector(nextKeyboard), for: .touchUpInside)
-        row.addArrangedSubview(left)
-        left.widthAnchor.constraint(equalToConstant: 86).isActive = true
+        // Row 1
+        let row1 = makeRow(height: 43)
+        row1.distribution = .fillEqually
+        for key in row1Keys {
+            row1.addArrangedSubview(makeCharacterKey(title: key, output: key))
+        }
+        container.addArrangedSubview(row1)
 
-        let start = makeKey(title: "Start Parayu", imageName: "waveform", style: .brand)
-        start.addTarget(self, action: #selector(openDictation), for: .touchUpInside)
-        row.addArrangedSubview(start)
+        // Row 2
+        let row2 = makeRow(height: 43)
+        row2.distribution = .fillEqually
+        for key in row2Keys {
+            row2.addArrangedSubview(makeCharacterKey(title: key, output: key))
+        }
+        container.addArrangedSubview(row2)
 
-        let returnKey = makeKey(title: nil, imageName: "return", style: .special)
-        returnKey.addTarget(self, action: #selector(insertReturn), for: .touchUpInside)
-        row.addArrangedSubview(returnKey)
-        returnKey.widthAnchor.constraint(equalToConstant: 86).isActive = true
+        // Row 3
+        let row3 = makeRow(height: 43)
 
-        return row
+        let altSymbols = makeKey(title: "#+=", imageName: nil, style: .special)
+        row3.addArrangedSubview(altSymbols)
+        altSymbols.widthAnchor.constraint(equalToConstant: 44).isActive = true
+
+        let row3KeysStack = UIStackView()
+        row3KeysStack.axis = .horizontal
+        row3KeysStack.alignment = .fill
+        row3KeysStack.distribution = .fillEqually
+        row3KeysStack.spacing = 5
+        for key in row3Keys {
+            row3KeysStack.addArrangedSubview(makeCharacterKey(title: key, output: key))
+        }
+        row3.addArrangedSubview(row3KeysStack)
+
+        let deleteBtn = makeKey(title: nil, imageName: "delete.left", style: .special)
+        deleteBtn.addTarget(self, action: #selector(deleteBackward), for: .touchUpInside)
+        row3.addArrangedSubview(deleteBtn)
+        deleteBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        container.addArrangedSubview(row3)
+
+        // Row 4
+        let row4 = makeRow(height: 43)
+
+        let toggleBtn = makeKey(title: "ABC", imageName: nil, style: .special)
+        toggleBtn.addTarget(self, action: #selector(toggleKeyboardLayout), for: .touchUpInside)
+        row4.addArrangedSubview(toggleBtn)
+        toggleBtn.widthAnchor.constraint(equalToConstant: 54).isActive = true
+
+        let micBtn = makeKey(title: nil, imageName: "mic.fill", style: .special)
+        micBtn.addTarget(self, action: #selector(openDictation), for: .touchUpInside)
+        micBtn.tintColor = accentColor
+        row4.addArrangedSubview(micBtn)
+        micBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
+
+        let spaceBtn = makeKey(title: "space", imageName: nil, style: .character)
+        spaceBtn.addTarget(self, action: #selector(insertSpace), for: .touchUpInside)
+        row4.addArrangedSubview(spaceBtn)
+
+        let returnBtn = makeKey(title: "return", imageName: nil, style: .special)
+        returnBtn.addTarget(self, action: #selector(insertReturn), for: .touchUpInside)
+        row4.addArrangedSubview(returnBtn)
+        returnBtn.widthAnchor.constraint(equalToConstant: 76).isActive = true
+
+        container.addArrangedSubview(row4)
     }
 
-    private func makeGlobeRow() -> UIView {
-        let row = UIStackView()
-        row.axis = .horizontal
-        row.alignment = .center
-        row.distribution = .fill
-        row.heightAnchor.constraint(equalToConstant: 31).isActive = true
+    private func updateLetterKeysCapitalization() {
+        let isUpper = (keyboardState == .uppercase)
+        for btn in letterButtons {
+            if let raw = btn.accessibilityIdentifier {
+                let title = isUpper ? raw.uppercased() : raw.lowercased()
+                btn.setTitle(title, for: .normal)
+                btn.output = title
+            }
+        }
+        shiftButton?.setImage(UIImage(systemName: isUpper ? "shift.fill" : "shift"), for: .normal)
+    }
 
-        let globe = UIButton(type: .system)
-        globe.setImage(UIImage(systemName: "globe"), for: .normal)
-        globe.tintColor = .white
-        globe.addTarget(self, action: #selector(nextKeyboard), for: .touchUpInside)
-        row.addArrangedSubview(globe)
-        globe.widthAnchor.constraint(equalToConstant: 56).isActive = true
+    @objc private func toggleShift() {
+        triggerFeedback()
+        if keyboardState == .lowercase {
+            keyboardState = .uppercase
+        } else {
+            keyboardState = .lowercase
+        }
+        updateLetterKeysCapitalization()
+    }
 
-        row.addArrangedSubview(UIView())
-        return row
+    @objc private func toggleKeyboardLayout() {
+        triggerFeedback()
+        if keyboardState == .symbols {
+            keyboardState = .lowercase
+        } else {
+            keyboardState = .symbols
+        }
+        setupKeyboard()
+    }
+
+    @objc private func insertSpace() {
+        triggerFeedback()
+        textDocumentProxy.insertText(" ")
     }
 
     private enum KeyStyle {
@@ -207,15 +403,6 @@ final class KeyboardViewController: UIInputViewController {
         case special
         case icon
         case brand
-    }
-
-    private func makeEqualRow(keys: [(title: String, output: String)]) -> UIStackView {
-        let row = makeRow()
-        row.distribution = .fillEqually
-        for key in keys {
-            row.addArrangedSubview(makeCharacterKey(title: key.title, output: key.output))
-        }
-        return row
     }
 
     private func makeRow(height: CGFloat = 43) -> UIStackView {
@@ -241,10 +428,8 @@ final class KeyboardViewController: UIInputViewController {
             switch style {
             case .character:
                 return keyColor
-            case .special, .icon:
+            case .special, .icon, .brand:
                 return specialKeyColor
-            case .brand:
-                return disabledKeyColor
             }
         }()
         button.tintColor = .white
@@ -258,12 +443,8 @@ final class KeyboardViewController: UIInputViewController {
         button.setTitleColor(UIColor.white.withAlphaComponent(0.62), for: .highlighted)
         button.titleLabel?.font = {
             switch style {
-            case .special:
+            case .special, .icon, .brand:
                 return .systemFont(ofSize: 15, weight: .medium)
-            case .icon:
-                return .systemFont(ofSize: 15, weight: .medium)
-            case .brand:
-                return .systemFont(ofSize: 16, weight: .semibold)
             case .character:
                 return .systemFont(ofSize: 20, weight: .regular)
             }
@@ -276,66 +457,45 @@ final class KeyboardViewController: UIInputViewController {
         if let imageName {
             button.setImage(UIImage(systemName: imageName), for: .normal)
             button.imageView?.contentMode = .scaleAspectFit
-            if title != nil {
-                button.semanticContentAttribute = .forceLeftToRight
-                button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 4)
-            }
         }
 
-        return button
-    }
-
-    private func makeRoundButton(imageName: String) -> UIButton {
-        let button = UIButton(type: .system)
-        button.backgroundColor = .white
-        button.tintColor = .black
-        button.layer.cornerRadius = 19.5
-        button.layer.cornerCurve = .continuous
-        button.setImage(UIImage(systemName: imageName), for: .normal)
         return button
     }
 
     @objc private func insertCharacter(_ sender: KeyboardKeyButton) {
+        triggerFeedback()
         guard let output = sender.output else { return }
         textDocumentProxy.insertText(output)
+        
+        if keyboardState == .uppercase {
+            keyboardState = .lowercase
+            updateLetterKeysCapitalization()
+        }
     }
 
     @objc private func insertReturn() {
+        triggerFeedback()
         textDocumentProxy.insertText("\n")
     }
 
     @objc private func deleteBackward() {
+        triggerFeedback()
         textDocumentProxy.deleteBackward()
     }
 
     @objc private func openDictation() {
-        guard let url = URL(string: "parayu://dictate") else { return }
-
-        let defaults = UserDefaults(suiteName: appGroupId) ?? .standard
-        defaults.set("dictate", forKey: pendingActionKey)
-        defaults.set(Date().timeIntervalSince1970, forKey: "pendingShortcutActionAt")
-        defaults.synchronize()
-
-        showTemporaryStatus("Starting Parayu...")
-
-        if openURLThroughResponderChain(url) {
-            return
-        }
-
-        guard let extensionContext else {
-            showTemporaryStatus("Enable Full Access")
-            return
-        }
-
-        extensionContext.open(url) { [weak self] opened in
-            guard let self else { return }
-            if !opened {
-                DispatchQueue.main.async {
-                    if !self.openURLThroughResponderChain(url) {
-                        self.showTemporaryStatus("Enable Full Access")
-                    }
-                }
-            }
+        triggerFeedback()
+        // iOS does NOT permit microphone capture inside a keyboard extension:
+        // AVAudioEngine returns kAudioUnitErr_CannotDoInCurrentContext (2003329396)
+        // and AVAudioRecorder yields 0-frame files. So instead of recording here we
+        // hand off to the main Parayu app, which records + runs Whisper, then writes
+        // the clean English to the shared App Group ("latestTranscribedText").
+        // checkForPendingText() (polled + on viewWillAppear/textWillChange) inserts
+        // it automatically once the user returns to this text field.
+        showTemporaryStatus("Opening Parayu\u{2026}")
+        let url = URL(string: "parayu://dictate")!
+        if !openURLThroughResponderChain(url) {
+            showTemporaryStatus("Enable Full Access for Parayu Keyboard in Settings")
         }
     }
 
@@ -386,4 +546,5 @@ final class KeyboardViewController: UIInputViewController {
             self?.statusLabel?.text = "Parayu ready - Malayalam -> English"
         }
     }
+
 }

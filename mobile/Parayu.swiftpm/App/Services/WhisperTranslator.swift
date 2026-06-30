@@ -17,6 +17,17 @@ public struct WhisperModelInfo: Identifiable, Codable {
             return bundled
         }
         let dest = modelPath(file: file)
+        
+        // Auto-migrate from old application support path if it exists
+        if !FileManager.default.fileExists(atPath: dest.path) {
+            let oldPaths = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            let oldDir = oldPaths[0].appendingPathComponent("Parayu/models", isDirectory: true)
+            let oldFile = oldDir.appendingPathComponent(file)
+            if FileManager.default.fileExists(atPath: oldFile.path) {
+                try? FileManager.default.moveItem(at: oldFile, to: dest)
+            }
+        }
+        
         guard isUsableModel(at: dest, expectedBytes: expectedBytes) else { return nil }
         return dest
     }
@@ -44,6 +55,11 @@ public struct WhisperModelInfo: Identifiable, Codable {
     }
     
     public static func modelPath(file: String) -> URL {
+        if let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.parayu.app") {
+            let dir = groupURL.appendingPathComponent("Library/Application Support/Parayu/models", isDirectory: true)
+            try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+            return dir.appendingPathComponent(file)
+        }
         let paths = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
         let dir = paths[0].appendingPathComponent("Parayu/models", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -218,6 +234,7 @@ public actor WhisperCoreTranslator {
     }
 }
 
+#if !KEYBOARD
 public class WhisperSpeechTranslator: ObservableObject {
     private let core = WhisperCoreTranslator()
     public let downloader = WhisperModelDownloader()
@@ -334,3 +351,4 @@ public class WhisperSpeechTranslator: ObservableObject {
         }
     }
 }
+#endif

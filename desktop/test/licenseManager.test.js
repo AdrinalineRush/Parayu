@@ -47,7 +47,7 @@ function makeToken(privateKey, overrides = {}) {
       'email_mode',
       'advanced_clipboard_restore'
     ],
-    allowedModels: ['tiny', 'base', 'small-q5_1', 'medium-q5_0'],
+    allowedModels: ['base', 'small-q5_1', 'medium-q4_0', 'large-v3-q4_0', 'large-v3'],
     deviceId: 'device_1',
     issuedAt: new Date(now).toISOString(),
     ...overrides
@@ -109,7 +109,7 @@ test('valid Pro license keeps premium features available offline', () => {
   const flags = new FeatureFlag(() => fx.manager.getState());
   assert.equal(fx.manager.getState().offline, true);
   assert.equal(flags.isEnabled('local_llm_formatter'), true);
-  assert.equal(flags.canUseModel('medium-q5_0'), true);
+  assert.equal(flags.canUseModel('medium-q4_0'), true);
 });
 
 test('Base license matches website middle tier entitlements', () => {
@@ -127,7 +127,7 @@ test('Base license matches website middle tier entitlements', () => {
   assert.equal(flags.isEnabled('text_snippets'), true);
   assert.equal(flags.isEnabled('local_llm_formatter'), false);
   assert.equal(flags.canUseModel('small-q5_1'), true);
-  assert.equal(flags.canUseModel('medium-q5_0'), false);
+  assert.equal(flags.canUseModel('medium-q4_0'), false);
 });
 
 test('Pro Lifetime license is represented as Pro with lifetime billing metadata', () => {
@@ -186,10 +186,9 @@ test('model access gates allow Free models and lock premium models', () => {
   const fx = managerFixture();
   fx.manager.initialize();
   const flags = new FeatureFlag(() => fx.manager.getState());
-  assert.equal(flags.canUseModel('tiny'), true);
-  assert.equal(flags.canUseModel('base'), false);
+  assert.equal(flags.canUseModel('base'), true);
   assert.equal(flags.canUseModel('small-q5_1'), false);
-  assert.equal(flags.canUseModel('medium-q5_0'), false);
+  assert.equal(flags.canUseModel('medium-q4_0'), false);
 });
 
 test('license refresh failure preserves current state', async () => {
