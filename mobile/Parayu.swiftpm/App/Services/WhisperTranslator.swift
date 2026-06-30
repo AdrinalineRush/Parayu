@@ -7,7 +7,10 @@ public struct WhisperModelInfo: Identifiable, Codable {
     public let file: String
     public let bytes: Int64
     public let desc: String
-    
+    public var bullets: [String] = []
+
+    public var isEnglishOnly: Bool { id.contains(".en") }
+
     public var isDownloaded: Bool {
         return WhisperModelInfo.availableModelURL(file: file, expectedBytes: bytes) != nil
     }
@@ -67,33 +70,76 @@ public struct WhisperModelInfo: Identifiable, Codable {
     }
     
     public static func modelById(_ id: String) -> WhisperModelInfo {
-        return WHISPER_MODELS.first { $0.id == id } ?? WHISPER_MODELS[6] // default to small-q5_1
+        return WHISPER_MODELS.first { $0.id == id } ?? WHISPER_MODELS.first { $0.id == "small-q5_1" } ?? WHISPER_MODELS[0]
     }
-    
+
     public static func bestModelFor(language: String, selectedModelId: String) -> WhisperModelInfo {
+        // Like the macOS app: a single multilingual model serves both languages;
+        // the spoken language is handled by the decoding params, not by swapping models.
         let selected = modelById(selectedModelId)
-        guard language == "ml" else {
-            return selected
-        }
-        
-        // Malayalam needs a multilingual Whisper model. Older installs can have an
-        // English-only model saved in UserDefaults, which makes Malayalam fail.
-        if selected.id.hasSuffix(".en") {
+        // Malayalam needs a multilingual model; an English-only model can't do it.
+        if language == "ml" && selected.isEnglishOnly {
             return modelById("small-q5_1")
         }
         return selected
     }
 }
 
+// Brain Switch catalog — phone-tuned tiers (macOS "Brain Switch" style). One model
+// serves a language path; HIGH (small-q5_1) is bundled in the app and is the default.
+// Sizes capped for phone: PRO = 539MB (the desktop 844MB/2.9GB tiers are not shipped).
 public let WHISPER_MODELS = [
-    WhisperModelInfo(id: "tiny.en", label: "Tiny (English)", file: "ggml-tiny.en.bin", bytes: 78 * 1024 * 1024, desc: "English only. Lightning fast, smallest download."),
-    WhisperModelInfo(id: "base.en", label: "Base (English)", file: "ggml-base.en.bin", bytes: 148 * 1024 * 1024, desc: "English only. Fast with solid everyday accuracy."),
-    WhisperModelInfo(id: "small.en-q5_1", label: "Small (English)", file: "ggml-small.en-q5_1.bin", bytes: 190 * 1024 * 1024, desc: "English only. Recommended balance of accuracy and speed."),
-    WhisperModelInfo(id: "medium.en-q5_0", label: "Medium (English)", file: "ggml-medium.en-q5_0.bin", bytes: 539 * 1024 * 1024, desc: "English only. Highest accuracy, best with names/accents."),
-    WhisperModelInfo(id: "tiny", label: "Tiny (Multilingual)", file: "ggml-tiny.bin", bytes: 78 * 1024 * 1024, desc: "Supports 99+ languages. Extremely fast, lower translation quality."),
-    WhisperModelInfo(id: "base", label: "Base (Multilingual)", file: "ggml-base.bin", bytes: 148 * 1024 * 1024, desc: "Supports 99+ languages. Fast with decent translation accuracy."),
-    WhisperModelInfo(id: "small-q5_1", label: "Small (Multilingual)", file: "ggml-small-q5_1.bin", bytes: 190 * 1024 * 1024, desc: "Supports 99+ languages. Recommended balance of translation quality and speed."),
-    WhisperModelInfo(id: "medium-q5_0", label: "Medium (Multilingual)", file: "ggml-medium-q5_0.bin", bytes: 539 * 1024 * 1024, desc: "Supports 99+ languages. Highest quality translation, best for complex speech.")
+    // Multilingual tiers (handle both English and Malayalam)
+    WhisperModelInfo(id: "base", label: "MEDIUM", file: "ggml-base.bin", bytes: 148 * 1024 * 1024,
+        desc: "Lightweight model with fast inference and a very low memory footprint.",
+        bullets: [
+            "Fastest transcription speed on any device",
+            "Supports 99+ languages locally",
+            "Great for quick notes and short dictation",
+            "Extremely low memory footprint (ideal for multitasking)"
+        ]),
+    WhisperModelInfo(id: "small-q5_1", label: "HIGH", file: "ggml-small-q5_1.bin", bytes: 190 * 1024 * 1024,
+        desc: "Balanced model delivering solid accuracy with fast, native-GPU inference.",
+        bullets: [
+            "Recommended balance of speed and accuracy",
+            "Strong Malayalam ↔ English translation",
+            "Supports 99+ languages locally",
+            "Quantized to 5-bit precision for native GPU performance"
+        ]),
+    WhisperModelInfo(id: "medium-q5_0", label: "PRO", file: "ggml-medium-q5_0.bin", bytes: 539 * 1024 * 1024,
+        desc: "Highest on-device accuracy with excellent Malayalam understanding.",
+        bullets: [
+            "Best Malayalam to English translation quality on phone",
+            "Highly sensitive to naming, punctuation, and terms",
+            "Robust grammar and spacing recognition",
+            "Quantized to 5-bit precision, accelerated on Apple Silicon"
+        ]),
+
+    // English-only counterparts (faster + sharper for English; cannot do Malayalam)
+    WhisperModelInfo(id: "base.en", label: "MEDIUM", file: "ggml-base.en.bin", bytes: 148 * 1024 * 1024,
+        desc: "Lightweight English-only model — the fastest English dictation.",
+        bullets: [
+            "Fastest English transcription on any device",
+            "Sharper than multilingual at the same size for English",
+            "Extremely low memory footprint",
+            "English only — cannot transcribe Malayalam"
+        ]),
+    WhisperModelInfo(id: "small.en-q5_1", label: "HIGH", file: "ggml-small.en-q5_1.bin", bytes: 190 * 1024 * 1024,
+        desc: "Balanced English-only model — recommended for English dictation.",
+        bullets: [
+            "Recommended balance of speed and English accuracy",
+            "Specialized for English — sharper than multilingual",
+            "Low memory footprint",
+            "English only — cannot transcribe Malayalam"
+        ]),
+    WhisperModelInfo(id: "medium.en-q5_0", label: "PRO", file: "ggml-medium.en-q5_0.bin", bytes: 539 * 1024 * 1024,
+        desc: "Highest-accuracy English-only model, great with names and accents.",
+        bullets: [
+            "Top English accuracy, strong with proper nouns",
+            "Best for professional English dictation",
+            "Robust punctuation and casing",
+            "English only — cannot transcribe Malayalam"
+        ])
 ]
 
 public class WhisperModelDownloader: NSObject, ObservableObject, URLSessionDownloadDelegate {
@@ -164,7 +210,9 @@ public actor WhisperCoreTranslator {
         }
         
         let pathPointer = (path as NSString).utf8String
-        let params = whisper_context_default_params()
+        var params = whisper_context_default_params()
+        params.use_gpu = true       // Metal GPU backend (compiled in via GGML_USE_METAL)
+        params.flash_attn = true    // big speedup + lower memory on Metal
         context = whisper_init_from_file_with_params(pathPointer, params)
         if context == nil {
             throw NSError(domain: "ParayuWhisperError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to initialize whisper context from model file"])
@@ -198,6 +246,18 @@ public actor WhisperCoreTranslator {
         params.translate = translateToEnglish
         
         let boundedSamples = samples.count > maxSamples ? Array(samples.prefix(maxSamples)) : samples
+
+        // Trim the encoder window to the actual audio length. Whisper otherwise always
+        // runs the encoder over a full 30s window (1500 frames) even for a 5s clip, which
+        // dominates latency for short dictation. ~320 samples per audio-ctx frame; add a
+        // ~1.3s headroom so we never clip the tail of speech, and clamp to the model max.
+        let modelMaxAudioCtx = whisper_model_n_audio_ctx(context)
+        if modelMaxAudioCtx > 0 {
+            let audioFrames = Int((Double(boundedSamples.count) / 320.0).rounded(.up))
+            let clamped = min(Int(modelMaxAudioCtx), max(256, audioFrames + 64))
+            params.audio_ctx = Int32(clamped)
+        }
+
         let result = try language.withCString { languagePointer in
             params.language = languagePointer
             return try boundedSamples.withUnsafeBufferPointer { sampleBuffer in

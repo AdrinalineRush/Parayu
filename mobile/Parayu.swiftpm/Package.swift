@@ -37,7 +37,10 @@ let package = Package(
         .executableTarget(
             name: "App",
             dependencies: [],
-            path: "App"
+            path: "App",
+            resources: [
+                .process("Resources/Fonts")
+            ]
         )
     ]
 )

@@ -1,80 +1,137 @@
-#!/bin/bash
-# seal-dmg-background.sh — applies the styled DMG background the ONLY way that
-# renders on macOS Sonoma/Sequoia: by letting Finder itself author the .DS_Store.
+#!/usr/bin/env bash
+# seal-dmg-background.sh — Re-seals a Parayu DMG with a Finder-authored
+# background image so macOS Sonoma/Sequoia renders it correctly.
 #
-# Programmatic backgrounds (electron-builder's alias, ds_store/mac_alias, etc.)
-# position the icons correctly but Sequoia's Finder ignores the background-image
-# alias, so the window shows up plain. A background Finder writes always renders.
+# Usage:
+#   ./seal-dmg-background.sh                          # seals dist/Parayu-superdev-*.dmg
+#   ./seal-dmg-background.sh dist/Parayu-dev-0.1.0.dmg   # seals a specific DMG
 #
-# Run AFTER `npm run dist` or `npm run dist:dev`:  ./seal-dmg-background.sh
-set -e
+# Prerequisites:
+#   - build/dmg-background.png (540×540 1x)
+#   - build/dmg-background@2x.png (1080×1080 2x)
+#   - macOS with Finder automation permission for Terminal/osascript
 
-# Eject any existing mounted volumes matching Parayu to avoid collisions
-for v in /Volumes/Parayu*; do
-  if [ -d "$v" ]; then
-    echo "Ejecting collision volume: $v"
-    hdiutil detach "$v" -force >/dev/null 2>&1 || true
-  fi
-done
+set -euo pipefail
 
-# Find all matching DMGs in dist/
-DMGS=$(ls dist/Parayu-*.dmg 2>/dev/null || true)
-if [ -z "$DMGS" ]; then
-  # Try to find a plain Parayu.dmg if no version suffix is present
-  DMGS=$(ls dist/Parayu.dmg 2>/dev/null || true)
+# ---- Resolve the DMG to seal ----
+if [[ $# -ge 1 ]]; then
+  DMG="$1"
+else
+  # Auto-detect: prefer superdev, fall back to dev
+  DMG=$(ls -t dist/Parayu-superdev-*.dmg 2>/dev/null | head -1)
+  [[ -z "$DMG" ]] && DMG=$(ls -t dist/Parayu-dev-*.dmg 2>/dev/null | head -1)
+  [[ -z "$DMG" ]] && DMG=$(ls -t dist/Parayu-*.dmg 2>/dev/null | head -1)
 fi
 
-if [ -z "$DMGS" ]; then
-  echo "❌ No DMG found in dist/ directory. Please run 'npm run dist' or 'npm run dist:dev' first."
+if [[ -z "$DMG" || ! -f "$DMG" ]]; then
+  echo "❌ No DMG found. Run 'npm run dist' first, or pass a path as argument."
   exit 1
 fi
 
-RW="/tmp/parayu_rw.dmg"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+BG_1X="$SCRIPT_DIR/build/dmg-background.png"
+BG_2X="$SCRIPT_DIR/build/dmg-background@2x.png"
 
-for DMG in $DMGS; do
-  echo "=================================================================="
-  echo "⚙️ Processing: $DMG"
-  echo "=================================================================="
+if [[ ! -f "$BG_1X" ]]; then
+  echo "❌ Missing build/dmg-background.png"
+  exit 1
+fi
+if [[ ! -f "$BG_2X" ]]; then
+  echo "⚠️  Missing build/dmg-background@2x.png — using 1x only"
+  BG_2X=""
+fi
 
-  rm -f "$RW"
+echo "🔧 Sealing DMG: $DMG"
 
-  echo "==> convert to read-write"
-  hdiutil convert "$DMG" -format UDRW -o "$RW" -quiet
-  hdiutil resize -size 300m "$RW" -quiet 2>/dev/null || true
+# ---- Detect the app name inside the DMG ----
+PROBE_OUT=$(hdiutil attach "$DMG" -readonly -noverify -nobrowse 2>&1 || true)
+PROBE_VOL=$(echo "$PROBE_OUT" | grep '/Volumes/' | sed 's|.*\(/Volumes/.*\)|\1|' | head -1 | xargs)
 
-  echo "==> attach"
-  # -nobrowse keeps the volume hidden in Finder's sidebar, avoiding popups
-  ATTACH_OUT=$(hdiutil attach "$RW" -readwrite -noverify -nobrowse)
-  VOL=$(echo "$ATTACH_OUT" | grep -o '/Volumes/.*' | head -1)
-  VOLNAME=$(basename "$VOL")
-  sleep 2
+if [[ -z "$PROBE_VOL" || ! -d "$PROBE_VOL" ]]; then
+  echo "❌ Could not mount DMG to probe contents."
+  echo "$PROBE_OUT"
+  exit 1
+fi
 
-  echo "==> copy hidpi background tiff"
-  mkdir -p "$VOL/.background"
-  tiffutil -cathidpicheck build/dmg-background.png build/dmg-background@2x.png \
-    -out "$VOL/.background/background.tiff" >/dev/null
+APP_NAME=$(ls "$PROBE_VOL" | grep '\.app$' | head -1)
+VOL_NAME=$(basename "$PROBE_VOL")
 
-  # Determine the app name dynamically inside the volume (e.g. Parayu.app or Parayu Dev.app)
-  APP_NAME=$(basename "$(ls -d "$VOL"/*.app | head -n 1)")
-  echo "==> found app: $APP_NAME"
+if [[ -z "$APP_NAME" ]]; then
+  echo "❌ No .app found inside the DMG volume."
+  hdiutil detach "$PROBE_VOL" -force 2>/dev/null || true
+  exit 1
+fi
 
-  echo "==> let Finder author the layout ($VOLNAME)"
-  osascript <<APPLESCRIPT
+echo "   App: $APP_NAME"
+echo "   Volume: $VOL_NAME"
+
+# Detach the probe mount
+hdiutil detach "$PROBE_VOL" -force 2>/dev/null || true
+sleep 1
+
+# ---- Phase 2: Re-seal with Finder-authored .DS_Store ----
+
+# 1. Eject ALL volumes with the same name
+for vol in /Volumes/"$VOL_NAME"*; do
+  [[ -d "$vol" ]] && hdiutil detach "$vol" -force 2>/dev/null || true
+done
+sleep 1
+
+RW_DMG="/tmp/parayu-rw-$$.dmg"
+
+# 2. Convert to read-write
+echo "   Converting to read-write…"
+hdiutil convert "$DMG" -format UDRW -o "$RW_DMG" -quiet
+
+# 3. Resize to add headroom
+hdiutil resize -size 8g "$RW_DMG" 2>/dev/null || true
+
+# 4. Mount read-write
+echo "   Mounting read-write…"
+ATTACH_OUT=$(hdiutil attach "$RW_DMG" -readwrite -noverify -nobrowse 2>&1)
+VOL_PATH=$(echo "$ATTACH_OUT" | grep '/Volumes/' | sed 's|.*\(/Volumes/.*\)|\1|' | head -1 | xargs)
+
+if [[ -z "$VOL_PATH" || ! -d "$VOL_PATH" ]]; then
+  echo "❌ Could not mount read-write DMG."
+  echo "$ATTACH_OUT"
+  rm -f "$RW_DMG"
+  exit 1
+fi
+
+echo "   Mounted at: $VOL_PATH"
+
+# 5. Create .background and build HiDPI TIFF
+echo "   Installing background image…"
+mkdir -p "$VOL_PATH/.background"
+
+if [[ -n "$BG_2X" ]]; then
+  tiffutil -cathidpicheck "$BG_1X" "$BG_2X" -out "$VOL_PATH/.background/background.tiff" 2>/dev/null
+else
+  sips -s format tiff "$BG_1X" --out "$VOL_PATH/.background/background.tiff" >/dev/null 2>&1
+fi
+
+# 6. Drive Finder via AppleScript to author the .DS_Store
+echo "   Configuring Finder window layout…"
+
+APP_ESCAPED=$(echo "$APP_NAME" | sed 's/"/\\\\"/g')
+RW_VOL_NAME=$(basename "$VOL_PATH")
+
+osascript <<APPLESCRIPT
 tell application "Finder"
-    tell disk "$VOLNAME"
+    tell disk "$RW_VOL_NAME"
         open
-        delay 2
         set current view of container window to icon view
         set toolbar visible of container window to false
         set statusbar visible of container window to false
         set the bounds of container window to {300, 200, 840, 740}
-        set vo to the icon view options of container window
-        set arrangement of vo to not arranged
-        set icon size of vo to 128
-        set text size of vo to 12
-        set background picture of vo to file ".background:background.tiff"
-        set position of item "$APP_NAME" of container window to {130, 270}
-        set position of item "Applications" of container window to {410, 270}
+        set theViewOptions to icon view options of container window
+        set arrangement of theViewOptions to not arranged
+        set icon size of theViewOptions to 128
+        set background picture of theViewOptions to file ".background:background.tiff"
+        set position of item "$APP_ESCAPED" to {130, 270}
+        set position of item "Applications" to {410, 270}
+        close
+        open
         update without registering applications
         delay 2
         close
@@ -82,16 +139,21 @@ tell application "Finder"
 end tell
 APPLESCRIPT
 
-  echo "==> seal back to compressed read-only"
-  sync; sleep 1
-  hdiutil detach "$VOL" -force -quiet 2>/dev/null || true
-  sleep 2
-  rm -f "$DMG"
-  hdiutil convert "$RW" -format UDZO -imagekey zlib-level=9 -o "$DMG" -quiet
-  rm -f "$RW"
+echo "   Finder layout applied."
 
-  echo "✅ Styled DMG sealed: $DMG"
-  ls -lh "$DMG" | awk '{print $5, $NF}'
-done
+# 7. Sync and detach
+sync
+sleep 2
+hdiutil detach "$VOL_PATH" -force 2>/dev/null || true
+sleep 1
 
-echo "🎉 All matching DMGs have been successfully sealed!"
+# 8. Convert back to compressed read-only
+echo "   Compressing final DMG…"
+rm -f "$DMG"
+hdiutil convert "$RW_DMG" -format UDZO -imagekey zlib-level=9 -o "$DMG" -quiet
+rm -f "$RW_DMG"
+
+FINAL_SIZE=$(du -h "$DMG" | cut -f1 | xargs)
+echo ""
+echo "✅ Sealed DMG ready: $DMG ($FINAL_SIZE)"
+echo "   Verify: open \"$DMG\" and confirm the background + icon positions render."

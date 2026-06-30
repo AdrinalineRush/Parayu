@@ -56,6 +56,7 @@ public class AppState: ObservableObject, @unchecked Sendable {
     @Published public var stats = Stats()
     @Published public var appUsage: [String: AppUsageEntry] = [:]
     
+    @Published public var userName: String = ""
     @Published public var aiCleanup: Bool = true
     @Published public var dictationMode: String = "toggle"
     @Published public var selectedModel: String = "small-q5_1"
@@ -103,6 +104,7 @@ public class AppState: ObservableObject, @unchecked Sendable {
         defaults.set(inputLanguage, forKey: "inputLanguage")
         defaults.set(translateMalayalam, forKey: "translateMalayalam")
         defaults.set(onboarded, forKey: "onboarded")
+        defaults.set(userName, forKey: "userName")
     }
     
     public func loadAll() {
@@ -129,6 +131,21 @@ public class AppState: ObservableObject, @unchecked Sendable {
             translateMalayalam = defaults.bool(forKey: "translateMalayalam")
         }
         onboarded = defaults.bool(forKey: "onboarded")
+        if let name = defaults.string(forKey: "userName") {
+            userName = name
+        }
+    }
+
+    /// Lightweight persistence for small preferences (avoids rewriting all JSON files).
+    public func persistName() {
+        let defaults = UserDefaults(suiteName: "group.com.parayu.app") ?? UserDefaults.standard
+        defaults.set(userName, forKey: "userName")
+    }
+
+    /// Friendly greeting for the dashboard header.
+    public var greeting: String {
+        let trimmed = userName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "Welcome back 👋" : "Hello, \(trimmed) 👋"
     }
     
     private func saveFile<T: Encodable>(_ data: T, name: String) {

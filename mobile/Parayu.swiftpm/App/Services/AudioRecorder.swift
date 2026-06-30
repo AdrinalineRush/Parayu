@@ -108,7 +108,59 @@ public class AudioRecorder: NSObject, ObservableObject {
         }
         
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-        
+
         return recordedSamples
+    }
+}
+
+// MARK: - Text-to-speech for the "read aloud" button on the result card.
+final class SpeechService: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
+    private let synthesizer = AVSpeechSynthesizer()
+    @Published var isSpeaking = false
+
+    override init() {
+        super.init()
+        synthesizer.delegate = self
+    }
+
+    /// Speaks the text, or stops if already speaking. `language` is a BCP-47 tag (e.g. "en-US", "ml-IN").
+    func toggle(_ text: String, language: String = "en-US") {
+        if synthesizer.isSpeaking {
+            synthesizer.stopSpeaking(at: .immediate)
+            isSpeaking = false
+            return
+        }
+
+        let clean = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !clean.isEmpty else { return }
+
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, options: [.duckOthers])
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            // Non-fatal — speech will still attempt to play.
+        }
+
+        let utterance = AVSpeechUtterance(string: clean)
+        utterance.voice = AVSpeechSynthesisVoice(language: language)
+            ?? AVSpeechSynthesisVoice(language: "en-US")
+        utterance.rate = AVSpeechUtteranceDefaultSpeechRate
+        utterance.postUtteranceDelay = 0
+
+        isSpeaking = true
+        synthesizer.speak(utterance)
+    }
+
+    func stop() {
+        synthesizer.stopSpeaking(at: .immediate)
+        isSpeaking = false
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        DispatchQueue.main.async { self.isSpeaking = false }
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        DispatchQueue.main.async { self.isSpeaking = false }
     }
 }

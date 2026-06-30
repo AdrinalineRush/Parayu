@@ -125,22 +125,31 @@ function allowedModelsList() {
 }
 
 function ensureAllowedSelectedModel() {
-  const current = store.get('selectedModel') || 'base';
-  if (featureFlag.canUseModel(current)) return current;
-  setSelectedModel('base');
-  return 'base';
+  const current = store.get('selectedModel');
+  if (!current || current === 'tiny' || current === 'small-q5_1') {
+    const { isDownloaded, modelById } = require('./whisper');
+    // If the PRO model is bundled/downloaded, default to it
+    const proModel = modelById('large-v3');
+    if (proModel && isDownloaded(proModel)) {
+      setSelectedModel('large-v3');
+      return 'large-v3';
+    }
+    // Otherwise, if the HIGH model is bundled/downloaded, default to it
+    const highModel = modelById('large-v3-q5_0');
+    if (highModel && isDownloaded(highModel)) {
+      setSelectedModel('large-v3-q5_0');
+      return 'large-v3-q5_0';
+    }
+  }
+
+  const active = store.get('selectedModel') || 'small-q5_1';
+  if (featureFlag.canUseModel(active)) return active;
+  setSelectedModel('small-q5_1');
+  return 'small-q5_1';
 }
 
 function ensureModelForInputLanguage() {
-  const current = ensureAllowedSelectedModel();
-  const inputLanguage = store.get('inputLanguage') || 'en';
-  if (inputLanguage === 'ml' && current !== 'small-q5_1' && current !== 'medium-q4_0') {
-    if (featureFlag.canUseModel('small-q5_1')) {
-      setSelectedModel('small-q5_1');
-      return 'small-q5_1';
-    }
-  }
-  return store.get('selectedModel') || current;
+  return ensureAllowedSelectedModel();
 }
 
 function friendlyFeatureError(feature) {
@@ -175,9 +184,6 @@ function createWindow() {
     }
   });
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
-  if (!app.isPackaged) {
-    mainWindow.webContents.openDevTools();
-  }
   mainWindow.setSize(1180, 740);
   mainWindow.center();
 
@@ -237,6 +243,7 @@ function ensureOverlayWindow() {
 }
 
 function showMainWindow() {
+  if (!app.isReady()) return;
   if (!mainWindow || mainWindow.isDestroyed()) {
     createWindow();
     return;
@@ -473,7 +480,7 @@ function wavAudioStats(arrayBuffer) {
   };
 }
 
-ipcMain.handle('transcribe-audio', async (_event, wavArrayBuffer) => {
+ipcMain.handle('transcribe-audio', async (_event, wavArrayBuffer, isScreenwriting) => {
   try {
     licenseManager.setDictationActive(true);
     ensureModelForInputLanguage();
@@ -483,7 +490,7 @@ ipcMain.handle('transcribe-audio', async (_event, wavArrayBuffer) => {
       return { text: '', words: 0, pasteError: 'Your voice is a little low. Move closer to the mic.' };
     }
     sendToWindow(overlayWindow, 'overlay-state', 'processing');
-    const rawText = await transcribe(wavArrayBuffer);
+    const rawText = await transcribe(wavArrayBuffer, isScreenwriting ? { translate: false } : undefined);
     if (!rawText) return { text: '', words: 0 };
 
     // Developer-curated global corrections. 'pre' entries (Malayalam-script
@@ -573,7 +580,8 @@ ipcMain.handle('transcribe-audio', async (_event, wavArrayBuffer) => {
       restoreClipboardDelay: store.get('restoreClipboardDelay')
     });
     const { words, stats } = recordTranscription(rawText, finalText,
-      { durationSec: audioStats.durationSec, wordsCorrected, dictionaryFixes, appName });
+      { durationSec: audioStats.durationSec, wordsCorrected, dictionaryFixes, appName,
+        rms: audioStats.rms, peak: audioStats.peak });
     sendToWindow(overlayWindow, 'overlay-state', pasteResult.ok ? 'done' : 'error');
     const pasteError = pasteResult.ok ? null : `Paste failed; text copied to clipboard. ${pasteResult.error || ''}`.trim();
     return { text: finalText, words, stats, formatterError, formatterDecision, pasteError };
@@ -648,6 +656,11 @@ ipcMain.handle('save-screenwriting-transcript', async (_event, text) => {
   if (canceled || !filePath) return { ok: false };
   await require('fs/promises').writeFile(filePath, text, 'utf8');
   return { ok: true, filePath };
+});
+
+ipcMain.handle('open-external', (_e, url) => {
+  const { shell } = require('electron');
+  shell.openExternal(url);
 });
 
 ipcMain.handle('offline-ai-status', async () => {
@@ -1082,7 +1095,7 @@ ipcMain.handle('set-cleanup-mode', (_e, mode) => {
   }
   if (next === 'premium') {
     store.set('formatterModel', 'quality_7b');
-    if (featureFlag.canUseModel('medium-q4_0')) setSelectedModel('medium-q4_0');
+    if (featureFlag.canUseModel('medium-q5_0')) setSelectedModel('medium-q5_0');
   } else if (next === 'smart' && store.get('formatterModel') !== 'quality_7b') {
     store.set('formatterModel', 'fast_3b');
   }

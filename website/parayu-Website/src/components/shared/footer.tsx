@@ -51,6 +51,7 @@ export function Footer() {
             <h3 className="font-semibold text-zinc-950 dark:text-white mb-4">Resources</h3>
             <ul className="space-y-3">
               <li><Link href="/blog" className="text-zinc-600 dark:text-zinc-400 hover:text-primary dark:hover:text-primary text-sm transition-colors">Blog</Link></li>
+              <li><Link href="/parayu-vs-wispr-flow" className="text-zinc-600 dark:text-zinc-400 hover:text-primary dark:hover:text-primary text-sm transition-colors">Parayu vs Wispr Flow</Link></li>
               <li><Link href="/use-cases" className="text-zinc-600 dark:text-zinc-400 hover:text-primary dark:hover:text-primary text-sm transition-colors">Use Cases</Link></li>
               <li><Link href="/docs" className="text-zinc-600 dark:text-zinc-400 hover:text-primary dark:hover:text-primary text-sm transition-colors">Documentation</Link></li>
               <li><Link href="/help" className="text-zinc-600 dark:text-zinc-400 hover:text-primary dark:hover:text-primary text-sm transition-colors">Help Center</Link></li>

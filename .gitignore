@@ -31,6 +31,8 @@ desktop/build/mac-*/
 
 # --- ML model binaries (bundled at build time via extraResources, never in git) ---
 *.bin
+**/models/
+**/hf_cache/
 
 # --- Training / admin runtime artifacts (generated locally, not source) ---
 output/
@@ -41,12 +43,14 @@ __pycache__/
 *.pyc
 .venv/
 **/.venv/
+**/bundled-venv/
 
 # --- iOS / Xcode / SwiftPM ---
 **/.swiftpm/xcode/package.xcworkspace/xcuserdata/
 **/*.xcuserstate
 **/.build/
 DerivedData/
+mobile/build/
 
 # --- Android ---
 mobile/android/.gradle/

@@ -40,8 +40,8 @@ def get_pipeline(model_name):
     from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
     from IndicTransToolkit.processor import IndicProcessor
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True, local_files_only=True)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name, trust_remote_code=True, local_files_only=True)
     model.eval()
     processor = IndicProcessor(inference=True)
     _loaded[model_name] = (tokenizer, model, processor, torch)

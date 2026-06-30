@@ -5,150 +5,148 @@ struct DictionaryView: View {
     @State private var fromText = ""
     @State private var toText = ""
     @State private var errorMessage = ""
-    
+
     var body: some View {
-        VStack(spacing: 0) {
-            // Form Card
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Add Replacement Rule")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(.secondary)
-                    .textCase(.uppercase)
-                    .tracking(0.5)
-                
-                HStack(spacing: 10) {
+        ScrollView {
+            VStack(spacing: 16) {
+                // Form card
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionLabel(text: "ADD REPLACEMENT RULE")
+
                     TextField("Spoken word (e.g. apple)", text: $fromText)
-                        .padding(11)
-                        .background(Color.white.opacity(0.05))
-                        .cornerRadius(10)
-                        .foregroundColor(.white)
-                        .font(.system(size: 14))
+                        .parayuField()
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
-                    
-                    Image(systemName: "arrow.right")
-                        .foregroundColor(.secondary)
-                    
-                    TextField("Replace with (e.g. Apple)", text: $toText)
-                        .padding(11)
-                        .background(Color.white.opacity(0.05))
-                        .cornerRadius(10)
-                        .foregroundColor(.white)
-                        .font(.system(size: 14))
-                        .autocorrectionDisabled(true)
-                }
-                
-                Button(action: addRule) {
-                    Text("Add Replacement")
-                        .fontWeight(.bold)
-                        .font(.system(size: 13))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color(red: 224/255, green: 30/255, blue: 65/255))
-                        .cornerRadius(10)
-                }
-                
-                if !errorMessage.isEmpty {
-                    Text(errorMessage)
-                        .font(.caption)
-                        .foregroundColor(.red)
-                        .padding(.top, 2)
-                }
-            }
-            .padding()
-            .background(Color.white.opacity(0.04))
-            .cornerRadius(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.white.opacity(0.06), lineWidth: 1)
-            )
-            .padding()
-            
-            // Rules List
-            if state.dictionary.isEmpty {
-                VStack(spacing: 12) {
-                    Spacer()
-                    Image(systemName: "character.book.closed.fill")
-                        .font(.system(size: 44))
-                        .foregroundColor(.secondary)
-                    Text("No dictionary rules yet")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.secondary)
-                    Text("Rules replace specific words in the final output text.")
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
-                    Spacer()
-                }
-                .frame(maxHeight: .infinity)
-            } else {
-                List {
-                    ForEach(state.dictionary) { rule in
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(rule.from)
-                                    .font(.system(size: 15, weight: .bold))
-                                    .foregroundColor(.white)
-                                Text("Spoken / Transcribed")
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            Spacer()
-                            Image(systemName: "arrow.right")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            
-                            VStack(alignment: .trailing, spacing: 2) {
-                                Text(rule.to)
-                                    .font(.system(size: 15, weight: .bold))
-                                    .foregroundColor(Color(red: 224/255, green: 30/255, blue: 65/255))
-                                Text("Replaced With")
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        .listRowBackground(Color.white.opacity(0.02))
+
+                    HStack {
+                        Spacer()
+                        Image(systemName: "arrow.down")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(ParayuTheme.faint)
+                            .frame(width: 26, height: 26)
+                            .background(Circle().fill(ParayuTheme.surface))
+                        Spacer()
                     }
-                    .onDelete(perform: deleteRules)
+
+                    TextField("Replace with (e.g. Apple)", text: $toText)
+                        .parayuField()
+                        .autocorrectionDisabled(true)
+
+                    Button(action: addRule) {
+                        Text("Add replacement")
+                            .font(ParayuTheme.font(14, .bold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 13)
+                            .background(ParayuTheme.accentGradient)
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+
+                    if !errorMessage.isEmpty {
+                        Text(errorMessage)
+                            .font(ParayuTheme.font(12, .semibold))
+                            .foregroundColor(ParayuTheme.accent)
+                    }
                 }
-                .scrollContentBackground(.hidden)
-                .background(Color.clear)
+                .parayuCard(padding: 16, radius: 20)
+
+                if state.dictionary.isEmpty {
+                    emptyState
+                } else {
+                    VStack(spacing: 10) {
+                        HStack {
+                            SectionLabel(text: "\(state.dictionary.count) \(state.dictionary.count == 1 ? "RULE" : "RULES")")
+                            Spacer()
+                        }
+                        ForEach(state.dictionary) { rule in
+                            ruleCard(rule)
+                        }
+                    }
+                }
             }
+            .padding(.horizontal, 18)
+            .padding(.top, 14)
+            .clearsFloatingTabBar()
         }
+        .background(ParayuTheme.bg.ignoresSafeArea())
         .navigationTitle("Dictionary Rules")
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color.black.ignoresSafeArea())
     }
-    
+
+    private func ruleCard(_ rule: DictionaryRule) -> some View {
+        HStack(spacing: 12) {
+            IconBadge(system: "textformat", tint: ParayuTheme.purple, size: 38, iconScale: 0.42)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(rule.from)
+                    .font(ParayuTheme.font(15, .bold))
+                    .foregroundColor(ParayuTheme.text)
+                    .lineLimit(1)
+                Text("Spoken")
+                    .font(ParayuTheme.font(10, .semibold))
+                    .foregroundColor(ParayuTheme.faint)
+            }
+            Image(systemName: "arrow.right")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(ParayuTheme.faint)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(rule.to)
+                    .font(ParayuTheme.font(15, .bold))
+                    .foregroundColor(ParayuTheme.accent)
+                    .lineLimit(1)
+                Text("Becomes")
+                    .font(ParayuTheme.font(10, .semibold))
+                    .foregroundColor(ParayuTheme.faint)
+            }
+            Spacer(minLength: 4)
+            Button { delete(rule) } label: {
+                Image(systemName: "trash")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(ParayuTheme.faint)
+                    .frame(width: 32, height: 32)
+                    .background(Circle().fill(ParayuTheme.surface))
+            }
+            .buttonStyle(.plain)
+        }
+        .parayuCard(padding: 13, radius: 16)
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 12) {
+            IconBadge(system: "character.book.closed.fill", tint: ParayuTheme.purple, size: 60, iconScale: 0.42)
+            Text("No dictionary rules yet")
+                .font(ParayuTheme.font(15, .bold))
+                .foregroundColor(ParayuTheme.text)
+            Text("Rules replace specific words in the final output text.")
+                .font(ParayuTheme.font(12, .medium))
+                .foregroundColor(ParayuTheme.muted)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 30)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 30)
+    }
+
     private func addRule() {
         let from = fromText.trimmingCharacters(in: .whitespacesAndNewlines)
         let to = toText.trimmingCharacters(in: .whitespacesAndNewlines)
-        
         guard !from.isEmpty, !to.isEmpty else {
             errorMessage = "Both fields are required."
             return
         }
-        
         if state.dictionary.contains(where: { $0.from.lowercased() == from.lowercased() }) {
             errorMessage = "A replacement for '\(from)' already exists."
             return
         }
-        
-        let newRule = DictionaryRule(from: from, to: to)
-        state.dictionary.append(newRule)
+        withAnimation { state.dictionary.append(DictionaryRule(from: from, to: to)) }
         state.saveAll()
-        
-        fromText = ""
-        toText = ""
-        errorMessage = ""
+        fromText = ""; toText = ""; errorMessage = ""
     }
-    
-    private func deleteRules(at offsets: IndexSet) {
-        state.dictionary.remove(atOffsets: offsets)
-        state.saveAll()
+
+    private func delete(_ rule: DictionaryRule) {
+        if let idx = state.dictionary.firstIndex(where: { $0.id == rule.id }) {
+            withAnimation { _ = state.dictionary.remove(at: idx) }
+            state.saveAll()
+        }
     }
 }

@@ -140,7 +140,7 @@ export default async function SubscriptionPage() {
               ))
             ) : (
               [
-                "1,000 English words / month",
+                "2,500 English words / month",
                 "LOW English Brain (0.07B parameters)",
                 "System-wide paste (⌥ Space)",
                 "Custom dictionary",

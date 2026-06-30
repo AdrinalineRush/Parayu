@@ -98,7 +98,14 @@ function recordTranscription(rawText, finalText, meta = {}) {
     rawText,
     timestamp: Date.now(),
     words,
-    durationSec: meta.durationSec || 0
+    durationSec: meta.durationSec || 0,
+    // Which app the dictation landed in (macOS gives us the name) — powers the
+    // dashboard "Recent dictations" attribution. Null when unknown.
+    app: meta.appName || null,
+    // Raw signal-level stats from the captured audio, used to derive the
+    // dashboard "Voice quality" card. rms ≈ loudness, peak ≈ clipping headroom.
+    rms: typeof meta.rms === 'number' ? meta.rms : null,
+    peak: typeof meta.peak === 'number' ? meta.peak : null
   });
   store.set('history', history.slice(0, 1000));
 

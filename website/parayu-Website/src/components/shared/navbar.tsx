@@ -50,23 +50,25 @@ export function Navbar() {
               </Link>
               
               {activeMenu === "product" && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-white/95 backdrop-blur-md border border-[#e8e5df] rounded-2xl p-3 shadow-2xl flex flex-col gap-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <Link href="/features" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Features</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Core capabilities of our offline voice client.</span>
-                  </Link>
-                  <Link href="/commands" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">AI Commands</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Local voice-activated text formatting.</span>
-                  </Link>
-                  <Link href="/languages" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Supported Languages</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Malayalam, English, and 99+ local languages.</span>
-                  </Link>
-                  <Link href="/integrations" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Integrations</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Pasting system-wide into all your tools.</span>
-                  </Link>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-80 z-50">
+                  <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-[#e8e5df] dark:border-zinc-800 rounded-2xl p-3 shadow-2xl flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <Link href="/features" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Features</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Core capabilities of our offline voice client.</span>
+                    </Link>
+                    <Link href="/commands" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">AI Commands</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Local voice-activated text formatting.</span>
+                    </Link>
+                    <Link href="/languages" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Supported Languages</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Malayalam, English, and 99+ local languages.</span>
+                    </Link>
+                    <Link href="/integrations" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Integrations</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Pasting system-wide into all your tools.</span>
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
@@ -82,27 +84,29 @@ export function Navbar() {
               </Link>
               
               {activeMenu === "use-cases" && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-white/95 backdrop-blur-md border border-[#e8e5df] rounded-2xl p-3 shadow-2xl flex flex-col gap-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <Link href="/use-cases" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Overview</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Tailored voice workflows for every role.</span>
-                  </Link>
-                  <Link href="/use-cases/developers" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">For Developers</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">PRs, commits, terminal, and code syntax.</span>
-                  </Link>
-                  <Link href="/use-cases/content-creators" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">For Content Creators</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Drafting script, social copy, and outline.</span>
-                  </Link>
-                  <Link href="/use-cases/founders" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">For Founders & Execs</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Drafting email, slack, and update offline.</span>
-                  </Link>
-                  <Link href="/use-cases/students" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">For Students</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Local notes, exam study, and outline.</span>
-                  </Link>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-80 z-50">
+                  <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-[#e8e5df] dark:border-zinc-800 rounded-2xl p-3 shadow-2xl flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <Link href="/use-cases" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Overview</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Tailored voice workflows for every role.</span>
+                    </Link>
+                    <Link href="/use-cases/developers" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">For Developers</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">PRs, commits, terminal, and code syntax.</span>
+                    </Link>
+                    <Link href="/use-cases/content-creators" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">For Content Creators</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Drafting script, social copy, and outline.</span>
+                    </Link>
+                    <Link href="/use-cases/founders" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">For Founders & Execs</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Drafting email, slack, and update offline.</span>
+                    </Link>
+                    <Link href="/use-cases/students" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">For Students</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Local notes, exam study, and outline.</span>
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
@@ -118,27 +122,33 @@ export function Navbar() {
               </Link>
               
               {activeMenu === "resources" && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-white/95 backdrop-blur-md border border-[#e8e5df] rounded-2xl p-3 shadow-2xl flex flex-col gap-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <Link href="/docs" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Documentation</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Quickstart setup, shortcuts, and dictionary.</span>
-                  </Link>
-                  <Link href="/help" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Help Center</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Frequently asked questions and guides.</span>
-                  </Link>
-                  <Link href="/blog" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Blog</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Latest updates, tutorials, and features.</span>
-                  </Link>
-                  <Link href="/affiliate" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Affiliate Program</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Earn recurring partner commissions.</span>
-                  </Link>
-                  <Link href="/media-kit" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] transition-colors">
-                    <span className="text-sm font-bold text-[#1c1b19] group-hover/item:text-[#e01e41] transition-colors">Media Kit</span>
-                    <span className="text-xs text-[#706b61] mt-0.5">Official logos and transparent assets.</span>
-                  </Link>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-80 z-50">
+                  <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-[#e8e5df] dark:border-zinc-800 rounded-2xl p-3 shadow-2xl flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <Link href="/docs" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Documentation</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Quickstart setup, shortcuts, and dictionary.</span>
+                    </Link>
+                    <Link href="/help" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Help Center</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Frequently asked questions and guides.</span>
+                    </Link>
+                    <Link href="/blog" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Blog</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Latest updates, tutorials, and features.</span>
+                    </Link>
+                    <Link href="/parayu-vs-wispr-flow" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">vs Wispr Flow</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Detailed offline local vs cloud comparison.</span>
+                    </Link>
+                    <Link href="/affiliate" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Affiliate Program</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Earn recurring partner commissions.</span>
+                    </Link>
+                    <Link href="/media-kit" className="group/item flex flex-col p-2.5 rounded-xl hover:bg-[#f6f4f0] dark:hover:bg-zinc-800 transition-colors">
+                      <span className="text-sm font-bold text-[#1c1b19] dark:text-zinc-100 group-hover/item:text-[#e01e41] transition-colors">Media Kit</span>
+                      <span className="text-xs text-[#706b61] dark:text-zinc-400 mt-0.5">Official logos and transparent assets.</span>
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>

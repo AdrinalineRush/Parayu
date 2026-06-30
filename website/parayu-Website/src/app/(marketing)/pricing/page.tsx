@@ -125,7 +125,7 @@ export default function PricingPage() {
       </Link>
       <ul className="space-y-4 text-sm mt-auto border-t border-border pt-6">
         {[
-          { bold: "1,000 words", normal: "English dictation / mo" },
+          { bold: "2,500 words", normal: "English dictation / mo" },
           { bold: "LOW English Brain (0.07B parameters)", normal: "runs locally" },
           { bold: "System-wide paste", normal: "⌥ Space hotkey" },
         ].map((item, i) => (
@@ -194,7 +194,7 @@ export default function PricingPage() {
       <h3 className="text-xl font-heading font-extrabold text-foreground mb-1">Pro Plan</h3>
       <p className="text-muted-foreground text-xs mb-6 min-h-[36px] font-semibold leading-relaxed">Uncapped dictation, Fluid Malayalam Vocal Support, and advanced AI cleanup tools.</p>
       <div className="mb-6 flex items-baseline gap-1">
-        <span className="text-5xl font-black text-foreground">{useInr ? (isAnnual ? "₹249" : "₹299") : (isAnnual ? "$2.49" : "$3")}</span>
+        <span className="text-5xl font-black text-foreground">{useInr ? (isAnnual ? "₹329" : "₹399") : (isAnnual ? "$3.99" : "$5")}</span>
         <span className="text-muted-foreground font-bold text-sm ml-1">/month</span>
       </div>
       <UpgradeButton plan="pro" cycle={isAnnual ? "annual" : "monthly"} className="w-full mb-8 h-12 rounded-xl bg-gradient-to-r from-[#e01e41] to-[#d81d54] hover:opacity-95 text-white font-bold shadow-md shadow-[0_4px_14px_rgba(224,30,65,0.2)] transition-all cursor-pointer">
@@ -203,7 +203,7 @@ export default function PricingPage() {
       <ul className="space-y-4 text-sm mt-auto border-t border-[#e01e41]/25 pt-6">
         {[
           { bold: "Unlimited dictation", normal: "in English, Malayalam, & 90+ languages" },
-          { bold: "All speech brains (up to 1.55B parameters)", normal: "includes Base, Small, Medium, and Large v3 (Q4 & Unquantized)" },
+          { bold: "All speech brains (up to 1.55B parameters)", normal: "includes Base, Small, Medium, and Large v3 (Q5 & Unquantized)" },
           { bold: "Fluid Malayalam Vocal Support", normal: "built-in conversational intelligence" },
           { bold: "Premium AI cleanup", normal: "corrects grammar & pauses" },
           { bold: "AI tone styling", normal: "professional, casual, etc." },
@@ -415,7 +415,7 @@ export default function PricingPage() {
                   <tbody className="divide-y divide-border text-muted-foreground">
                     <tr>
                       <td className="p-4 font-bold text-foreground">Monthly Words Quota</td>
-                      <td className="p-4 font-semibold">1,000 words</td>
+                      <td className="p-4 font-semibold">2,500 words</td>
                       <td className="p-4 font-semibold">5,000 words</td>
                       <td className="p-4 font-extrabold text-[#e01e41] dark:text-rose-400">Unlimited</td>
                       <td className="p-4 font-extrabold text-purple-600 dark:text-purple-400">Unlimited</td>
@@ -497,7 +497,7 @@ export default function PricingPage() {
             <div>
               <h3 className="font-heading font-bold text-base text-foreground mb-2">Can I try before I buy?</h3>
               <p className="text-sm text-muted-foreground font-semibold leading-relaxed">
-                Absolutely. The Free plan gives you 1,000 words of English dictation.
+                Absolutely. The Free plan gives you 2,500 words of English dictation.
                 Upgrade to Base or Pro when you need higher word limits, Malayalam access, or AI tone styling.
               </p>
             </div>

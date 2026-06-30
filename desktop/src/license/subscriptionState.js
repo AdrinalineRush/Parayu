@@ -52,18 +52,17 @@ const PLAN_FEATURES = {
 };
 
 const MODEL_FEATURES = {
-  base: 'whisper_base_model',
   'small-q5_1': 'whisper_small_model',
-  'medium-q4_0': 'whisper_medium_model',
-  'large-v3-q4_0': 'whisper_large_v3_model',
+  'medium-q5_0': 'whisper_medium_model',
+  'large-v3-q5_0': 'whisper_large_v3_model',
   'large-v3': 'whisper_large_v3_unquantized_model'
 };
 
 const PLAN_MODELS = {
-  [PLAN_FREE]: ['base'],
-  [PLAN_BASE]: ['base', 'small-q5_1'],
-  [PLAN_PRO]: ['base', 'small-q5_1', 'medium-q4_0', 'large-v3-q4_0', 'large-v3'],
-  [PLAN_ENTERPRISE]: ['base', 'small-q5_1', 'medium-q4_0', 'large-v3-q4_0', 'large-v3']
+  [PLAN_FREE]: ['small-q5_1'],
+  [PLAN_BASE]: ['small-q5_1'],
+  [PLAN_PRO]: ['small-q5_1', 'medium-q5_0', 'large-v3-q5_0', 'large-v3'],
+  [PLAN_ENTERPRISE]: ['small-q5_1', 'medium-q5_0', 'large-v3-q5_0', 'large-v3']
 };
 
 function normalizePlan(plan) {

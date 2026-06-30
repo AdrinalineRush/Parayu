@@ -12,25 +12,60 @@ const { store } = require('./store');
 // detected and re-fetched. `id` is what gets persisted in the store.
 const HF_BASE = 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/';
 const MODELS = [
-  { id: 'base', label: 'LOW', file: 'ggml-base.bin', bytes: 148 * 1024 * 1024,
-    desc: 'Fast with solid everyday accuracy. A good pick for casual dictation. Supports 99+ languages and translation.' },
-  { id: 'small-q5_1', label: 'MEDIUM', file: 'ggml-small-q5_1.bin', bytes: 190 * 1024 * 1024,
-    desc: 'The sweet spot for most people: near top-tier accuracy and still quick. Recommended for translation.' },
-  { id: 'medium-q4_0', label: 'HIGH', file: 'ggml-medium-q4_0.bin', bytes: 433 * 1024 * 1024,
-    desc: 'Very high accuracy. Best for accents, names, and complex speech. Optimized 4-bit model.' },
-  { id: 'large-v3-q4_0', label: 'MAX', file: 'ggml-large-v3-q4_0.bin', bytes: 709 * 1024 * 1024,
-    desc: 'Absolute state-of-the-art accuracy. Excellent for complex specialized dictation. Optimized 4-bit model.' },
-  { id: 'large-v3', label: 'PRO', file: 'ggml-large-v3.bin', bytes: 1566376483,
-    desc: 'Absolute peak capabilities. Full 16-bit precision with zero quality loss. Slower and a bigger download.' }
+  { id: 'small-q5_1', label: 'LOW', file: 'ggml-small-q5_1.bin', bytes: 190 * 1024 * 1024,
+    desc: 'Lightweight, highly optimized model that delivers solid accuracy with fast inference speed.',
+    bullets: [
+      'Fastest transcription speed on any device',
+      'Optimized for high-speed bilingual translation',
+      'Supports 99+ languages locally',
+      'Extremely low memory footprint (ideal for multitasking)'
+    ]
+  },
+  { id: 'medium-q5_0', label: 'MEDIUM', file: 'ggml-medium-q5_0.bin', bytes: 539 * 1024 * 1024,
+    desc: 'Balanced brain providing high accuracy, excellent Malayalam understanding, and fast GPU speed.',
+    bullets: [
+      'Enhanced Malayalam vocabulary and accents',
+      'Perfect balance of speed and recognition',
+      'Robust grammar and spacing recognition',
+      'Quantized to 5-bit precision for native GPU performance'
+    ]
+  },
+  { id: 'large-v3-q5_0', label: 'HIGH', file: 'ggml-large-v3-q5_0.bin', bytes: 844 * 1024 * 1024,
+    desc: 'State-of-the-art accuracy with deep multilingual heuristics. Ideal for complex vocabularies.',
+    bullets: [
+      'Excellent Malayalam to English translation quality',
+      'Highly sensitive to naming, punctuation, and terms',
+      'Perfect for transcription in noisy environments',
+      'Optimized 5-bit quantization for Apple Silicon GPUs'
+    ]
+  },
+  { id: 'large-v3', label: 'PRO', file: 'ggml-large-v3.bin', bytes: 3095033483,
+    desc: 'Our flagship unquantized model. Full 16-bit float precision with absolute peak recognition.',
+    bullets: [
+      'Zero quality loss - the absolute best possible transcription accuracy',
+      'Professional-grade Malayalam and English translations',
+      'Extremely high sensitivity to quiet or distant speech',
+      'Uses 2.9 GB VRAM, fully accelerated on Apple Silicon GPU'
+    ]
+  }
 ];
-const DEFAULT_MODEL_ID = 'base';
+const DEFAULT_MODEL_ID = 'small-q5_1';
 
 function modelById(id) {
   return MODELS.find((m) => m.id === id) || MODELS.find((m) => m.id === DEFAULT_MODEL_ID);
 }
 
 function selectedModelId() {
-  return modelById(store.get('selectedModel')).id;
+  const stored = store.get('selectedModel');
+  if (stored && MODELS.find((m) => m.id === stored)) return stored;
+  // First launch: pick the best model that is already downloaded/bundled,
+  // preferring higher-quality models. Falls back to DEFAULT_MODEL_ID.
+  const preferred = [...MODELS].reverse(); // highest quality first
+  for (const m of preferred) {
+    const p = modelPath(m);
+    if (fs.existsSync(p) && fs.statSync(p).size > m.bytes * 0.85) return m.id;
+  }
+  return DEFAULT_MODEL_ID;
 }
 
 let whisperPromise = null;
@@ -366,7 +401,7 @@ async function transcribe(wavArrayBuffer, overrides) {
   const params = { language: inputLanguage, n_threads, no_context: true, suppress_non_speech_tokens: true };
 
   const activeModelId = selectedModelId();
-  if (activeModelId === 'small-q5_1' || activeModelId === 'medium-q4_0' || activeModelId === 'large-v3-q4_0') {
+  if (activeModelId === 'small-q5_1' || activeModelId === 'medium-q5_0' || activeModelId === 'large-v3-q5_0') {
     params.speed_up = true;
   }
 
@@ -395,18 +430,18 @@ async function transcribe(wavArrayBuffer, overrides) {
     });
   }
 
-  // Gate Malayalam translation by Pro/Enterprise subscription plan. Whisper does
-  // the baseline Malayalam->English translation (covering everything); the
-  // developer-curated global dictionary then PATCHES specific phrases/slang/names
-  // Whisper gets wrong. The dictionary augments translation — it never replaces
-  // it — so untrained speech still comes out as English.
   if (inputLanguage === 'ml' && featureChecker('malayalam_to_english_premium') && store.get('translateMalayalam') !== false) {
     params.translate = true;
   }
 
-  // Allow callers (e.g. Dataset Studio) to force translation or override params
+  // Allow callers (e.g. Dataset Studio or Screenwriting tab) to force transcription or override params
   if (overrides && typeof overrides === 'object') {
     Object.assign(params, overrides);
+  }
+
+  // Force-prevent translation if explicitly set to false in overrides (like in screenwriting mode)
+  if (overrides && overrides.translate === false) {
+    params.translate = false;
   }
 
   let whisper = await getWhisper();
@@ -442,4 +477,4 @@ function isActiveModelReady() {
   return isDownloaded(modelById(selectedModelId()));
 }
 
-module.exports = { transcribe, warmUp, setProgressCallback, setFeatureChecker, listModels, downloadModel, setSelectedModel, isActiveModelReady };
+module.exports = { transcribe, warmUp, setProgressCallback, setFeatureChecker, listModels, downloadModel, setSelectedModel, isActiveModelReady, modelById, isDownloaded };

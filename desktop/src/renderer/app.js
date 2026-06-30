@@ -75,6 +75,9 @@ function saveCharacterBios() {
 
 async function refresh() {
   state = await window.parayu.getState();
+  if (lastPasteError === "This model requires an active paid plan." && isProOrEnterprise()) {
+    lastPasteError = null;
+  }
   if (!state.onboarded) { renderOnboarding(); return; }
   removeOnboarding();
   render();
@@ -380,7 +383,7 @@ function renderLimitBanner() {
   
   const stats = state.stats || {};
   const total = stats.totalWords || 0;
-  const limit = 1000;
+  const limit = 2500;
   
   if (total >= limit) {
     return `
@@ -390,7 +393,7 @@ function renderLimitBanner() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 18px; height: 18px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           </div>
           <div>
-            <div style="font-size: 13.5px; font-weight: 700; color: #1a202c; margin-bottom: 2px;">Word limit reached (1,000 words)</div>
+            <div style="font-size: 13.5px; font-weight: 700; color: #1a202c; margin-bottom: 2px;">Word limit reached (2,500 words)</div>
             <div style="font-size: 12px; color: #718096; line-height: 1.4;">You have dictated ${total.toLocaleString()} words this month. Upgrade to Pro for unlimited transcription.</div>
           </div>
         </div>
@@ -399,7 +402,7 @@ function renderLimitBanner() {
     `;
   }
   
-  if (total >= 800) {
+  if (total >= 2000) {
     const remaining = limit - total;
     return `
       <div class="limit-banner warning" style="background: rgba(224, 138, 61, 0.08); border: 1.5px solid rgba(224, 138, 61, 0.2); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; animation: fadeIn 0.3s ease-out; flex-shrink: 0;">
@@ -504,11 +507,11 @@ function render() {
     } else {
       proCard.innerHTML = `
         <div class="pro-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z" fill="currentColor"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         </div>
-        <div class="pro-title">Unlock Pro Features</div>
-        <div class="pro-desc">Remove limits, sync across devices and more.</div>
-        <button class="pro-btn" id="pro-manage-btn">Upgrade Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;display:inline;"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <div class="pro-title">Sign in to Parayu</div>
+        <div class="pro-desc">Access your account and saved settings.</div>
+        <button class="pro-btn" id="pro-manage-btn">Sign In</button>
         ${state.flavor === 'dev' ? '<button class="pro-btn dev-demo-card-btn" id="dev-demo-card-btn" type="button">Use Dev Demo</button>' : ''}
       `;
     }
@@ -727,12 +730,42 @@ function ensureLiveClock() {
   liveClockTimer = setInterval(updateLiveDateTime, 60000);
 }
 
-function renderInsights() {
-  ensureLiveClock();
+// Time-of-day greeting + first name (falls back gracefully when not signed in).
+function dashboardGreeting() {
+  const h = new Date().getHours();
+  const part = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const profile = state.userProfile || {};
+  const firstName = (profile.registered && profile.name)
+    ? profile.name.trim().split(/\s+/)[0]
+    : '';
+  return firstName ? `${part}, ${escapeHtml(firstName)}` : part;
+}
+
+function renderKpiPills() {
   const stats = state.stats || {};
   const total = stats.totalWords || 0;
   const wpm = avgWpm(state.history, stats);
   const fixes = (stats.wordsCorrected || 0) + (stats.dictionaryFixes || 0);
+  const ready = !!state.modelReady;
+  const pill = (cls, icon, value, label) => `
+    <div class="ins-kpi ${cls}">
+      <span class="ins-kpi-icon">${icon}</span>
+      <span class="ins-kpi-text">
+        <span class="ins-kpi-value">${value}</span>
+        <span class="ins-kpi-label">${label}</span>
+      </span>
+    </div>`;
+  return `
+    <div class="ins-kpi-row">
+      ${pill('red', insIcon('keyboard-mic'), total.toLocaleString(), 'Words')}
+      ${pill('purple', insIcon('speed'), wpm, 'WPM')}
+      ${pill('orange', insIcon('wand'), fixes, 'Fixes')}
+      ${pill(ready ? 'green' : 'warn', insIcon(ready ? 'check-circle' : 'spark'), ready ? 'Ready' : 'Setup', ready ? 'Model ready' : 'Model setup')}
+    </div>`;
+}
+
+function renderInsights() {
+  ensureLiveClock();
   const tabs = `
     <div class="ins-tabs">
       <button class="ins-tab ${insightsTab === 'usage' ? 'on' : ''}" data-ins-tab="usage">Your Usage</button>
@@ -741,18 +774,10 @@ function renderInsights() {
   return `
     <div class="insights-header-row">
       <div class="ins-hero-copy">
-        <div class="ins-eyebrow">Local analytics</div>
         <div class="ins-title">
-          Insights
-          <span class="ins-title-mark">${insIcon('spark')}</span>
+          ${dashboardGreeting()} <span class="ins-wave">👋</span>
         </div>
-        <div class="ins-subtitle">A live view of dictation speed, editing impact, desktop usage, and consistency.</div>
-        <div class="ins-summary-strip">
-          <span><strong>${total.toLocaleString()}</strong> words</span>
-          <span><strong>${wpm}</strong> wpm</span>
-          <span><strong>${fixes}</strong> fixes</span>
-          <span class="${state.modelReady ? 'ok' : 'warn'}">${state.modelReady ? 'Model ready' : 'Setup needed'}</span>
-        </div>
+        <div class="ins-subtitle">Here's your dictation overview</div>
       </div>
       <div class="ins-toolbar">
         <div class="ins-toolbar-controls">
@@ -762,8 +787,92 @@ function renderInsights() {
         ${tabs}
       </div>
     </div>
+    ${insightsTab === 'voice' ? '' : renderKpiPills()}
     ${insightsTab === 'voice' ? renderVoiceTab() : renderUsageTab()}
   `;
+}
+
+// ---- Real-data helpers for the dashboard ----
+
+// Words dictated since local midnight today, summed from history.
+function wordsToday(history) {
+  const start = new Date(); start.setHours(0, 0, 0, 0);
+  const ms = start.getTime();
+  let w = 0;
+  for (const h of history || []) {
+    if ((h.timestamp || 0) >= ms) w += (h.words || 0);
+  }
+  return w;
+}
+
+// Percent change in words: last 7 days vs the 7 days before that. Returns null
+// when there isn't enough history in the prior window to compare honestly.
+function weeklyWordTrend(history) {
+  const day = 86400000;
+  const now = Date.now();
+  let cur = 0, prev = 0;
+  for (const h of history || []) {
+    const age = now - (h.timestamp || 0);
+    if (age < 7 * day) cur += (h.words || 0);
+    else if (age < 14 * day) prev += (h.words || 0);
+  }
+  if (prev <= 0) return null;
+  return Math.round(((cur - prev) / prev) * 100);
+}
+
+// Derives a "voice quality" read from the raw signal stats captured per
+// dictation (rms ≈ loudness, peak ≈ clipping). Honest aggregate, not a guess:
+// returns null until we have at least a few measured dictations.
+function voiceQuality(history) {
+  const samples = (history || [])
+    .filter((h) => typeof h.rms === 'number' && typeof h.peak === 'number' && h.rms > 0)
+    .slice(0, 40);
+  if (samples.length < 3) return null;
+  let healthy = 0, noClip = 0;
+  for (const s of samples) {
+    if (s.rms >= 0.01 && s.rms <= 0.25) healthy++;   // audible, not blown out
+    if (s.peak < 0.98) noClip++;                       // headroom, not clipping
+  }
+  const healthyPct = healthy / samples.length;
+  const noClipPct = noClip / samples.length;
+  const score = (healthyPct + noClipPct) / 2;
+  const label = score >= 0.8 ? 'Excellent' : score >= 0.55 ? 'Good' : 'Adjust mic';
+  return {
+    label,
+    score,
+    n: samples.length,
+    healthyLevel: healthyPct >= 0.6,
+    noClipping: noClipPct >= 0.8,
+    fastResponse: samples.some((s) => s.rms >= 0.01)
+  };
+}
+
+// A short, human title for a dictation history item (first words of the text).
+function dictationTitle(h) {
+  const t = (h.text || '').trim().replace(/\s+/g, ' ');
+  if (!t) return 'Dictation';
+  const words = t.split(' ');
+  return words.length > 7 ? words.slice(0, 7).join(' ') + '…' : t;
+}
+
+// Non-deceptive primary CTA: dictation is driven by the global hotkey, so the
+// button explains exactly how to start rather than pretending to trigger it.
+function showDictationHint() {
+  const old = document.getElementById('beta-lang-modal');
+  if (old) old.remove();
+  const ov = document.createElement('div');
+  ov.id = 'beta-lang-modal';
+  ov.className = 'beta-modal-overlay';
+  ov.innerHTML = `
+    <div class="beta-modal">
+      <div class="beta-emoji">🎙️</div>
+      <h3>Start dictating anywhere</h3>
+      <p>Place your cursor in any app, then press ${hotkeyChipsHtml(state.hotkey)} to start and stop. Parayu types clean English right where you're working.</p>
+      <button class="beta-ok" type="button">Got it</button>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('.beta-ok').onclick = () => ov.remove();
+  ov.onclick = (e) => { if (e.target === ov) ov.remove(); };
 }
 
 function renderUsageTab() {
@@ -773,6 +882,12 @@ function renderUsageTab() {
   const dictFixes = stats.dictionaryFixes || 0;
   const totalFixes = corrected + dictFixes;
   const total = stats.totalWords || 0;
+  const trend = weeklyWordTrend(state.history);
+  const trendHtml = trend === null ? '' : `
+    <div class="gauge-trend">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;${trend < 0 ? 'transform:scaleY(-1);' : ''}"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span>${trend >= 0 ? '+' : ''}${trend}% vs last week</span>
+    </div>`;
 
   return `
     <div class="ins-grid">
@@ -783,14 +898,11 @@ function renderUsageTab() {
         </div>
         <div class="gauge-wrap">
           ${gaugeSvg(wpm)}
-          <div class="gauge-trend">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            <span>+18% vs last week</span>
-          </div>
+          ${trendHtml}
         </div>
         <div class="metric-foot">
           <span>Target 120 wpm</span>
-          <strong>${Math.max(0, 120 - wpm)} to goal</strong>
+          <strong class="${wpm >= 120 ? 'on-track' : ''}">${wpm >= 120 ? 'On track' : `${Math.max(0, 120 - wpm)} to goal`}</strong>
         </div>
       </div>
 
@@ -869,7 +981,7 @@ function renderUsageTab() {
 function renderVoiceTab() {
   const stats = state.stats || {};
   const total = stats.totalWords || 0;
-  const goal = 1000;
+  const goal = 2500;
   const pct = Math.min(100, Math.round((total / goal) * 100));
   const remaining = Math.max(0, goal - total);
   return `
@@ -1091,7 +1203,10 @@ function insIcon(name) {
     wand: '<path d="m19 2 3 3L6 21H3v-3L17.5 3.5zm-5 3.5 2.5 2.5"/>',
     'check-circle': '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
     'book-open': '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
-    'keyboard-mic': '<path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/>'
+    'keyboard-mic': '<path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/>',
+    history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 4v4h4"/><path d="M12 8v4l3 2"/>',
+    snippet: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+    shield: '<path d="M12 2l8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/>'
   };
   return s(icons[name] || '');
 }
@@ -1170,7 +1285,7 @@ function screenwritingStatusBanner() {
     <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;">
       <span style="font-size:12px;color:${c.fg};">IndicTrans2's models are gated on Hugging Face — create a free account, accept the license on each model page, then paste an access token here:</span>
       <input id="screenwriting-hf-token" type="password" placeholder="hf_…" style="flex:1;min-width:200px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;" />
-      <button id="screenwriting-save-token-btn" style="background:var(--accent);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Save & set up</button>
+      <button id="screenwriting-token-action-btn" type="button" style="padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.15s;"></button>
     </div>` : '';
 
   const showCancelBtn = s.state === 'installing';
@@ -1186,6 +1301,17 @@ function screenwritingStatusBanner() {
     </div>`;
 }
 
+function getOrderedScreenwritingLangs() {
+  const activeSource = state.inputLanguage || 'en';
+  const langs = SCREEN_LANGS.filter((l) => screenwritingTargets.has(l.code));
+  langs.sort((a, b) => {
+    if (a.code === activeSource) return -1;
+    if (b.code === activeSource) return 1;
+    return 0;
+  });
+  return langs;
+}
+
 function renderTranslationTab() {
   const langToggles = SCREEN_LANGS.map((l) => `
     <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--text);cursor:pointer;">
@@ -1193,7 +1319,7 @@ function renderTranslationTab() {
       ${escapeHtml(l.name)}
     </label>`).join('');
 
-  const panels = SCREEN_LANGS.filter((l) => screenwritingTargets.has(l.code)).map((l) => {
+  const panels = getOrderedScreenwritingLangs().map((l) => {
     const text = screenwritingLines.map((line) => {
       let t, muted = false;
       if (line.sourceLang === l.code) {
@@ -1972,7 +2098,7 @@ function buildFountainText() {
 }
 
 function buildScreenwritingTranscript() {
-  return SCREEN_LANGS.filter((l) => screenwritingTargets.has(l.code)).map((l) => {
+  return getOrderedScreenwritingLangs().map((l) => {
     const lines = screenwritingLines.map((line) => {
       if (line.sourceLang === l.code) return line.source;
       const t = line.translations[l.code];
@@ -2061,15 +2187,37 @@ function wireScreenwriting() {
       render();
     };
 
-    const saveTokenBtn = document.getElementById('screenwriting-save-token-btn');
-    if (saveTokenBtn) saveTokenBtn.onclick = async () => {
-      const input = document.getElementById('screenwriting-hf-token');
-      const token = input ? input.value.trim() : '';
-      if (!token) return;
-      await window.parayu.setHfToken(token);
-      screenwritingHasToken = true;
-      runScreenwritingSetup();
-    };
+    const tokenInput = document.getElementById('screenwriting-hf-token');
+    const actionBtn = document.getElementById('screenwriting-token-action-btn');
+    if (tokenInput && actionBtn) {
+      const updateButton = () => {
+        const hasText = tokenInput.value.trim().length > 0;
+        if (hasText) {
+          actionBtn.textContent = 'Save & set up';
+          actionBtn.style.background = 'var(--accent)';
+          actionBtn.style.color = '#fff';
+          actionBtn.style.border = 'none';
+        } else {
+          actionBtn.textContent = 'Get token';
+          actionBtn.style.background = '#f4f6f8';
+          actionBtn.style.color = 'var(--text)';
+          actionBtn.style.border = '1px solid var(--border)';
+        }
+      };
+      updateButton();
+      tokenInput.oninput = updateButton;
+
+      actionBtn.onclick = async () => {
+        const token = tokenInput.value.trim();
+        if (token) {
+          await window.parayu.setHfToken(token);
+          screenwritingHasToken = true;
+          runScreenwritingSetup();
+        } else {
+          window.parayu.openExternal('https://huggingface.co/settings/tokens');
+        }
+      };
+    }
 
     const clearBtn = document.getElementById('screenwriting-clear-btn');
     if (clearBtn) clearBtn.onclick = () => { screenwritingLines = []; render(); };
@@ -2103,8 +2251,7 @@ function wireScreenwriting() {
 
 async function handleScreenwritingSegment(text) {
   if (activeProWritingTab === 'translation') {
-    const hasMalayalamCharacters = /[\u0D00-\u0D7F]/.test(text);
-    const sourceLang = hasMalayalamCharacters ? 'ml' : 'en';
+    const sourceLang = state.inputLanguage || 'en';
     const line = { source: text, sourceLang, translations: {}, translationPending: false, translationError: null };
     screenwritingLines.push(line);
     screenwritingBusy = true;
@@ -2493,65 +2640,25 @@ function renderSettings() {
             <div class="set-info" style="display: flex; flex-direction: column; gap: 2px;">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="color: var(--accent); display: flex; align-items: center; width: 15px; height: 15px;">${setIcon('ai')}</span>
-                <div class="set-name" style="font-size: 13.5px; font-weight: 700;">AI cleanup</div>
+                <div class="set-name" style="font-size: 13.5px; font-weight: 700;">Active Offline AI</div>
               </div>
-              <p class="set-desc" style="font-size: 11px; margin: 2px 0 0; color: var(--muted);">Fixes stutters & filler words.</p>
+              <p class="set-desc" style="font-size: 11px; margin: 2px 0 0; color: var(--muted);">Correct stutters, repetitions, and grammar offline.</p>
             </div>
             <div class="set-ctl" style="display:flex; align-items:center;">
-              <label class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="ai-cleanup-toggle" ${state.aiCleanup ? 'checked' : ''} /><span class="slider" style="border-radius: 20px;"></span></label>
+              <label class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="ai-formatter-toggle" ${state.aiFormatterEnabled && canFormatter ? 'checked' : ''} ${canFormatter ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></label>
             </div>
           </div>
 
           <div class="set-divider" style="margin: 6px 0; background: var(--border); height: 1px;"></div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; align-items: center;">
-            <div class="seg" style="grid-column: span 2; padding: 3px; display: grid; grid-template-columns: repeat(3, 1fr);">
+          <div style="display: grid; grid-template-columns: 1fr; gap: 8px; align-items: center;">
+            <div class="seg" style="padding: 3px; display: grid; grid-template-columns: repeat(2, 1fr);">
               ${[
-                ['fast', 'Fast'],
-                ['smart', 'Smart'],
-                ['premium', 'Premium']
+                ['fast', 'Fast Mode'],
+                ['smart', 'Smart Mode']
               ].map(([mode, label]) => `<button class="seg-btn ${state.cleanupMode === mode ? 'seg-active' : ''}" data-cleanup-mode="${mode}" style="padding: 5px 10px; font-size: 11.5px;">${label}</button>`).join('')}
             </div>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-              Private Offline AI
-              <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="ai-formatter-toggle" ${state.aiFormatterEnabled && canFormatter ? 'checked' : ''} ${canFormatter ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></span>
-            </label>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-              Always format
-              <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="always-format-toggle" ${state.alwaysFormat ? 'checked' : ''} ${canFormatter ? '' : 'disabled'} /><span class="slider" style="border-radius: 20px;"></span></span>
-            </label>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-              Skip short
-              <span class="switch" style="width: 36px; height: 20px;"><input type="checkbox" id="skip-short-toggle" ${state.skipLlmForShortDictations !== false ? 'checked' : ''} /><span class="slider" style="border-radius: 20px;"></span></span>
-            </label>
-            <select id="formatter-model" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
-              <option value="fast_3b" ${state.formatterModel !== 'quality_7b' ? 'selected' : ''}>Offline AI Model: Fast</option>
-              <option value="quality_7b" ${state.formatterModel === 'quality_7b' ? 'selected' : ''}>Offline AI Model: Quality</option>
-            </select>
-            <select id="formatter-tone" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
-              ${[
-                ['natural', 'Natural'],
-                ['professional', 'Professional'],
-                ['casual', 'Casual'],
-                ['developer_prompt', canDeveloperPrompt ? 'Developer prompt' : 'Developer prompt Pro'],
-                ['short_reply', 'Short reply']
-              ].map(([value, label]) => `<option value="${value}" ${state.formatterTone === value ? 'selected' : ''} ${value === 'developer_prompt' && !canDeveloperPrompt ? 'disabled' : ''}>${label}</option>`).join('')}
-            </select>
-            <select id="formatter-output-mode" style="grid-column: span 2; width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px; background: white;">
-              <option value="transcribe" ${state.formatterOutputMode !== 'translate_to_english' ? 'selected' : ''}>Default output: Transcription</option>
-              <option value="translate_to_english" ${state.formatterOutputMode === 'translate_to_english' ? 'selected' : ''} ${canMalayalamPremium ? '' : 'disabled'}>Default output: Malayalam to English${canMalayalamPremium ? '' : ' Paid'}</option>
-            </select>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-              Timeout
-              <input id="formatter-timeout" type="number" min="500" max="15000" step="250" value="${state.formatterTimeoutMs || 2500}" style="width: 88px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px;" />
-              <span style="color: var(--muted); font-size: 10px;">ms</span>
-            </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;">
-              Min words
-              <input id="formatter-min-words" type="number" min="1" max="100" step="1" value="${state.formatterMinWords || 12}" style="width: 64px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11.5px;" />
-            </label>
             ${renderOfflineAISettingsUI()}
-            <p style="grid-column: span 2; font-size: 10px; margin: 0; color: var(--muted); line-height: 1.25;">Fast uses Basic Offline Mode. Smart Offline Mode formats only when useful. Premium Offline Mode can use the quality Offline AI Model.</p>
           </div>
         </div>
 
@@ -2696,7 +2803,12 @@ function renderBrainPanel(models) {
               <span class="brain-box-size" style="font-size: 11px; color: var(--muted); font-weight: 600;">${formatBytes(preview.bytes)}</span>
               ${badgeHtml}
             </div>
-            <p class="brain-box-desc" style="font-size: 11.5px; line-height: 1.45; color: var(--muted); margin: 0; font-weight: 500;">${escapeHtml(preview.desc)}</p>
+            <p class="brain-box-desc" style="font-size: 11.5px; line-height: 1.45; color: var(--text); margin: 0 0 6px; font-weight: 700;">${escapeHtml(preview.desc)}</p>
+            ${Array.isArray(preview.bullets) ? `
+              <ul class="brain-box-bullets" style="font-size: 10.5px; line-height: 1.4; color: var(--muted); margin: 6px 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 4px;">
+                ${preview.bullets.map(b => `<li style="margin-bottom: 2px;">${escapeHtml(b)}</li>`).join('')}
+              </ul>
+            ` : ''}
           </div>
           <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto; border-top: 1px solid var(--border); padding-top: 8px;">
             <span style="font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.02em;">${statusText}</span>
@@ -2742,6 +2854,7 @@ function bindBrainControls() {
         openProfileModal();
         return;
       }
+      lastPasteError = null;
       modelsCache = await window.parayu.selectModel(btn.dataset.useModel);
       renderBrainSwitch();
     };
@@ -2754,6 +2867,7 @@ function bindBrainControls() {
         openProfileModal();
         return;
       }
+      lastPasteError = null;
       startModelDownload(btn.dataset.downloadModel);
     };
   });
@@ -2986,13 +3100,24 @@ function wireView() {
     btn.onclick = () => { insightsTab = btn.dataset.insTab; render(); };
   });
 
-  document.querySelectorAll('.history-card').forEach((el) => {
+  document.querySelectorAll('.history-card, .recent-item').forEach((el) => {
     el.ondblclick = async () => {
       try {
         await navigator.clipboard.writeText(el.dataset.copy);
         el.classList.add('show-copied');
         setTimeout(() => el.classList.remove('show-copied'), 1200);
       } catch (_e) { /* clipboard unavailable */ }
+    };
+  });
+
+  // Dashboard hero + quick actions (home view only).
+  const heroStart = document.getElementById('hero-start-btn');
+  if (heroStart) heroStart.onclick = () => showDictationHint();
+  document.querySelectorAll('.quick-action[data-quick]').forEach((el) => {
+    el.onclick = () => {
+      const target = el.dataset.quick;
+      if (target === 'hint') showDictationHint();
+      else setView(target);
     };
   });
 
@@ -3044,14 +3169,12 @@ function wireView() {
     await refresh();
   };
 
-  const aiToggle = document.getElementById('ai-cleanup-toggle');
-  if (aiToggle) aiToggle.onchange = async () => {
-    state.aiCleanup = await window.parayu.setAiCleanup(aiToggle.checked);
-  };
-
   const aiFormatterToggle = document.getElementById('ai-formatter-toggle');
   if (aiFormatterToggle) aiFormatterToggle.onchange = async () => {
-    state.aiFormatterEnabled = await window.parayu.setAiFormatterEnabled(aiFormatterToggle.checked);
+    const val = aiFormatterToggle.checked;
+    state.aiFormatterEnabled = await window.parayu.setAiFormatterEnabled(val);
+    state.aiCleanup = await window.parayu.setAiCleanup(val);
+    await refresh();
   };
 
   document.querySelectorAll('[data-cleanup-mode]').forEach((btn) => {
@@ -3467,10 +3590,10 @@ window.parayu.onToggleRecording(async (shouldRecord) => {
   const stats = state.stats || {};
   const total = stats.totalWords || 0;
   
-  if (shouldRecord && subscription().plan === 'free' && total >= 1000) {
+  if (shouldRecord && subscription().plan === 'free' && total >= 2500) {
     recording = false;
     window.parayu.notifyRecordingStopped();
-    lastPasteError = "Word limit reached (1,000 words). Upgrade your plan to continue using Parayu.";
+    lastPasteError = "Word limit reached (2,500 words). Upgrade your plan to continue using Parayu.";
     render();
     openProfileModal();
     return;
@@ -3501,7 +3624,7 @@ window.parayu.onToggleRecording(async (shouldRecord) => {
     // start() may have failed, in which case there's nothing to transcribe.
     if (!wav) { await refresh(); return; }
     try {
-      const result = await window.parayu.transcribeAudio(wav);
+      const result = await window.parayu.transcribeAudio(wav, currentView === 'screenwriting');
       lastPasteError = result.pasteError || null;
       if (result.text && currentView === 'screenwriting' && isProOrEnterprise()) handleScreenwritingSegment(result.text);
     } catch (_e) {
@@ -3553,7 +3676,7 @@ function pricingPlansForBilling() {
         desc: 'Essential local dictation features to test performance.',
         price: '₹0', suffix: '/month', cta: 'Get Started',
         features: [
-          '<strong>1,000 words</strong> English dictation / mo',
+          '<strong>2,500 words</strong> English dictation / mo',
           '<strong>Tiny English Brain (0.04B parameters)</strong> runs locally',
           '<strong>System-wide paste</strong> ⌥ Space hotkey'
         ]
@@ -3561,7 +3684,7 @@ function pricingPlansForBilling() {
       {
         id: 'pro', kind: 'pro', badge: '✣ Popular', recommended: true, name: 'Pro Plan',
         desc: 'Uncapped dictation, Fluid Malayalam Vocal Support, and advanced AI cleanup tools.',
-        price: '₹299', suffix: '/month', cta: 'Subscribe Now', features: proFeatures
+        price: '₹399', suffix: '/month', cta: 'Subscribe Now', features: proFeatures
       },
       {
         id: 'base', kind: 'base', name: 'Base Plan',
@@ -3579,7 +3702,7 @@ function pricingPlansForBilling() {
     {
       id: 'pro', kind: 'pro', badge: '✣ Popular', recommended: true, name: 'Pro Plan',
       desc: 'Uncapped dictation, Fluid Malayalam Vocal Support, and advanced AI cleanup tools.',
-      price: '₹249', suffix: '/month', cta: 'Subscribe Now', features: proFeatures
+      price: '₹329', suffix: '/month', cta: 'Subscribe Now', features: proFeatures
     },
     {
       id: 'pro_lifetime', kind: 'lifetime', badge: '♛ Best Value', lifetime: true, name: 'Pro Lifetime',

@@ -34,9 +34,48 @@ const TRANSLATION_REQUEST_TIMEOUT_MS = Number(process.env.PARAYU_TRANSLATION_TIM
 const TRANSLATION_WORKER_READY_TIMEOUT_MS = Number(process.env.PARAYU_TRANSLATION_READY_TIMEOUT_MS || 30000);
 
 function register({ ipcMain, app, BrowserWindow, saveSecureToken, getSecureToken }) {
-  const scriptsDir = path.join(__dirname, 'translate');
+  const scriptsDir = __dirname.includes('app.asar')
+    ? path.join(__dirname.replace('app.asar', 'app.asar.unpacked'), 'translate')
+    : path.join(__dirname, 'translate');
   const venvDir = path.join(app.getPath('userData'), 'translate-venv');
   const readyMarker = path.join(venvDir, '.ready');
+
+  // ---- Self-contained build: auto-provision bundled resources on first launch ----
+  // If the developer build shipped with a pre-built venv and HF model cache,
+  // install them automatically so the user never sees a setup screen.
+  const bundledVenvDir = path.join(process.resourcesPath, 'bundled-venv');
+  const bundledHfCacheDir = path.join(process.resourcesPath, 'hf_cache');
+
+  if (fs.existsSync(bundledVenvDir) && !fs.existsSync(venvDir)) {
+    try {
+      // Copy the bundled venv to the user data directory. The venv's internal
+      // paths may reference the original machine, but Python re-resolves them
+      // via the pyvenv.cfg home key at runtime.
+      require('child_process').execSync(
+        `cp -R "${bundledVenvDir}" "${venvDir}"`,
+        { stdio: 'ignore', timeout: 60000 }
+      );
+      // Fix the pyvenv.cfg home to point to the local Python if it exists
+      const cfgPath = path.join(venvDir, 'pyvenv.cfg');
+      if (fs.existsSync(cfgPath)) {
+        let cfg = fs.readFileSync(cfgPath, 'utf8');
+        // Update home to a local Python that exists on this machine
+        for (const candidate of BASE_PYTHON_CANDIDATES) {
+          const dir = candidate.startsWith('/') ? path.dirname(candidate) : null;
+          if (dir && fs.existsSync(candidate)) {
+            cfg = cfg.replace(/^home\s*=\s*.*$/m, `home = ${dir}`);
+            fs.writeFileSync(cfgPath, cfg, 'utf8');
+            break;
+          }
+        }
+      }
+      // Mark as ready so the app skips the setup screen entirely
+      fs.writeFileSync(readyMarker, `bundled: ${new Date().toISOString()}`);
+      console.log('[Translate] Auto-provisioned bundled Python venv.');
+    } catch (e) {
+      console.error('[Translate] Failed to provision bundled venv:', e);
+    }
+  }
 
   function venvPython() {
     const bin = process.platform === 'win32'
@@ -112,8 +151,17 @@ function register({ ipcMain, app, BrowserWindow, saveSecureToken, getSecureToken
   }
 
   function hfEnv() {
+    const env = { ...process.env };
     const token = getSecureToken ? getSecureToken(HF_TOKEN_KEY) : null;
-    return token ? { ...process.env, HF_TOKEN: token } : process.env;
+    if (token) env.HF_TOKEN = token;
+    // If the build shipped with a bundled HF model cache, point Hugging Face
+    // libraries at it so they load models from disk without any network calls.
+    if (fs.existsSync(bundledHfCacheDir)) {
+      env.HF_HOME = bundledHfCacheDir;
+      env.TRANSFORMERS_OFFLINE = '1';
+      env.HF_HUB_OFFLINE = '1';
+    }
+    return env;
   }
 
   let setupChild = null; // the in-flight setup subprocess, if any — lets Cancel actually kill work

@@ -37,11 +37,26 @@ targets:
       - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/ops.cpp
       - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/quants.c
       - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/repack.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-common.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-device.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-device.m
+        compilerFlags: -fno-objc-arc
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-context.m
+        compilerFlags: -fno-objc-arc
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-ops.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal.metal
+      - path: ../desktop/vendor/whisper.cpp/src/coreml/whisper-encoder.mm
+      - path: ../desktop/vendor/whisper.cpp/src/coreml/whisper-encoder-impl.m
+      - path: ../desktop/vendor/whisper.cpp/src/coreml/whisper-compat.m
+      - path: ../desktop/src/assets/models/ggml-small-encoder.mlmodelc
+        type: folder
+        buildPhase: resources
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.parayu.app
       INFOPLIST_FILE: Parayu.swiftpm/App/Info.plist
       CODE_SIGN_STYLE: Automatic
-      DEVELOPMENT_TEAM: ""
+      DEVELOPMENT_TEAM: Q4283HG7BT
       CODE_SIGN_ENTITLEMENTS: Parayu.entitlements
       SWIFT_OBJC_BRIDGING_HEADER: Parayu.swiftpm/App/Parayu-Bridging-Header.h
       CLANG_CXX_LANGUAGE_STANDARD: c++17
@@ -74,18 +89,29 @@ targets:
         - ../desktop/vendor/whisper.cpp/ggml/include
         - ../desktop/vendor/whisper.cpp/ggml/src
         - ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu
+        - ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal
+      MTL_HEADER_SEARCH_PATHS:
+        - $(inherited)
+        - ../desktop/vendor/whisper.cpp/ggml/src
+        - ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal
       GCC_PREPROCESSOR_DEFINITIONS:
         - $(inherited)
         - _DARWIN_C_SOURCE
         - GGML_USE_CPU
+        - GGML_USE_METAL
         - GGML_USE_ACCELERATE
         - ACCELERATE_NEW_LAPACK
         - ACCELERATE_LAPACK_ILP64
         - WHISPER_VERSION=\"1.9.1\"
         - GGML_VERSION=\"0.15.3\"
         - GGML_COMMIT=\"vendored\"
+        - WHISPER_USE_COREML
+        - WHISPER_COREML_ALLOW_FALLBACK
     dependencies:
       - sdk: Accelerate.framework
+      - sdk: Metal.framework
+      - sdk: MetalKit.framework
+      - sdk: CoreML.framework
       - target: ParayuKeyboard
 
   ParayuKeyboard:
@@ -121,11 +147,20 @@ targets:
       - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/ops.cpp
       - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/quants.c
       - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu/arch/arm/repack.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-common.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-device.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-device.m
+        compilerFlags: -fno-objc-arc
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-context.m
+        compilerFlags: -fno-objc-arc
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal-ops.cpp
+      - path: ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal/ggml-metal.metal
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.parayu.app.keyboard
       INFOPLIST_FILE: ParayuKeyboard/Info.plist
       CODE_SIGN_STYLE: Automatic
-      DEVELOPMENT_TEAM: ""
+      DEVELOPMENT_TEAM: Q4283HG7BT
       CODE_SIGN_ENTITLEMENTS: ParayuKeyboard/ParayuKeyboard.entitlements
       SWIFT_OBJC_BRIDGING_HEADER: ParayuKeyboard/ParayuKeyboard-Bridging-Header.h
       CLANG_CXX_LANGUAGE_STANDARD: c++17
@@ -161,10 +196,16 @@ targets:
         - ../desktop/vendor/whisper.cpp/ggml/include
         - ../desktop/vendor/whisper.cpp/ggml/src
         - ../desktop/vendor/whisper.cpp/ggml/src/ggml-cpu
+        - ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal
+      MTL_HEADER_SEARCH_PATHS:
+        - $(inherited)
+        - ../desktop/vendor/whisper.cpp/ggml/src
+        - ../desktop/vendor/whisper.cpp/ggml/src/ggml-metal
       GCC_PREPROCESSOR_DEFINITIONS:
         - $(inherited)
         - _DARWIN_C_SOURCE
         - GGML_USE_CPU
+        - GGML_USE_METAL
         - GGML_USE_ACCELERATE
         - ACCELERATE_NEW_LAPACK
         - ACCELERATE_LAPACK_ILP64
@@ -173,6 +214,8 @@ targets:
         - GGML_COMMIT=\"vendored\"
     dependencies:
       - sdk: Accelerate.framework
+      - sdk: Metal.framework
+      - sdk: MetalKit.framework
 
 schemes:
   Parayu:

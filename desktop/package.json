@@ -1,10 +1,12 @@
 {
   "name": "parayu",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Free, open, local voice dictation for macOS, Windows, iOS, and Android",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
+    "postinstall": "node scripts/copy-metal.js",
+    "predist": "node scripts/copy-metal.js",
     "start:dev": "PARAYU_FLAVOR=dev electron .",
     "dist": "electron-builder",
     "dist:dev": "PARAYU_FLAVOR=dev electron-builder --config electron-builder.dev.js",
@@ -29,6 +31,9 @@
       "package.json",
       "!src/admin/**/*",
       "!src/renderer/admin/**/*",
+      "!src/assets/hf_cache/**/*",
+      "!src/assets/bundled-venv/**/*",
+      "!src/assets/models/**/*",
       "!**/node_modules/*/{etc,test,tests,examples,sources,src,libuiohook,whisper.cpp}/**",
       "!**/node_modules/uiohook-napi/prebuilds/linux-**",
       "!**/node_modules/smart-whisper/build/Release/obj.target/**",
@@ -37,7 +42,8 @@
     ],
     "asarUnpack": [
       "**/node_modules/uiohook-napi/**",
-      "**/node_modules/smart-whisper/**"
+      "**/node_modules/smart-whisper/**",
+      "src/translate/**"
     ],
     "extraResources": [
       {

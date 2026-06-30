@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 contextBridge.exposeInMainWorld('parayu', {
   onToggleRecording: (cb) => ipcRenderer.on('toggle-recording', (_e, recording) => cb(recording)),
-  transcribeAudio: (wavArrayBuffer) => ipcRenderer.invoke('transcribe-audio', wavArrayBuffer),
+  transcribeAudio: (wavArrayBuffer, isScreenwriting) => ipcRenderer.invoke('transcribe-audio', wavArrayBuffer, isScreenwriting),
   getState: () => ipcRenderer.invoke('get-state'),
   addDictionaryEntry: (entry) => ipcRenderer.invoke('add-dictionary-entry', entry),
   removeDictionaryEntry: (index) => ipcRenderer.invoke('remove-dictionary-entry', index),
@@ -66,7 +66,8 @@ contextBridge.exposeInMainWorld('parayu', {
   getHfTokenStatus: () => ipcRenderer.invoke('get-hf-token-status'),
   offlineAIStatus: () => ipcRenderer.invoke('offline-ai-status'),
   downloadOfflineAIModel: (modelId) => ipcRenderer.invoke('download-offline-ai-model', modelId),
-  onOfflineAIStatus: (cb) => ipcRenderer.on('offline-ai-status', (_e, status) => cb(status))
+  onOfflineAIStatus: (cb) => ipcRenderer.on('offline-ai-status', (_e, status) => cb(status)),
+  openExternal: (url) => ipcRenderer.invoke('open-external', url)
 });
 
 // Admin bridge — the renderer admin UI (src/renderer/admin/admin.js) is only

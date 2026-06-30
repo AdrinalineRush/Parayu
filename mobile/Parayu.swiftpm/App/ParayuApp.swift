@@ -6,12 +6,22 @@ struct ParayuApp: App {
     @Environment(\.scenePhase) private var scenePhase
     
     public init() {
-        // Customize appearance
+        // Light/warm chrome to match the macOS desktop app
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.systemBackground
+        appearance.backgroundColor = ParayuTheme.uiSidebar
+        appearance.shadowColor = ParayuTheme.uiBorder
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
+
+        let nav = UINavigationBarAppearance()
+        nav.configureWithOpaqueBackground()
+        nav.backgroundColor = ParayuTheme.uiBg
+        nav.shadowColor = .clear
+        nav.titleTextAttributes = [.foregroundColor: ParayuTheme.uiText]
+        nav.largeTitleTextAttributes = [.foregroundColor: ParayuTheme.uiText]
+        UINavigationBar.appearance().standardAppearance = nav
+        UINavigationBar.appearance().scrollEdgeAppearance = nav
     }
     
     var body: some Scene {
@@ -20,11 +30,11 @@ struct ParayuApp: App {
                 if state.onboarded {
                     MainView()
                         .environmentObject(state)
-                        .preferredColorScheme(.dark) // Match the dark premium theme of Parayu
+                        .preferredColorScheme(.light) // Light/warm theme — matches the macOS app
                 } else {
                     OnboardingView()
                         .environmentObject(state)
-                        .preferredColorScheme(.dark)
+                        .preferredColorScheme(.light)
                 }
             }
             .onOpenURL { url in
