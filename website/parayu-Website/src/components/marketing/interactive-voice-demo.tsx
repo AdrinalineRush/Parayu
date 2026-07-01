@@ -88,7 +88,7 @@ const scrollSteps = [
     color: "#ff8a1f",
     tab: "Snippets",
     icon: FileText,
-    image: "snippets.png"
+    image: "snippets_anim" // Custom animated snippet shortcut addition + transcription expand loop WITH sidebar
   },
   {
     id: "settings",
@@ -285,7 +285,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [demoText, setDemoText] = useState("");
   const [correctionState, setCorrectionState] = useState("typing"); // "typing" | "waiting" | "correcting" | "clean"
 
-  // Custom animation states for Step 5: Dictionary entry creation + translation rewrite example
+  // Custom animation states for Step 5: Dictionary entry creation + translation rewrite loop
   const [misheardVal, setMisheardVal] = useState("");
   const [correctVal, setCorrectVal] = useState("");
   const [dictAdded, setDictAdded] = useState(false);
@@ -293,6 +293,15 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [dictCursor, setDictCursor] = useState({ x: 260, y: 140, opacity: 0, scale: 1 });
   const [dictDemoText, setDictDemoText] = useState("");
   const [dictDemoState, setDictDemoState] = useState("silent"); // "silent" | "untranslated" | "scanning" | "translated"
+
+  // Custom animation states for Step 6: Snippets entry shortcut addition + shorthand expand loop
+  const [snipTriggerVal, setSnipTriggerVal] = useState("");
+  const [snipExpandVal, setSnipExpandVal] = useState("");
+  const [snipAdded, setSnipAdded] = useState(false);
+  const [snipBtnPress, setSnipBtnPress] = useState(false);
+  const [snipCursor, setSnipCursor] = useState({ x: 260, y: 140, opacity: 0, scale: 1 });
+  const [snipDemoText, setSnipDemoText] = useState("");
+  const [snipDemoState, setSnipDemoState] = useState("silent"); // "silent" | "unexpanded" | "matching" | "expanded"
 
   // Mouse coordinate values for premium interactive 3D parallax tilt
   const x = useMotionValue(0);
@@ -526,16 +535,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       return;
     }
 
-    // Timed sequence loop:
-    // 0s - 0.5s: Silent rest state
-    // 0.5s: Cursor appears over Misheard input. Types "parayoo" (letter by letter simulation)
-    // 1.8s: Cursor moves to Correct word input. Types "Parayu"
-    // 3.0s: Cursor moves over black 'Add' button.
-    // 3.4s: Add button clicked (button scales, list row pops in)
-    // 4.2s: Dictation box pops up untranslated block: "Welcome to parayoo."
-    // 5.2s: Word replacement scan triggers. Highlight background.
-    // 5.7s: Text replaces instantly to: "Welcome to Parayu."
-    // 8.5s: Reset loop.
     const runDictLoop = () => {
       setMisheardVal("");
       setCorrectVal("");
@@ -612,6 +611,112 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
     const cleanup = runDictLoop();
     const interval = setInterval(runDictLoop, 9000);
+
+    return () => {
+      cleanup();
+      clearInterval(interval);
+    };
+  }, [activeStep]);
+
+  // Trigger Step 6: Text Expansion Snippets Entry + Expansion demo loop animation (calendly link example)
+  useEffect(() => {
+    if (activeStep !== 5) {
+      setSnipTriggerVal("");
+      setSnipExpandVal("");
+      setSnipAdded(false);
+      setSnipBtnPress(false);
+      setSnipCursor({ x: 260, y: 140, opacity: 0, scale: 1 });
+      setSnipDemoText("");
+      setSnipDemoState("silent");
+      return;
+    }
+
+    // Timed sequence loop:
+    // 0s - 0.5s: Silent rest state
+    // 0.5s: Cursor appears over Trigger Input. Types "my link"
+    // 1.8s: Cursor moves to Expands to Input. Types "calendly.com/dev-demo"
+    // 3.0s: Cursor moves over black 'Add' button.
+    // 3.4s: Add button clicked (button scales, list row pops in)
+    // 4.2s: Dictation box pops up unexpanded block: "Please book a slot through my link."
+    // 5.2s: Scan triggers, highlights trigger phrase.
+    // 5.7s: Text replaces/expands instantly to: "Please book a slot through calendly.com/dev-demo."
+    // 8.5s: Reset loop.
+    const runSnipLoop = () => {
+      setSnipTriggerVal("");
+      setSnipExpandVal("");
+      setSnipAdded(false);
+      setSnipBtnPress(false);
+      setSnipCursor({ x: 260, y: 140, opacity: 0, scale: 1 });
+      setSnipDemoText("");
+      setSnipDemoState("silent");
+
+      const cursorShowTimer = setTimeout(() => {
+        setSnipCursor(prev => ({ ...prev, opacity: 1, x: 200, y: 55 }));
+      }, 400);
+
+      // Typing trigger phrase "my link"
+      const typeTriggerTimer = setTimeout(() => {
+        setSnipTriggerVal("my link");
+      }, 1000);
+
+      const cursorMoveExpandTimer = setTimeout(() => {
+        setSnipCursor(prev => ({ ...prev, x: 280, y: 55 }));
+      }, 1600);
+
+      // Typing expansion text "calendly.com/dev-demo"
+      const typeExpandTimer = setTimeout(() => {
+        setSnipExpandVal("calendly.com/dev-demo");
+      }, 2100);
+
+      const cursorMoveAddTimer = setTimeout(() => {
+        setSnipCursor(prev => ({ ...prev, x: 372, y: 55 }));
+      }, 2700);
+
+      // Click Add
+      const clickAddTimer = setTimeout(() => {
+        setSnipCursor(prev => ({ ...prev, scale: 0.8 }));
+        setSnipBtnPress(true);
+        setSnipAdded(true);
+      }, 3300);
+
+      const releaseAddTimer = setTimeout(() => {
+        setSnipCursor(prev => ({ ...prev, scale: 1, opacity: 0 }));
+        setSnipBtnPress(false);
+      }, 3600);
+
+      // Dictation voice pop
+      const voicePopTimer = setTimeout(() => {
+        setSnipDemoState("unexpanded");
+        setSnipDemoText("Please book a slot through my link.");
+      }, 4300);
+
+      // Scanning mapping match
+      const scannerTimer = setTimeout(() => {
+        setSnipDemoState("matching");
+      }, 5400);
+
+      // Instant text expansion pop
+      const expandTimer = setTimeout(() => {
+        setSnipDemoState("expanded");
+        setSnipDemoText("Please book a slot through calendly.com/dev-demo.");
+      }, 6000);
+
+      return () => {
+        clearTimeout(cursorShowTimer);
+        clearTimeout(typeTriggerTimer);
+        clearTimeout(cursorMoveExpandTimer);
+        clearTimeout(typeExpandTimer);
+        clearTimeout(cursorMoveAddTimer);
+        clearTimeout(clickAddTimer);
+        clearTimeout(releaseAddTimer);
+        clearTimeout(voicePopTimer);
+        clearTimeout(scannerTimer);
+        clearTimeout(expandTimer);
+      };
+    };
+
+    const cleanup = runSnipLoop();
+    const interval = setInterval(runSnipLoop, 9000);
 
     return () => {
       cleanup();
@@ -700,7 +805,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                             {/* Date card widget mimicking screenshot */}
                             <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[9.5px] font-bold text-zinc-505 flex items-center gap-1.5 cursor-default">
-                              <Calendar className="w-3 h-3 text-zinc-400" />
+                              <Calendar className="w-3 h-3 text-zinc-405" />
                               <span className="font-extrabold text-zinc-705 dark:text-zinc-300">1 Jul 2026</span>
                             </div>
                           </div>
@@ -865,12 +970,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad6)" 
+                                    stroke="url(#insightsGrad7)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad6" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad7" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
@@ -1112,7 +1217,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05)"
                                   }
                             }
-                            className="bg-white dark:bg-zinc-900 border p-3 rounded-2xl space-y-3 relative overflow-hidden transition-all duration-300"
+                            className="bg-white dark:bg-zinc-900 border p-3 rounded-2xl space-y-3 relative overflow-hidden transition-all duration-350"
                           >
                             
                             {/* Radial Glow pulse sweeping when AI activates */}
@@ -1152,7 +1257,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <Sparkles className="w-3.5 h-3.5 text-[#e01e41]" />
                                   <span className="text-[10px] font-heading font-black text-zinc-900 dark:text-white">Active Offline AI</span>
                                 </div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold pl-5 leading-normal">
+                                <div className="text-[7.5px] text-zinc-455 font-bold pl-5 leading-normal">
                                   Correct stutters, repetitions, and grammar offline.
                                 </div>
                               </div>
@@ -1233,7 +1338,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             )}
 
                             {/* Dictation Box Header */}
-                            <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1.5 mb-1.5 shrink-0">
+                            <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-455 border-b border-zinc-100 dark:border-zinc-850 pb-1.5 mb-1.5 shrink-0">
                               <span className="flex items-center gap-1.5">
                                 <span className={cn("w-1.5 h-1.5 rounded-full block", aiActive ? "bg-[#e01e41] animate-pulse" : "bg-zinc-400")} />
                                 <span className={cn("transition-colors duration-300", aiActive ? "text-[#e01e41] font-black" : "")}>
@@ -1265,7 +1370,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </motion.div>
 
                             {/* Status label at bottom of text area */}
-                            <div className="mt-1.5 flex justify-between items-center text-[7px] font-extrabold shrink-0 border-t border-zinc-100 dark:border-zinc-850 pt-1.5 text-zinc-450">
+                            <div className="mt-1.5 flex justify-between items-center text-[7px] font-extrabold shrink-0 border-t border-zinc-100 dark:border-zinc-855 pt-1.5 text-zinc-450">
                               <span>Auto-Correction Demo</span>
                               <AnimatePresence mode="wait">
                                 {correctionState === "typing" && (
@@ -1293,7 +1398,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                   if (step.image === "dictionary_anim") {
                     return (
                       /* CUSTOM ANIMATED DICTIONARY VIEW (Step 5) - Full macOS App Interface simulation */
-                      /* Shows Misheard Input, Correct Word, black Add button, list insertion, and speech replacement pop */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
                         
                         {/* Sidebar with active tab active */}
@@ -1334,7 +1438,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                           {/* List of custom word mappings */}
                           <div className="flex-grow overflow-hidden relative">
-                            <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wider mb-1.5">
+                            <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wider mb-1.5">
                               Custom Mappings List
                             </div>
 
@@ -1420,6 +1524,164 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   y: dictCursor.y, 
                                   scale: dictCursor.scale,
                                   opacity: dictCursor.opacity
+                                }}
+                                transition={{ type: "tween", ease: "easeInOut", duration: 0.6 }}
+                                className="absolute w-4.5 h-4.5 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
+                              >
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#e01e41]" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                        </div>
+
+                      </div>
+                    );
+                  }
+
+                  if (step.image === "snippets_anim") {
+                    return (
+                      /* CUSTOM ANIMATED SNIPPETS VIEW (Step 6) - Replicates screenshot with new useful example */
+                      /* Setup: types trigger "my link" -> expands to "calendly.com/dev-demo". Payoff: expands pop dynamically */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
+                        
+                        {/* Sidebar with active tab active */}
+                        <MockSidebar activeView="snippets" />
+
+                        {/* Right Content area: Snippets control panel */}
+                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[9.5px] overflow-hidden min-w-0 bg-[#faf9f7] dark:bg-zinc-950 relative">
+                          
+                          {/* Title */}
+                          <div className="text-[12px] font-heading font-black text-zinc-900 dark:text-white mb-2 shrink-0">
+                            Snippets
+                          </div>
+
+                          {/* Add snippet form inputs */}
+                          <div className="flex items-center gap-1.5 shrink-0 mb-3">
+                            {/* Trigger phrase input (shows red focus ring on active text entry) */}
+                            <div 
+                              className={cn(
+                                "relative border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm transition-colors",
+                                snipTriggerVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-800"
+                              )}
+                            >
+                              <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", snipTriggerVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-400")}>
+                                {snipTriggerVal || "Trigger phrase"}
+                              </span>
+                            </div>
+
+                            {/* Expands to input */}
+                            <div 
+                              className={cn(
+                                "relative border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm transition-colors",
+                                snipExpandVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-800"
+                              )}
+                            >
+                              <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", snipExpandVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-405")}>
+                                {snipExpandVal || "Expands to"}
+                              </span>
+                            </div>
+
+                            {/* Add Button (scales down/clicks) */}
+                            <motion.button 
+                              animate={{ scale: snipBtnPress ? 0.95 : 1 }}
+                              className="bg-[#1c1b19] dark:bg-zinc-800 hover:bg-[#2b2a26] text-white font-extrabold text-[9px] px-3.5 py-1.5 rounded-lg shrink-0 shadow-sm transition-transform leading-none"
+                            >
+                              Add
+                            </motion.button>
+                          </div>
+
+                          {/* List of active text macro shortcuts */}
+                          <div className="flex-grow overflow-hidden relative">
+                            
+                            <AnimatePresence mode="wait">
+                              {!snipAdded ? (
+                                <motion.div 
+                                  key="no-snips"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  exit={{ opacity: 0 }}
+                                  className="text-[9px] text-zinc-405 font-bold pt-1 pl-0.5"
+                                >
+                                  No text expansion shortcuts yet.
+                                </motion.div>
+                              ) : (
+                                <motion.div 
+                                  key="snips-list"
+                                  initial={{ opacity: 0, y: 5 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 p-2.5 rounded-xl flex items-center justify-between shadow-md max-w-[340px]"
+                                >
+                                  <div className="flex flex-col gap-1 min-w-0 leading-tight">
+                                    <div className="flex items-center gap-1">
+                                      <span className="font-extrabold text-zinc-900 dark:text-white text-[9.5px]">my link</span>
+                                      <ArrowRight className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                                    </div>
+                                    <div className="text-[8px] font-bold text-zinc-450 truncate">
+                                      calendly.com/dev-demo
+                                    </div>
+                                  </div>
+                                  <span className="text-[7.5px] font-bold text-zinc-400 bg-zinc-100 hover:bg-zinc-150 px-2.5 py-1 rounded-md shrink-0 cursor-default">
+                                    remove
+                                  </span>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+
+                            {/* Dictation Example Demonstration overlay (showing speech expansion pop) */}
+                            <AnimatePresence>
+                              {snipAdded && (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: 15 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="absolute bottom-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl shadow-md space-y-1.5"
+                                >
+                                  {/* Title bar */}
+                                  <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1">
+                                    <span className="flex items-center gap-1 text-[#ff8a1f]">
+                                      <Mic className="w-2.5 h-2.5 text-zinc-450 animate-pulse" />
+                                      <span>Macro Shorthand Expansion Demo</span>
+                                    </span>
+                                    <span className="uppercase text-[6px]">Detector</span>
+                                  </div>
+
+                                  {/* Speech transcription container */}
+                                  <div className="text-[8.5px] font-semibold leading-normal min-h-[22px]">
+                                    {snipDemoState === "unexpanded" && (
+                                      <span>Please book a slot through <span className="bg-orange-500/10 text-[#ff8a1f] px-1 rounded font-bold">my link</span>.</span>
+                                    )}
+                                    {snipDemoState === "matching" && (
+                                      <span>Please book a slot through <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 0.4 }} className="bg-yellow-500/10 text-yellow-600 px-1 rounded font-bold">my link</motion.span>.</span>
+                                    )}
+                                    {snipDemoState === "expanded" && (
+                                      <span>Please book a slot through <motion.span initial={{ scale: 0.96 }} animate={{ scale: 1 }} className="bg-emerald-500/10 text-emerald-600 px-1 rounded font-bold">calendly.com/dev-demo</motion.span>.</span>
+                                    )}
+                                  </div>
+
+                                  {/* Status indicator bar */}
+                                  <div className="flex justify-between items-center text-[6.5px] font-black text-zinc-455 pt-1 border-t border-zinc-100 dark:border-zinc-850">
+                                    <span>Voice command</span>
+                                    <AnimatePresence mode="wait">
+                                      {snipDemoState === "unexpanded" && <span key="une" className="text-zinc-500">populating raw transcription...</span>}
+                                      {snipDemoState === "matching" && <span key="match" className="text-[#ff8a1f] font-extrabold animate-pulse">expanding shortcut trigger...</span>}
+                                      {snipDemoState === "expanded" && <span key="exp" className="text-emerald-650 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> expanded macro successfully!</span>}
+                                    </AnimatePresence>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+
+                          </div>
+
+                          {/* Cursor indicator simulating click-and-type interaction inside snippets form */}
+                          <AnimatePresence>
+                            {snipCursor.opacity > 0 && (
+                              <motion.div
+                                animate={{ 
+                                  x: snipCursor.x, 
+                                  y: snipCursor.y, 
+                                  scale: snipCursor.scale,
+                                  opacity: snipCursor.opacity
                                 }}
                                 transition={{ type: "tween", ease: "easeInOut", duration: 0.6 }}
                                 className="absolute w-4.5 h-4.5 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
