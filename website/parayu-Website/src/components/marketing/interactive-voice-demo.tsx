@@ -1,260 +1,504 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Keyboard, 
-  Cpu, 
-  Languages, 
+  Mic, 
+  Square, 
   Sparkles, 
-  Monitor, 
-  Chrome, 
+  Check, 
+  RefreshCw, 
   FileText, 
-  MessageSquare, 
-  Code, 
   Mail, 
-  Flame,
+  Code, 
+  MessageSquare,
+  Keyboard,
+  Cpu,
   Volume2,
-  Lock
+  Brain,
+  Settings,
+  Flame,
+  Lock,
+  Shield,
+  Clock,
+  BookOpen,
+  Plus,
+  Trash2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
-const walkthroughSteps = [
+// Static definitions of all app views in scrollytelling walkthrough
+const scrollSteps = [
   {
-    number: "01",
-    badge: "The Global Trigger",
-    title: "Press ⌥ Space Anywhere",
-    description: "Hold the customizable hotkey shortcut to start recording. A clean, subtle voice wave overlay appears right beside your active text cursor in Slack, Notion, terminal, or any app. Release to stop.",
-    icon: Keyboard,
+    id: "insights",
+    badge: "01. Insights Dashboard",
+    title: "Track Your Speech Metrics",
+    description: "Our core Insights panel summarizes your daily dictation volume, average typing speed (WPM), and fixes made by Parayu. Monitor integrations and view your daily activity streak heatmap completely offline.",
     color: "#e01e41",
-    visual: (
-      <div className="relative w-full h-[220px] bg-white dark:bg-zinc-900 rounded-2xl border border-[#e8e5df] dark:border-zinc-800 shadow-sm flex items-center justify-center overflow-hidden">
-        {/* Abstract mock application text */}
-        <div className="absolute inset-x-8 top-10 space-y-2 opacity-30 select-none">
-          <div className="h-3.5 bg-zinc-200 dark:bg-zinc-850 rounded w-2/3" />
-          <div className="h-3.5 bg-zinc-200 dark:bg-zinc-850 rounded w-full" />
-          <div className="h-3.5 bg-zinc-200 dark:bg-zinc-850 rounded w-3/4" />
-        </div>
-
-        {/* Simulated Cursor and Overlay */}
-        <div className="relative z-10 flex flex-col items-center gap-3">
-          <div className="flex items-center gap-1">
-            <span className="text-zinc-400 dark:text-zinc-500 font-mono text-sm">Active cursor location</span>
-            <motion.div 
-              animate={{ opacity: [1, 0, 1] }} 
-              transition={{ repeat: Infinity, duration: 0.8 }}
-              className="w-1.5 h-4 bg-primary"
-            />
-          </div>
-
-          {/* Floating overlay pill */}
-          <motion.div 
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex items-center gap-3 h-[48px] px-4.5 rounded-full bg-[#16161a] border border-white/10 shadow-lg"
-          >
-            <div className="flex items-center gap-0.5 h-4">
-              {[6, 12, 8, 16, 10, 14, 7, 11, 5].map((h, i) => (
-                <motion.div
-                  key={i}
-                  className="w-[2.5px] rounded-full bg-gradient-to-t from-[#ff9d4d] to-[#ff6a3d]"
-                  style={{ height: h }}
-                  animate={{ height: [h, Math.max(4, Math.random() * 18 + 4), h] }}
-                  transition={{ repeat: Infinity, duration: 1.0, delay: i * 0.08 }}
-                />
-              ))}
-            </div>
-            <span className="text-xs font-bold text-white tracking-wide whitespace-nowrap">Listening...</span>
-          </motion.div>
-        </div>
-      </div>
-    )
+    tab: "Home"
   },
   {
-    number: "02",
-    badge: "Local Translation",
-    title: "Malayalam → Fluent English",
-    description: "Speak in spoken Malayalam or colloquial English dialects. Parayu's local brains process your voice on-device, automatically translating native Malayalam phrases and formatting spoken slang to clean, standard English.",
-    icon: Languages,
+    id: "history",
+    badge: "02. Tell Me History",
+    title: "Double-Click to Copy Anything",
+    description: "Every voice transcription is stored in a clean, local history log. Need to use a past translation elsewhere? Simply double-click any past card to copy the text to your clipboard instantly.",
     color: "#a02bb0",
-    visual: (
-      <div className="relative w-full h-[220px] bg-white dark:bg-zinc-900 rounded-2xl border border-[#e8e5df] dark:border-zinc-800 shadow-sm flex flex-col justify-center p-6 gap-4 overflow-hidden">
-        {/* Malayalam Input Card */}
-        <div className="flex items-start gap-2.5 bg-rose-500/5 dark:bg-rose-950/10 border border-rose-500/10 rounded-xl p-3">
-          <div className="w-5 h-5 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">M</div>
-          <p className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-350 italic">
-            &quot;Innalathe meetingil njan paranja karyangal ormayundo? Project timeline lag aavan chance undu.&quot;
-          </p>
-        </div>
-
-        {/* Translation Arrow indicator */}
-        <div className="flex justify-center items-center gap-1.5 -my-2.5">
-          <div className="h-[1px] bg-zinc-200 dark:bg-zinc-850 flex-grow" />
-          <div className="w-5 h-5 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-            <Sparkles className="w-3 h-3 text-purple-500 fill-purple-500" />
-          </div>
-          <div className="h-[1px] bg-zinc-200 dark:bg-zinc-850 flex-grow" />
-        </div>
-
-        {/* English Output Card */}
-        <div className="flex items-start gap-2.5 bg-emerald-500/5 dark:bg-emerald-950/10 border border-emerald-500/10 rounded-xl p-3">
-          <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">E</div>
-          <p className="text-[11px] font-bold text-[#1c1b19] dark:text-zinc-200">
-            &quot;Hey, do you remember what I said in yesterday&apos;s sync? The project timeline might get delayed.&quot;
-          </p>
-        </div>
-      </div>
-    )
+    tab: "Parayu History"
   },
   {
-    number: "03",
-    badge: "Keystroke Emulation",
-    title: "Global Ingestion. Every App.",
-    description: "Release the hotkey shortcut. Parayu instantly emulates native macOS keyboard keystrokes to type your formatted transcription directly into whichever app holds current window focus. No integration plugins needed.",
-    icon: Monitor,
+    id: "dictionary",
+    badge: "03. Custom Voice Dictionary",
+    title: "Prevent Transcription Errors",
+    description: "Map specialized jargon, accents, or misheard words. Define 'misheard → correct' word pairs (e.g., spoken Malayalam dialect to fluent English replacements) so the C++ engine corrects them automatically.",
     color: "#1f6f63",
-    visual: (
-      <div className="relative w-full h-[220px] bg-white dark:bg-zinc-900 rounded-2xl border border-[#e8e5df] dark:border-zinc-800 shadow-sm flex items-center justify-center overflow-hidden p-6">
-        <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
-          {[
-            { name: "Slack", icon: <MessageSquare className="w-4 h-4" />, color: "border-purple-500/20 bg-purple-500/5 text-purple-600" },
-            { name: "VS Code", icon: <Code className="w-4 h-4" />, color: "border-blue-500/20 bg-blue-500/5 text-blue-600" },
-            { name: "Notion", icon: <FileText className="w-4 h-4" />, color: "border-zinc-400/20 bg-zinc-500/5 text-zinc-700 dark:text-zinc-350" },
-            { name: "Gmail", icon: <Mail className="w-4 h-4" />, color: "border-rose-500/20 bg-rose-500/5 text-rose-600" }
-          ].map((app, i) => (
-            <motion.div 
-              key={app.name}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.4 }}
-              className={cn("flex items-center gap-2.5 p-3 rounded-xl border font-bold text-xs shadow-sm bg-white dark:bg-zinc-950", app.color)}
-            >
-              {app.icon}
-              <div className="flex-grow">
-                <div>{app.name}</div>
-                <div className="text-[9px] text-zinc-400 font-semibold mt-0.5">Keystroke Active</div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    )
+    tab: "Dictionary"
   },
   {
-    number: "04",
-    badge: "Offline Metrics",
-    title: "Local Analytics & Dictionary",
-    description: "Review typing speed diagnostics (WPM), word counts, and daily streak heatmap counters locally. Customize your vocabulary dictionary for custom offline search-and-replace word replacements.",
-    icon: Flame,
+    id: "snippets",
+    badge: "04. Text Expansion Snippets",
+    title: "Shorthand Speech Commands",
+    description: "Create text macro templates. Dictate custom trigger phrases like 'my signature' or 'project update' to instantly expand into long multiline email templates or boilerplate code blocks.",
     color: "#ff8a1f",
-    visual: (
-      <div className="relative w-full h-[220px] bg-white dark:bg-zinc-900 rounded-2xl border border-[#e8e5df] dark:border-zinc-800 shadow-sm p-4 flex flex-col justify-between overflow-hidden">
-        
-        {/* Header inside mockup */}
-        <div className="flex justify-between items-center pb-2 border-b border-zinc-100 dark:border-zinc-800 shrink-0">
-          <span className="text-[10px] font-heading font-black text-[#1c1b19] dark:text-white flex items-center gap-0.5">
-            <Flame className="w-3.5 h-3.5 text-primary fill-primary" />
-            <span>2 day streak</span>
-          </span>
-          <span className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase">Target 120 wpm | 104 wpm avg</span>
-        </div>
-
-        {/* Heatmap mockup */}
-        <div className="flex justify-center my-1.5">
-          <div className="grid grid-cols-21 gap-[2px.5]">
-            {Array.from({ length: 105 }).map((_, idx) => {
-              let lvl = 0;
-              if (idx === 103) lvl = 4;
-              else if (idx === 102) lvl = 3;
-              else if (idx > 90) lvl = [0, 1, 2, 0, 4, 3, 2, 1, 0][idx % 9];
-              else if (idx > 60) lvl = [0, 1, 0, 2, 0, 1, 0, 0, 2][idx % 9];
-              return (
-                <div
-                  key={idx}
-                  className={cn(
-                    "w-[5.5px] h-[5.5px] rounded-[1px]",
-                    lvl === 0 && "bg-zinc-100 dark:bg-zinc-800",
-                    lvl === 1 && "bg-primary/20",
-                    lvl === 2 && "bg-primary/45",
-                    lvl === 3 && "bg-primary/75",
-                    lvl === 4 && "bg-primary"
-                  )}
-                />
-              );
-            })}
-          </div>
-        </div>
-
-        {/* KPIs Grid */}
-        <div className="grid grid-cols-3 gap-2 shrink-0">
-          <div className="bg-zinc-50 dark:bg-zinc-950 p-2 rounded-xl text-center border border-zinc-100 dark:border-zinc-850">
-            <div className="text-[7px] font-bold text-zinc-450 uppercase">Words</div>
-            <div className="text-[11px] font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">1,648</div>
-          </div>
-          <div className="bg-zinc-50 dark:bg-zinc-950 p-2 rounded-xl text-center border border-zinc-100 dark:border-zinc-850">
-            <div className="text-[7px] font-bold text-zinc-450 uppercase">Speed</div>
-            <div className="text-[11px] font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">104 wpm</div>
-          </div>
-          <div className="bg-zinc-50 dark:bg-zinc-950 p-2 rounded-xl text-center border border-zinc-100 dark:border-zinc-850">
-            <div className="text-[7px] font-bold text-zinc-450 uppercase">Fixes</div>
-            <div className="text-[11px] font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">33</div>
-          </div>
-        </div>
-
-      </div>
-    )
+    tab: "Snippets"
+  },
+  {
+    id: "screenwriting",
+    badge: "05. Pro Writing Scene Editor",
+    title: "Structured Screenplay Mode",
+    description: "A specialized screenwriting interface with automatic script formatting helpers. Write character profiles, scene headers, and dialogue lines using optimized local C++ engines.",
+    color: "#7c5cff",
+    tab: "Pro Writing"
+  },
+  {
+    id: "settings",
+    badge: "06. Core Brain Switch",
+    title: "Pick Your On-Device Brain",
+    description: "Toggle hotkeys and speech models. Choose the speech brain that fits your hardware: LOW (190MB/fast), MEDIUM (539MB/Malayalam Optimized), HIGH (844MB/Multilingual), or PRO (2.9GB/Full Float 16).",
+    color: "#0ea5e9",
+    tab: "Settings"
   }
 ];
 
 export function InteractiveVoiceDemo({ className }: { className?: string }) {
-  return (
-    <div className={cn("max-w-5xl mx-auto px-4 space-y-16 py-4 select-none", className)}>
+  const [activeStep, setActiveStep] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Monitor scroll positioning to update active step highlight
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+      const elements = containerRef.current.querySelectorAll(".scroll-step-target");
+      const viewportHeight = window.innerHeight;
       
-      {/* 4 Steps Showcase layout grid */}
-      <div className="space-y-16">
-        {walkthroughSteps.map((step, index) => {
-          const isEven = index % 2 === 1;
-          return (
-            <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="grid md:grid-cols-2 gap-12 items-center"
-            >
-              {/* Text Area (alternates) */}
-              <div className={cn("space-y-4", isEven ? "md:order-last" : "")}>
-                <div className="flex items-center gap-3">
-                  <span className="text-4xl font-heading font-black tracking-tight text-[#e01e41]/15 leading-none">
-                    {step.number}
-                  </span>
-                  <div 
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider" 
-                    style={{ background: `${step.color}10`, color: step.color }}
-                  >
-                    <step.icon className="w-3 h-3" />
-                    {step.badge}
+      let currentActive = 0;
+      let minDistance = Infinity;
+
+      elements.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        // Calculate absolute distance of the card center from the screen vertical center
+        const distance = Math.abs(rect.top + rect.height / 2 - viewportHeight / 2);
+        if (distance < minDistance) {
+          minDistance = distance;
+          currentActive = index;
+        }
+      });
+
+      setActiveStep(currentActive);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // initial trigger
+    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleCopyHistory = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard!");
+  };
+
+  return (
+    <div ref={containerRef} className={cn("max-w-6xl mx-auto px-4 relative", className)}>
+      
+      {/* 2-Column Sticky Scrollytelling Layout */}
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        
+        {/* Left Column: Sticky macOS Application Mockup Window */}
+        <div className="sticky top-28 h-[480px] flex items-center justify-center shrink-0 z-20">
+          
+          {/* Frameless macOS app mockup window */}
+          <div className="w-full max-w-[460px] h-[390px] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-2xl rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300">
+            
+            {/* Left Sidebar Navigation */}
+            <div className="w-[145px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-3 pt-9 flex flex-col justify-between shrink-0 relative">
+              {/* macOS Red, Yellow, Green Window Dots */}
+              <div className="absolute top-3.5 left-3.5 flex gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+              </div>
+
+              <div className="space-y-4">
+                {/* Brand Logo Header */}
+                <div className="flex items-center gap-1.5 pt-1.5">
+                  <div className="w-6.5 h-6.5 rounded-md overflow-hidden shrink-0 border border-zinc-200 shadow-sm bg-white">
+                    <img src="/logo.png" alt="Parayu Logo" className="w-full h-full object-contain" />
+                  </div>
+                  <span className="font-heading font-black text-sm tracking-tight text-[#1c1b19] dark:text-white">Parayu</span>
+                </div>
+
+                {/* Nav Items List with Active State highlight matching activeStep */}
+                <div className="space-y-0.5 relative text-[10px]">
+                  {[
+                    { label: "Home", idx: 0, icon: <Brain className="w-3.5 h-3.5" /> },
+                    { label: "Parayu History", idx: 1, icon: <Clock className="w-3.5 h-3.5" /> },
+                    { label: "Dictionary", idx: 2, icon: <BookOpen className="w-3.5 h-3.5" /> },
+                    { label: "Snippets", idx: 3, icon: <Keyboard className="w-3.5 h-3.5" /> },
+                    { label: "Pro Writing", idx: 4, icon: <Code className="w-3.5 h-3.5" />, badge: "PRO" },
+                    { label: "Settings", idx: 5, icon: <Settings className="w-3.5 h-3.5" /> }
+                  ].map((item) => {
+                    const isActive = activeStep === item.idx;
+                    return (
+                      <div 
+                        key={item.label}
+                        className={cn(
+                          "relative flex items-center gap-2 px-2.5 py-1.5 rounded-lg font-bold transition-all duration-200",
+                          isActive 
+                            ? "bg-[#fdeef1] text-[#e01e41] before:content-[''] before:absolute before:left-[4px] before:top-1/2 before:-translate-y-1/2 before:w-[2.5px] before:height-[12px] before:rounded-full before:bg-[#e01e41]"
+                            : "text-[#706b61] dark:text-zinc-400 hover:bg-zinc-150/30"
+                        )}
+                      >
+                        {item.icon}
+                        <span className="truncate">{item.label}</span>
+                        {item.badge && (
+                          <span className={cn(
+                            "ml-auto text-[7px] px-1 py-0.2 rounded-full font-black",
+                            isActive ? "bg-[#e01e41]/10 text-[#e01e41]" : "bg-zinc-200 dark:bg-zinc-800 text-zinc-500"
+                          )}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Sidebar enterprise details */}
+              <div className="flex flex-col gap-1 border-t border-[#e8e5df] dark:border-zinc-800 pt-2 shrink-0 text-[10px]">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-5.5 h-5.5 rounded-full bg-[#ff5b5b] text-white flex items-center justify-center font-black text-[9px] shadow-sm">DD</div>
+                  <div className="min-w-0 leading-tight">
+                    <div className="font-extrabold text-[#1c1b19] dark:text-zinc-300 truncate">Dev Demo</div>
+                    <div className="text-[8px] text-[#706b61] dark:text-zinc-500 font-bold">Enterprise</div>
                   </div>
                 </div>
-                
-                <h3 className="text-xl md:text-2xl font-heading font-black text-foreground">
+                <span className="text-[8px] text-[#706b61] dark:text-zinc-500 pl-0.5 mt-0.5 font-semibold">Parayu v0.1.0</span>
+              </div>
+            </div>
+
+            {/* Right Screen: Renders View corresponding to activeStep */}
+            <div className="flex-grow p-4.5 overflow-y-auto space-y-4 flex flex-col justify-start bg-[#fcfbfa] dark:bg-zinc-950">
+              
+              {/* ========================================== */}
+              {/* VIEW 01: INSIGHTS DASHBOARD                */}
+              {/* ========================================== */}
+              {activeStep === 0 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                  <div className="flex justify-between items-center shrink-0">
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Insights</h4>
+                      <span className="w-4 h-4 rounded-full bg-[#e01e41] flex items-center justify-center text-white shrink-0">
+                        <Sparkles className="w-2.5 h-2.5 fill-white stroke-none" />
+                      </span>
+                    </div>
+                    {/* Timezone */}
+                    <span className="text-[7.5px] text-[#706b61] dark:text-zinc-500 font-bold">1 Jul 2026 · 5:55 am</span>
+                  </div>
+
+                  {/* KPIs */}
+                  <div className="grid grid-cols-3 gap-1.5 shrink-0 text-center">
+                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-1.5 rounded-lg font-extrabold text-[#1c1b19] dark:text-white">
+                      <div>1,648</div>
+                      <div className="text-[7px] text-[#706b61] uppercase mt-0.5">words</div>
+                    </div>
+                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-1.5 rounded-lg font-extrabold text-[#1c1b19] dark:text-white">
+                      <div>104</div>
+                      <div className="text-[7px] text-[#706b61] uppercase mt-0.5">wpm</div>
+                    </div>
+                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-1.5 rounded-lg font-extrabold text-[#1c1b19] dark:text-white">
+                      <div>33</div>
+                      <div className="text-[7px] text-[#706b61] uppercase mt-0.5">fixes</div>
+                    </div>
+                  </div>
+
+                  {/* Semicircular typing gauge card */}
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[80px] shrink-0">
+                    <div className="flex justify-between items-center text-[7.5px] font-bold text-[#706b61] uppercase">
+                      <span>Typing Speed</span>
+                      <span className="text-rose-500">+18% vs last week</span>
+                    </div>
+                    
+                    <div className="relative w-full flex justify-center mt-0.5">
+                      <svg viewBox="0 0 170 96" className="w-[80px] h-[44px]">
+                        <path d="M 15 85 A 70 70 0 0 1 155 85" fill="none" stroke="#ebe7df" strokeWidth="12" strokeLinecap="round" />
+                        <path d="M 15 85 A 70 70 0 0 1 112 20" fill="none" stroke="url(#gGrad)" strokeWidth="12" strokeLinecap="round" />
+                        <defs>
+                          <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#e81f3a" />
+                            <stop offset="100%" stopColor="#a02bb0" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-end">
+                        <span className="text-[11px] font-black leading-none text-[#1c1b19] dark:text-white">104</span>
+                        <span className="text-[6.5px] font-bold text-[#706b61] uppercase">wpm</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Integration list */}
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl space-y-1.5 flex-grow">
+                    <div className="text-[7.5px] font-black text-[#706b61] uppercase mb-1">Desktop Integration</div>
+                    {[
+                      { label: "Antigravity", words: "592 words", color: "bg-[#e01e41]", pct: "w-[85%]" },
+                      { label: "Claude", words: "557 words", color: "bg-orange-500", pct: "w-[80%]" }
+                    ].map((item) => (
+                      <div key={item.label} className="space-y-0.5">
+                        <div className="flex justify-between text-[7.5px] font-bold text-zinc-650 dark:text-zinc-400">
+                          <span>{item.label}</span>
+                          <span>{item.words}</span>
+                        </div>
+                        <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1 rounded-full overflow-hidden">
+                          <div className={cn("h-full rounded-full", item.color, item.pct)} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ========================================== */}
+              {/* VIEW 02: PARAYU HISTORY (DOUBLE CLICK)     */}
+              {/* ========================================== */}
+              {activeStep === 1 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start">
+                  <div className="flex justify-between items-center shrink-0">
+                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Parayu History</h4>
+                    <span className="text-[7px] font-black px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600">Free Tier</span>
+                  </div>
+
+                  <div className="text-[8px] text-[#706b61] font-semibold italic border-l-2 border-[#e01e41] pl-2 shrink-0">
+                    Double-click any card below to instantly copy details to clipboard.
+                  </div>
+
+                  {/* List of dictation cards */}
+                  <div className="space-y-2 flex-grow overflow-y-auto pr-0.5">
+                    {[
+                      { time: "10:45 AM", text: "Hey, do you remember what I said in yesterday's sync? The project timeline will delay by 2 weeks." },
+                      { time: "Yesterday", text: "We need to update the pricing matrix to changes to the free word limits and push." }
+                    ].map((h, i) => (
+                      <div 
+                        key={i}
+                        onDoubleClick={() => handleCopyHistory(h.text)}
+                        className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl shadow-sm hover:border-[#e01e41]/35 cursor-pointer select-none group transition-all"
+                        title="Double-click to copy"
+                      >
+                        <div className="flex justify-between items-center text-[7.5px] font-bold text-[#706b61] mb-1">
+                          <span>{h.time}</span>
+                          <span className="text-[7px] text-[#e01e41] opacity-0 group-hover:opacity-100 transition-opacity font-black">Double-click to copy</span>
+                        </div>
+                        <p className="text-[9px] text-[#1c1b19] dark:text-zinc-200 leading-normal font-semibold">
+                          {h.text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ========================================== */}
+              {/* VIEW 03: DICTIONARY MAPPING                */}
+              {/* ========================================== */}
+              {activeStep === 2 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                  <div className="flex justify-between items-center shrink-0">
+                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Dictionary</h4>
+                    <span className="text-[7.5px] text-[#706b61] font-bold">Auto-replacements</span>
+                  </div>
+
+                  {/* Entry form mock */}
+                  <div className="grid grid-cols-5 gap-1 shrink-0">
+                    <input readOnly placeholder="Misheard word" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded text-[8px] focus:outline-none" />
+                    <input readOnly placeholder="Correct word" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded text-[8px] focus:outline-none" />
+                    <button className="bg-[#e01e41] text-white rounded flex items-center justify-center"><Plus className="w-3.5 h-3.5" /></button>
+                  </div>
+
+                  {/* Dictionary rows */}
+                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5">
+                    {[
+                      { from: "ennale", to: "yesterday" },
+                      { from: "karyangal", to: "things" },
+                      { from: "lag", to: "delay" }
+                    ].map((row) => (
+                      <div key={row.from} className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-2 rounded-xl flex items-center justify-between shadow-sm">
+                        <span className="font-bold text-[#1c1b19] dark:text-zinc-200">
+                          {row.from} <span className="text-[#706b61] font-normal mx-1">→</span> {row.to}
+                        </span>
+                        <span className="text-[7px] font-black uppercase text-rose-500 hover:underline cursor-default">remove</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ========================================== */}
+              {/* VIEW 04: SNIPPETS                          */}
+              {/* ========================================== */}
+              {activeStep === 3 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                  <div className="flex justify-between items-center shrink-0">
+                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Snippets</h4>
+                    <span className="text-[7.5px] text-[#706b61] font-bold">Text expansions</span>
+                  </div>
+
+                  {/* Input trigger form */}
+                  <div className="grid grid-cols-5 gap-1 shrink-0">
+                    <input readOnly placeholder="trigger" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded text-[8px] focus:outline-none" />
+                    <input readOnly placeholder="expands to" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded text-[8px] focus:outline-none" />
+                    <button className="bg-[#e01e41] text-white rounded flex items-center justify-center"><Plus className="w-3.5 h-3.5" /></button>
+                  </div>
+
+                  {/* Snippet list */}
+                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5">
+                    {[
+                      { trigger: "mysig", val: "Kind regards, Adarsh" },
+                      { trigger: "timeline", val: "The project timeline will lag by 2 weeks." }
+                    ].map((row) => (
+                      <div key={row.trigger} className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-2 rounded-xl flex items-center justify-between shadow-sm">
+                        <div className="min-w-0 leading-tight">
+                          <div className="font-extrabold text-[#e01e41]">{row.trigger}</div>
+                          <div className="text-[8px] text-[#706b61] dark:text-zinc-500 truncate mt-0.5">{row.val}</div>
+                        </div>
+                        <span className="text-[7px] font-black uppercase text-rose-500 cursor-default">remove</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ========================================== */}
+              {/* VIEW 05: PRO WRITING                       */}
+              {/* ========================================== */}
+              {activeStep === 4 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                  <div className="flex justify-between items-center shrink-0">
+                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Pro Writing</h4>
+                    <span className="text-[7.5px] px-1.5 py-0.2 rounded-full bg-purple-500/10 text-purple-600 font-extrabold">PRO Mode</span>
+                  </div>
+
+                  {/* Editor view screenwriting */}
+                  <div className="flex-grow bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-xl flex flex-col justify-start font-mono text-[8px] leading-relaxed text-zinc-700 dark:text-zinc-400 overflow-y-auto space-y-2">
+                    <div className="text-center font-bold text-[#1c1b19] dark:text-white mb-2">SCENE 1: SYNCHRONIZATION</div>
+                    <div>INT. MEETING ROOM - DAY</div>
+                    <div className="pl-6 font-bold text-[#1c1b19] dark:text-white">ADARSH</div>
+                    <div className="pl-12">
+                      Innalathe meetingil njan paranja karyangal ormayundo? Athil chila changes undu.
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ========================================== */}
+              {/* VIEW 06: SETTINGS (BRAIN SWITCH)           */}
+              {/* ========================================== */}
+              {activeStep === 5 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                  <div className="flex justify-between items-center shrink-0">
+                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Settings</h4>
+                    <span className="text-[7.5px] text-[#706b61] font-bold">App Config</span>
+                  </div>
+
+                  {/* Hotkey trigger setting input */}
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl shrink-0 flex items-center justify-between">
+                    <span className="font-bold text-[#706b61] dark:text-zinc-400">Record Hotkey</span>
+                    <span className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-750 px-2 py-0.5 rounded font-mono font-extrabold text-[#1c1b19] dark:text-white">⌥ Space</span>
+                  </div>
+
+                  {/* Brain switch catalog list */}
+                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5">
+                    <div className="text-[7.5px] font-black text-[#706b61] uppercase mb-1">Brain Switch catalog</div>
+                    {[
+                      { name: "LOW", size: "190 MB", desc: "Fast & lightweight bilingual translation" },
+                      { name: "MEDIUM", size: "539 MB", desc: "Malayalam Optimized balanced understanding" },
+                      { name: "PRO", size: "2.9 GB", desc: "Flagship unquantized float 16 precision", active: true }
+                    ].map((model) => (
+                      <div 
+                        key={model.name}
+                        className={cn(
+                          "px-2.5 py-1.5 rounded-xl border flex items-center justify-between shadow-sm",
+                          model.active
+                            ? "border-[#e01e41] bg-[#e01e41]/5 text-[#e01e41]"
+                            : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-650"
+                        )}
+                      >
+                        <div className="min-w-0">
+                          <div className="font-black text-[9px] flex items-center gap-1">
+                            <span>{model.name}</span>
+                            <span className="text-[7px] font-normal opacity-60">· {model.size}</span>
+                          </div>
+                          <p className="text-[7.5px] opacity-75 truncate mt-0.5">{model.desc}</p>
+                        </div>
+                        {model.active && <Check className="w-3.5 h-3.5 text-[#e01e41]" />}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Scrollable Steps explaining each tab */}
+        <div className="space-y-16 py-12">
+          {scrollSteps.map((step, idx) => {
+            const isActive = activeStep === idx;
+            return (
+              <div 
+                key={step.id}
+                className={cn(
+                  "scroll-step-target p-6.5 rounded-2xl border transition-all duration-300 space-y-4",
+                  isActive
+                    ? "bg-white dark:bg-zinc-900 border-[#e8e5df] dark:border-zinc-800 shadow-md scale-[1.02]"
+                    : "border-transparent opacity-40 scale-100"
+                )}
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="text-3xl font-heading font-black tracking-tight text-[#e01e41]/10 leading-none">
+                    {step.badge.split(".")[0]}
+                  </span>
+                  <div 
+                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider" 
+                    style={{ background: `${step.color}15`, color: step.color }}
+                  >
+                    {step.tab}
+                  </div>
+                </div>
+
+                <h3 className="text-lg md:text-xl font-heading font-black text-foreground">
                   {step.title}
                 </h3>
-                
-                <p className="text-sm text-muted-foreground font-semibold leading-relaxed">
+
+                <p className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
                   {step.description}
                 </p>
               </div>
+            );
+          })}
+        </div>
 
-              {/* Visual Card (alternates) */}
-              <div className="w-full">
-                {step.visual}
-              </div>
-            </motion.div>
-          );
-        })}
       </div>
 
     </div>
