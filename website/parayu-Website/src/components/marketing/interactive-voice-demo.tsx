@@ -289,7 +289,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     offset: ["start end", "end start"]
   });
 
-  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.95, 1.02, 1.02, 0.95]);
+  // Scale and translate transforms
+  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.96, 1.03, 1.03, 0.96]);
   const translateY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [30, 0, 0, -30]);
 
   // Track scroll position to update active step index
@@ -377,13 +378,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       return;
     }
 
-    // Sequence loop:
-    // 0s - 2.5s: Types stutter text ("We need... we need to test... test the model offline... offline.")
-    // 2.8s: Active Offline AI switches ON (slides to red)
-    // 3.4s: Slider transitions from Fast Mode to Smart Mode
-    // 3.8s: Flash Correction animation state
-    // 4.1s: Text automatically corrects itself!
-    // 6.5s: Reset loop
     const runAiLoop = () => {
       setAiActive(false);
       setModeActive("fast");
@@ -404,7 +398,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
             clearInterval(typerInterval);
             setCorrectionState("waiting");
           }
-        }, 30);
+        }, 35);
       };
       
       startTyping();
@@ -415,16 +409,16 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
       const modeSmartTimer = setTimeout(() => {
         setModeActive("smart");
-      }, 3600);
+      }, 3700);
 
       const correctingTimer = setTimeout(() => {
         setCorrectionState("correcting");
-      }, 4000);
+      }, 4300);
 
       const correctedTimer = setTimeout(() => {
         setCorrectionState("clean");
         setDemoText("We need to test the model offline.");
-      }, 4400);
+      }, 4800);
 
       return () => {
         clearInterval(typerInterval);
@@ -436,7 +430,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     };
 
     const cleanup = runAiLoop();
-    const interval = setInterval(runAiLoop, 7500);
+    const interval = setInterval(runAiLoop, 8000);
 
     return () => {
       cleanup();
@@ -465,13 +459,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   return (
     <div ref={containerRef} className={cn("max-w-6xl mx-auto px-4 relative", className)}>
       
-      {/* 2-Column Sticky Scrollytelling Layout */}
-      <div className="grid md:grid-cols-12 gap-12 items-start">
+      {/* 2-Column Sticky Scrollytelling Layout - Improvised grid width (7 cols left, 5 cols right) */}
+      <div className="grid md:grid-cols-12 gap-8 items-start">
         
-        {/* Left Column: Sticky macOS Application Mockup Window */}
-        <div className="md:col-span-6 sticky top-28 h-[480px] flex items-center justify-center shrink-0 z-20">
+        {/* Left Column: Sticky macOS Application Mockup Window (Spans 7 columns for wider visual space) */}
+        <div className="md:col-span-7 sticky top-28 h-[480px] flex items-center justify-center shrink-0 z-20">
           
-          {/* Frameless mockup window in default 1180:740 ratio with 3D tilt animations */}
+          {/* Frameless mockup window in default 1180:740 ratio with 3D tilt animations (Max width expanded to 610px) */}
           <motion.div 
             ref={cardRef}
             onMouseMove={handleMouseMove}
@@ -484,7 +478,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
               transformStyle: "preserve-3d",
               perspective: 1200
             }}
-            className="w-full max-w-[550px] aspect-[1180/740] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300 cursor-grab active:cursor-grabbing"
+            className="w-full max-w-[610px] aspect-[1180/740] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300 cursor-grab active:cursor-grabbing"
           >
             
             {/* macOS Window Titlebar Traffic-Light Buttons (Overlayed on top of screens for authenticity) */}
@@ -589,7 +583,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-655 flex items-center justify-center shrink-0">
+                              <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-650 flex items-center justify-center shrink-0">
                                 <Pencil className="w-3.5 h-3.5" />
                               </div>
                               <div className="min-w-0 leading-tight">
@@ -630,12 +624,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad2)" 
+                                    stroke="url(#insightsGrad3)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
@@ -691,7 +685,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Dictation Volume</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-650 flex items-center justify-center bg-emerald-500/5">
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-655 flex items-center justify-center bg-emerald-500/5">
                                 <Mic className="w-3 h-3" />
                               </div>
 
@@ -861,12 +855,39 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                   if (step.image === "offline_ai_anim") {
                     return (
                       /* CUSTOM ANIMATED ACTIVE OFFLINE AI OPTIONS CARD + TYPING DICTATION CLEANUP (Step 4) */
+                      /* Features visual satisfying feedback of "turning on" (neon outline glow, radial pulse, background morph) */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
                         <div className="space-y-[3%] w-full max-w-[390px] mx-auto scale-[0.88] md:scale-95 origin-center">
                           
                           {/* Exact Options Card from User Screenshot */}
-                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl shadow-md space-y-3">
+                          <motion.div 
+                            animate={
+                              aiActive 
+                                ? { 
+                                    borderColor: "rgba(224, 30, 65, 0.25)",
+                                    boxShadow: "0 10px 30px -10px rgba(224, 30, 65, 0.08), var(--tw-shadow)"
+                                  }
+                                : { 
+                                    borderColor: "rgba(228, 228, 231, 1)",
+                                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05)"
+                                  }
+                            }
+                            className="bg-white dark:bg-zinc-900 border p-3 rounded-2xl space-y-3 relative overflow-hidden transition-all duration-300"
+                          >
                             
+                            {/* Radial Glow pulse sweeping when AI activates */}
+                            {aiActive && (
+                              <motion.div 
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: [0, 0.25, 0], scale: [0.8, 1.5, 2] }}
+                                transition={{ duration: 1.5, ease: "easeOut" }}
+                                className="absolute inset-0 bg-radial-glow pointer-events-none"
+                                style={{
+                                  background: "radial-gradient(circle, rgba(224,30,65,0.18) 0%, transparent 60%)"
+                                }}
+                              />
+                            )}
+
                             {/* Section 1: Speech language */}
                             <div className="space-y-1.5">
                               <div className="flex items-center gap-1.5">
@@ -895,17 +916,17 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   Correct stutters, repetitions, and grammar offline.
                                 </div>
                               </div>
-                              {/* Sliding Toggle Switch */}
+                              {/* Sliding Toggle Switch (Flashes glow when ON) */}
                               <div 
                                 className={cn(
-                                  "w-7 h-4.5 rounded-full p-0.5 transition-colors duration-300 cursor-pointer shrink-0 flex items-center",
-                                  aiActive ? "bg-[#e01e41]" : "bg-zinc-200 dark:bg-zinc-800"
+                                  "w-7 h-4.5 rounded-full p-0.5 transition-colors duration-300 cursor-pointer shrink-0 flex items-center relative",
+                                  aiActive ? "bg-[#e01e41] shadow-[0_0_8px_rgba(224,30,65,0.45)]" : "bg-zinc-200 dark:bg-zinc-800"
                                 )}
                               >
                                 <motion.div 
                                   animate={{ x: aiActive ? 10 : 0 }}
                                   transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                                  className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" 
+                                  className="w-3.5 h-3.5 rounded-full bg-white shadow-sm z-10" 
                                 />
                               </div>
                             </div>
@@ -915,11 +936,14 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             {/* Section 3: Fast Mode / Smart Mode Switcher */}
                             <div className="bg-[#f0ece5] dark:bg-zinc-950 p-0.5 rounded-lg relative flex items-center w-full">
                               <div className="grid grid-cols-2 w-full text-center relative z-10 text-[8px] font-extrabold">
-                                <span className={cn("py-1 transition-colors", modeActive === "fast" ? "text-zinc-900 dark:text-white" : "text-zinc-450")}>Fast Mode</span>
-                                <span className={cn("py-1 transition-colors", modeActive === "smart" ? "text-zinc-900 dark:text-white" : "text-zinc-450")}>Smart Mode</span>
+                                <span className={cn("py-1 transition-colors duration-200", modeActive === "fast" ? "text-zinc-900 dark:text-white font-[800]" : "text-zinc-450")}>Fast Mode</span>
+                                <span className={cn("py-1 transition-colors duration-200", modeActive === "smart" ? "text-zinc-900 dark:text-white font-[800]" : "text-zinc-450")}>Smart Mode</span>
                               </div>
                               <motion.div 
-                                animate={{ x: modeActive === "smart" ? "100%" : "0%" }}
+                                animate={{ 
+                                  x: modeActive === "smart" ? "100%" : "0%",
+                                  boxShadow: modeActive === "smart" ? "0 1px 3px rgba(224, 30, 65, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.05)"
+                                }}
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                                 className="absolute top-0.5 bottom-0.5 left-0.5 w-[calc(50%-4px)] bg-white dark:bg-zinc-900 rounded-md shadow-sm z-0"
                               />
@@ -938,50 +962,84 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </span>
                             </div>
 
-                          </div>
+                          </motion.div>
 
-                          {/* Live Dictation Demo Box below settings card */}
-                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl shadow-sm relative min-h-[75px] flex flex-col justify-between">
+                          {/* Live Dictation Demo Box - Transforms visually when AI turns ON */}
+                          <motion.div 
+                            animate={
+                              aiActive 
+                                ? { 
+                                    borderColor: "rgba(224, 30, 65, 0.4)",
+                                    boxShadow: "0 0 15px rgba(224, 30, 65, 0.15), var(--tw-shadow)",
+                                    background: "rgba(255, 255, 255, 1)"
+                                  }
+                                : { 
+                                    borderColor: "rgba(228, 228, 231, 1)",
+                                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.02)",
+                                    background: "rgba(250, 250, 250, 0.7)"
+                                  }
+                            }
+                            className="border p-3 rounded-2xl shadow-sm relative min-h-[75px] flex flex-col justify-between transition-all duration-300"
+                          >
                             
+                            {/* Glow pulse overlay on text box activation */}
+                            {correctionState === "correcting" && (
+                              <motion.div 
+                                initial={{ x: "-100%" }}
+                                animate={{ x: "100%" }}
+                                transition={{ duration: 0.8, ease: "easeInOut" }}
+                                className="absolute inset-0 z-10 pointer-events-none opacity-20 bg-gradient-to-r from-transparent via-[#e01e41] to-transparent"
+                              />
+                            )}
+
                             {/* Dictation Box Header */}
                             <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1.5 mb-1.5 shrink-0">
-                              <span className="flex items-center gap-1">
-                                <span className={cn("w-1.5 h-1.5 rounded-full block animate-pulse", aiActive ? "bg-[#e01e41]" : "bg-zinc-400")} />
-                                <span>{aiActive ? "Offline AI Active" : "Direct Transcription"}</span>
+                              <span className="flex items-center gap-1.5">
+                                <span className={cn("w-1.5 h-1.5 rounded-full block", aiActive ? "bg-[#e01e41] animate-pulse" : "bg-zinc-400")} />
+                                <span className={cn("transition-colors duration-300", aiActive ? "text-[#e01e41] font-black" : "")}>
+                                  {aiActive ? "✦ Offline AI Cleaned" : "Direct Speech (No Cleanup)"}
+                                </span>
                               </span>
-                              <span className="uppercase tracking-widest text-[6px]">Output Text Field</span>
+                              <span className="uppercase tracking-widest text-[6px]">Live Output</span>
                             </div>
 
-                            {/* Main output text */}
-                            <div className="text-[9px] font-semibold leading-relaxed text-[#1c1b19] dark:text-zinc-200 flex-grow pr-5">
+                            {/* Main output text with dynamic morphing transition on correction */}
+                            <motion.div 
+                              animate={
+                                correctionState === "correcting" 
+                                  ? { filter: "blur(1px)", opacity: 0.6 }
+                                  : { filter: "blur(0px)", opacity: 1 }
+                              }
+                              className="text-[9px] font-semibold leading-relaxed text-[#1c1b19] dark:text-zinc-200 flex-grow pr-5"
+                            >
                               {demoText}
                               <motion.span 
                                 animate={{ opacity: [1, 0, 1] }}
                                 transition={{ repeat: Infinity, duration: 0.8 }}
                                 className="inline-block w-1.5 h-3 bg-[#e01e41] ml-0.5 vertical-middle"
                               />
-                            </div>
+                            </motion.div>
 
                             {/* Status label at bottom of text area */}
                             <div className="mt-1.5 flex justify-between items-center text-[7px] font-extrabold shrink-0 border-t border-zinc-100 dark:border-zinc-850 pt-1.5 text-zinc-450">
-                              <span>Double click to edit</span>
+                              <span>Auto-Correction Demo</span>
                               <AnimatePresence mode="wait">
                                 {correctionState === "typing" && (
-                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-550 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-zinc-450" /> typing raw voice input...</motion.span>
+                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-550 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-zinc-450" /> typing voice input with stutters...</motion.span>
                                 )}
                                 {correctionState === "waiting" && (
-                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-600 font-extrabold">awaiting cleanup...</motion.span>
+                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-650 font-black">waiting for AI trigger...</motion.span>
                                 )}
                                 {correctionState === "correcting" && (
-                                  <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline cleanup...</motion.span>
+                                  <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> turning on offline AI...</motion.span>
                                 )}
                                 {correctionState === "clean" && (
-                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-600 font-black flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> corrected & finalized offline!</motion.span>
+                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-650 font-black flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> cleaned instantly (100% offline!)</motion.span>
                                 )}
                               </AnimatePresence>
                             </div>
 
-                          </div>
+                          </motion.div>
 
                         </div>
                       </div>
@@ -1005,8 +1063,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
           </motion.div>
         </div>
 
-        {/* Right Column: Scrollable Steps explaining each tab (Spans 6 columns) */}
-        <div className="md:col-span-6 space-y-16 py-12">
+        {/* Right Column: Scrollable Steps explaining each tab (Spans 5 columns for layout balance) */}
+        <div className="md:col-span-5 space-y-16 py-12">
           {scrollSteps.map((step, idx) => {
             const isActive = activeStep === idx;
             return (
