@@ -12,7 +12,10 @@ import {
   BookOpen,
   Settings,
   Search,
-  Check
+  Check,
+  Mic,
+  Pencil,
+  ChevronDown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -37,7 +40,7 @@ const scrollSteps = [
     color: "#e01e41",
     tab: "Home",
     icon: Sparkles,
-    image: "insights_anim" // Custom animated count-up close-up view
+    image: "insights_anim" // Custom animated count-up close-up view matching screenshot
   },
   {
     id: "history",
@@ -292,66 +295,181 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                   if (step.image === "insights_anim") {
                     return (
-                      /* CUSTOM ANIMATED INSIGHTS COUNT-UP CLOSE-UP (Step 2) */
-                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[6%] select-none">
-                        <div className="space-y-4 w-full max-w-sm mx-auto">
+                      /* CUSTOM ANIMATED INSIGHTS CLOSE-UP (Step 2) - Matches exact screenshot cards layout */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
+                        <div className="space-y-[3%] w-full max-w-[490px] mx-auto scale-95 md:scale-100">
                           
-                          {/* Close-up header */}
-                          <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-850 pb-2">
-                            <span className="text-xs font-heading font-black text-foreground flex items-center gap-1.5">
-                              <Sparkles className="w-4 h-4 text-[#e01e41] fill-[#e01e41]/10" />
-                              <span>Live Insights Panel</span>
-                            </span>
-                            <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Diagnostics</span>
-                          </div>
-
-                          {/* Dynamic counting-up KPI cards close-up */}
-                          <div className="grid grid-cols-3 gap-3">
+                          {/* Top Row (4 Columns) */}
+                          <div className="grid grid-cols-4 gap-2">
                             
-                            {/* Words Counter */}
-                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-2xl text-center shadow-md flex flex-col justify-center min-h-[90px] transition-all">
-                              <div className="text-[8px] font-bold text-zinc-450 uppercase tracking-wider mb-1">Words</div>
-                              <div className="text-xl font-heading font-black text-[#e01e41]">
-                                <Counter from={1450} to={1648} active={activeStep === 1} />
+                            {/* Words Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
+                              <div className="w-7 h-7 rounded-full bg-[#e01e41]/5 text-[#e01e41] flex items-center justify-center shrink-0">
+                                <Mic className="w-3.5 h-3.5 fill-[#e01e41]/10" />
                               </div>
-                              <div className="text-[7.5px] font-bold text-emerald-600 mt-1 bg-emerald-500/10 px-1.5 py-0.5 rounded-full inline-block mx-auto leading-none">
-                                +24 today
-                              </div>
-                            </div>
-
-                            {/* Speed Counter */}
-                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-2xl text-center shadow-md flex flex-col justify-center min-h-[90px] transition-all">
-                              <div className="text-[8px] font-bold text-zinc-450 uppercase tracking-wider mb-1">Speed</div>
-                              <div className="text-xl font-heading font-black text-[#1c1b19] dark:text-white">
-                                <Counter from={75} to={104} active={activeStep === 1} />
-                              </div>
-                              <div className="text-[7px] font-black text-zinc-400 mt-1 uppercase tracking-wide">
-                                wpm avg
+                              <div className="min-w-0 leading-tight">
+                                <div className="text-[12px] font-heading font-black truncate">
+                                  <Counter from={1900} to={2068} active={activeStep === 1} />
+                                </div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold uppercase mt-0.5">Words</div>
                               </div>
                             </div>
 
-                            {/* Fixes Counter */}
-                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-2xl text-center shadow-md flex flex-col justify-center min-h-[90px] transition-all">
-                              <div className="text-[8px] font-bold text-zinc-450 tracking-wider uppercase mb-1">Fixes</div>
-                              <div className="text-xl font-heading font-black text-purple-600 dark:text-purple-400">
-                                <Counter from={10} to={33} active={activeStep === 1} />
+                            {/* WPM Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
+                              <div className="w-7 h-7 rounded-full bg-purple-500/5 text-purple-600 flex items-center justify-center shrink-0">
+                                <Clock className="w-3.5 h-3.5" />
                               </div>
-                              <div className="text-[7.5px] font-bold text-purple-600 dark:text-purple-400 mt-1 bg-purple-500/10 px-1.5 py-0.5 rounded-full inline-block mx-auto leading-none">
-                                AI active
+                              <div className="min-w-0 leading-tight">
+                                <div className="text-[12px] font-heading font-black truncate">
+                                  <Counter from={80} to={102} active={activeStep === 1} />
+                                </div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold uppercase mt-0.5">WPM</div>
+                              </div>
+                            </div>
+
+                            {/* Fixes Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
+                              <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-600 flex items-center justify-center shrink-0">
+                                <Pencil className="w-3.5 h-3.5" />
+                              </div>
+                              <div className="min-w-0 leading-tight">
+                                <div className="text-[12px] font-heading font-black truncate">
+                                  <Counter from={15} to={40} active={activeStep === 1} />
+                                </div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold uppercase mt-0.5">Fixes</div>
+                              </div>
+                            </div>
+
+                            {/* Status Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
+                              <div className="w-7 h-7 rounded-full bg-emerald-500/5 text-emerald-600 flex items-center justify-center shrink-0">
+                                <Check className="w-3.5 h-3.5" />
+                              </div>
+                              <div className="min-w-0 leading-tight">
+                                <div className="text-[11px] font-heading font-black text-emerald-600 truncate">Ready</div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold uppercase mt-0.5">Model ready</div>
                               </div>
                             </div>
 
                           </div>
-                          
-                          {/* Streak preview card below counters */}
-                          <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-xl flex items-center justify-between text-[10px] shadow-sm">
-                            <span className="font-bold text-[#1c1b19] dark:text-zinc-200 flex items-center gap-1.5">
-                              <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
-                              <span>Streak: 2 days</span>
-                            </span>
-                            <span className="text-[8.5px] font-extrabold text-[#e01e41] bg-[#e01e41]/5 px-2 py-0.5 rounded-lg border border-[#e01e41]/10">
-                              Target speed: 120 wpm
-                            </span>
+
+                          {/* Bottom Row (3 Columns) */}
+                          <div className="grid grid-cols-3 gap-2">
+                            
+                            {/* TYPING SPEED Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
+                              <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Typing Speed</div>
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-rose-500/10 text-rose-500 flex items-center justify-center bg-rose-500/5">
+                                <Clock className="w-3 h-3" />
+                              </div>
+                              
+                              <div className="relative w-full flex justify-center mt-1">
+                                <svg viewBox="0 0 170 96" className="w-[82px] h-[44px]">
+                                  <path d="M 15 85 A 70 70 0 0 1 155 85" fill="none" stroke="#ebe7df" strokeWidth="12" strokeLinecap="round" />
+                                  <motion.path 
+                                    initial={{ pathLength: 0 }}
+                                    animate={activeStep === 1 ? { pathLength: 1 } : { pathLength: 0 }}
+                                    transition={{ duration: 1.2, ease: "easeOut" }}
+                                    d="M 15 85 A 70 70 0 0 1 112 20" 
+                                    fill="none" 
+                                    stroke="url(#insightsGrad2)" 
+                                    strokeWidth="12" 
+                                    strokeLinecap="round" 
+                                  />
+                                  <defs>
+                                    <linearGradient id="insightsGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                      <stop offset="0%" stopColor="#e81f3a" />
+                                      <stop offset="100%" stopColor="#a02bb0" />
+                                    </linearGradient>
+                                  </defs>
+                                </svg>
+                                <div className="absolute inset-0 flex flex-col items-center justify-end">
+                                  <span className="text-[12px] font-black leading-none text-[#1c1b19] dark:text-white">
+                                    <Counter from={80} to={102} active={activeStep === 1} />
+                                  </span>
+                                  <span className="text-[6.5px] font-bold text-[#706b61] uppercase mt-0.5">wpm</span>
+                                </div>
+                              </div>
+                              <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-500 border-t border-zinc-150 pt-1.5 mt-1 shrink-0">
+                                <span>Target 120 wpm</span>
+                                <span className="font-extrabold text-[#e01e41]">18 to goal</span>
+                              </div>
+                            </div>
+
+                            {/* SMART EDITING Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
+                              <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-600 flex items-center justify-center bg-purple-500/5">
+                                <Pencil className="w-3 h-3" />
+                              </div>
+
+                              <div className="my-1.5 leading-tight">
+                                <div className="text-[19px] font-heading font-black text-zinc-850 dark:text-zinc-100">
+                                  <Counter from={20} to={40} active={activeStep === 1} />
+                                </div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Fixes made by Parayu</div>
+                              </div>
+
+                              {/* Nested rows inside smart editing */}
+                              <div className="space-y-1 text-[8.5px] font-bold">
+                                <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
+                                  <div className="flex items-center gap-1">
+                                    <Check className="w-3 h-3 text-emerald-600" />
+                                    <span>
+                                      <Counter from={15} to={33} active={activeStep === 1} /> corrections
+                                    </span>
+                                  </div>
+                                  <ChevronDown className="w-3 h-3 text-zinc-400" />
+                                </div>
+                                <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
+                                  <div className="flex items-center gap-1">
+                                    <BookOpen className="w-3 h-3 text-[#a02bb0]" />
+                                    <span>
+                                      <Counter from={2} to={7} active={activeStep === 1} /> dictionary
+                                    </span>
+                                  </div>
+                                  <ChevronDown className="w-3 h-3 text-zinc-400" />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* DICTATION VOLUME Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
+                              <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Dictation Volume</div>
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-600 flex items-center justify-center bg-emerald-500/5">
+                                <Mic className="w-3 h-3" />
+                              </div>
+
+                              <div className="my-1.5 leading-tight">
+                                <div className="text-[19px] font-heading font-black text-zinc-850 dark:text-zinc-100">
+                                  <Counter from={1900} to={2068} active={activeStep === 1} />
+                                </div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Total words dictated</div>
+                              </div>
+
+                              {/* Nested rows inside dictation volume */}
+                              <div className="space-y-1 text-[8.5px] font-bold">
+                                <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
+                                  <div className="flex items-center gap-1">
+                                    <Monitor className="w-3 h-3 text-[#e01e41]" />
+                                    <span>
+                                      <Counter from={1900} to={2068} active={activeStep === 1} /> words pasted
+                                    </span>
+                                  </div>
+                                  <ChevronDown className="w-3 h-3 text-zinc-400" />
+                                </div>
+                                <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
+                                  <div className="flex items-center gap-1">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse block shrink-0" />
+                                    <span className="text-emerald-600 font-extrabold">Ready</span>
+                                    <span className="text-zinc-450 font-normal">on-device engine</span>
+                                  </div>
+                                  <ChevronDown className="w-3 h-3 text-zinc-400" />
+                                </div>
+                              </div>
+                            </div>
+
                           </div>
 
                         </div>
