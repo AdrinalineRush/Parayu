@@ -18,7 +18,8 @@ import {
   ChevronDown,
   Lock,
   ShieldCheck,
-  Home
+  Home,
+  Globe
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -56,8 +57,18 @@ const scrollSteps = [
     image: "history_anim" // Custom double-click scroll copy animation view WITH sidebar
   },
   {
+    id: "offline_ai",
+    badge: "04. Active Offline AI",
+    title: "On-Device Speech Cleanup",
+    description: "Toggle Active Offline AI to automatically clean up stutters, repetitions, and grammar mistakes as you speak. Switch between Fast Mode for speed or Smart Mode for deep linguistic corrections—all running 100% locally.",
+    color: "#e01e41",
+    tab: "Offline AI",
+    icon: Sparkles,
+    image: "offline_ai_anim" // Custom animated toggles and text correction loop (no sidebar close-up)
+  },
+  {
     id: "dictionary",
-    badge: "04. Custom Voice Dictionary",
+    badge: "05. Custom Voice Dictionary",
     title: "Prevent Transcription Errors",
     description: "Map specialized jargon, accents, or misheard words. Define 'misheard → correct' word pairs (e.g., spoken Malayalam dialect to fluent English replacements) so the C++ engine corrects them automatically.",
     color: "#1f6f63",
@@ -67,7 +78,7 @@ const scrollSteps = [
   },
   {
     id: "snippets",
-    badge: "05. Text Expansion Snippets",
+    badge: "06. Text Expansion Snippets",
     title: "Shorthand Speech Commands",
     description: "Create text macro templates. Dictate custom trigger phrases like 'my signature' or 'project update' to instantly expand into long multiline email templates or boilerplate code blocks.",
     color: "#ff8a1f",
@@ -77,7 +88,7 @@ const scrollSteps = [
   },
   {
     id: "settings",
-    badge: "06. Core Brain Switch",
+    badge: "07. Core Brain Switch",
     title: "Pick Your On-Device Brain",
     description: "Toggle hotkeys and speech models. Choose the speech brain that fits your hardware: LOW (190MB/fast), MEDIUM (539MB/Malayalam Optimized), HIGH (844MB/Multilingual), or PRO (2.9GB/Full Float 16).",
     color: "#0ea5e9",
@@ -131,7 +142,7 @@ const sidebarMenuItems = [
 // Custom Sidebar Component replicating macOS side card structure exactly (de-congested formatting)
 function MockSidebar({ activeView }: { activeView: string }) {
   return (
-    <div className="w-[21.7%] bg-[#f6f4f0] dark:bg-zinc-950 border-r border-[#e8e5df] dark:border-zinc-800 flex flex-col justify-between p-2 h-full shrink-0 font-sans select-none">
+    <div className="w-[21.7%] bg-[#f6f4f0] dark:bg-zinc-950 border-r border-[#e8e5df] dark:border-zinc-800 flex flex-col justify-between p-2.5 h-full shrink-0 font-sans select-none">
       
       {/* Upper Area */}
       <div className="space-y-2">
@@ -166,7 +177,7 @@ function MockSidebar({ activeView }: { activeView: string }) {
                   />
                 )}
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <Icon className={cn("w-2.5 h-2.5 shrink-0", isActive ? "text-[#e01e41]" : "text-zinc-550")} />
+                  <Icon className={cn("w-2.5 h-2.5 shrink-0", isActive ? "text-[#e01e41]" : "text-zinc-555")} />
                   <span className="truncate">{item.label}</span>
                 </div>
                 {item.showBadge && (
@@ -258,6 +269,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [isClicking, setIsClicking] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
+  // Custom animation states for Step 4: Active Offline AI demo toggling & text correction
+  const [aiActive, setAiActive] = useState(false);
+  const [modeActive, setModeActive] = useState("fast"); // "fast" | "smart"
+  const [demoText, setDemoText] = useState("");
+  const [correctionState, setCorrectionState] = useState("typing"); // "typing" | "waiting" | "correcting" | "clean"
+
   // Mouse coordinate values for premium interactive 3D parallax tilt
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -343,6 +360,83 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
     const cleanup = runAnimationLoop();
     const interval = setInterval(runAnimationLoop, 6500);
+
+    return () => {
+      cleanup();
+      clearInterval(interval);
+    };
+  }, [activeStep]);
+
+  // Trigger Offline AI toggling and automatic typing text correction animation loop for Step 4
+  useEffect(() => {
+    if (activeStep !== 3) {
+      setAiActive(false);
+      setModeActive("fast");
+      setDemoText("");
+      setCorrectionState("typing");
+      return;
+    }
+
+    // Sequence loop:
+    // 0s - 2.5s: Types stutter text ("We need... we need to test... test the model offline... offline.")
+    // 2.8s: Active Offline AI switches ON (slides to red)
+    // 3.4s: Slider transitions from Fast Mode to Smart Mode
+    // 3.8s: Flash Correction animation state
+    // 4.1s: Text automatically corrects itself!
+    // 6.5s: Reset loop
+    const runAiLoop = () => {
+      setAiActive(false);
+      setModeActive("fast");
+      setCorrectionState("typing");
+      setDemoText("");
+
+      // Typwriter simulation for stutter text
+      const rawText = "We need... we need to test... test the model offline... offline.";
+      let charIndex = 0;
+      let typerInterval: NodeJS.Timeout;
+
+      const startTyping = () => {
+        typerInterval = setInterval(() => {
+          if (charIndex <= rawText.length) {
+            setDemoText(rawText.slice(0, charIndex));
+            charIndex++;
+          } else {
+            clearInterval(typerInterval);
+            setCorrectionState("waiting");
+          }
+        }, 30);
+      };
+      
+      startTyping();
+
+      const toggleOnTimer = setTimeout(() => {
+        setAiActive(true);
+      }, 3000);
+
+      const modeSmartTimer = setTimeout(() => {
+        setModeActive("smart");
+      }, 3600);
+
+      const correctingTimer = setTimeout(() => {
+        setCorrectionState("correcting");
+      }, 4000);
+
+      const correctedTimer = setTimeout(() => {
+        setCorrectionState("clean");
+        setDemoText("We need to test the model offline.");
+      }, 4400);
+
+      return () => {
+        clearInterval(typerInterval);
+        clearTimeout(toggleOnTimer);
+        clearTimeout(modeSmartTimer);
+        clearTimeout(correctingTimer);
+        clearTimeout(correctedTimer);
+      };
+    };
+
+    const cleanup = runAiLoop();
+    const interval = setInterval(runAiLoop, 7500);
 
     return () => {
       cleanup();
@@ -483,7 +577,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-purple-500/5 text-purple-600 flex items-center justify-center shrink-0">
+                              <div className="w-7 h-7 rounded-full bg-purple-500/5 text-purple-650 flex items-center justify-center shrink-0">
                                 <Clock className="w-3.5 h-3.5" />
                               </div>
                               <div className="min-w-0 leading-tight">
@@ -495,7 +589,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-600 flex items-center justify-center shrink-0">
+                              <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-655 flex items-center justify-center shrink-0">
                                 <Pencil className="w-3.5 h-3.5" />
                               </div>
                               <div className="min-w-0 leading-tight">
@@ -756,6 +850,136 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 </motion.div>
                               )}
                             </AnimatePresence>
+
+                          </div>
+
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (step.image === "offline_ai_anim") {
+                    return (
+                      /* CUSTOM ANIMATED ACTIVE OFFLINE AI OPTIONS CARD + TYPING DICTATION CLEANUP (Step 4) */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
+                        <div className="space-y-[3%] w-full max-w-[390px] mx-auto scale-[0.88] md:scale-95 origin-center">
+                          
+                          {/* Exact Options Card from User Screenshot */}
+                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl shadow-md space-y-3">
+                            
+                            {/* Section 1: Speech language */}
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-1.5">
+                                <Globe className="w-3.5 h-3.5 text-[#e01e41]" />
+                                <span className="text-[10px] font-heading font-black text-zinc-900 dark:text-white">Speech language</span>
+                              </div>
+                              <div className="text-[7.5px] text-zinc-450 font-bold pl-5 leading-none">English transcribes directly.</div>
+                              <div className="pl-5 pt-0.5">
+                                <div className="inline-flex bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 p-0.5 rounded-lg">
+                                  <button className="bg-white dark:bg-zinc-900 text-zinc-850 dark:text-white text-[8px] font-extrabold px-2.5 py-0.5 rounded-md shadow-sm">English</button>
+                                  <button className="text-zinc-450 text-[8px] font-bold px-2.5 py-0.5 rounded-md">Malayalam</button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="h-px bg-zinc-150 dark:bg-zinc-800" />
+
+                            {/* Section 2: Active Offline AI */}
+                            <div className="flex items-center justify-between">
+                              <div className="space-y-0.5">
+                                <div className="flex items-center gap-1.5">
+                                  <Sparkles className="w-3.5 h-3.5 text-[#e01e41]" />
+                                  <span className="text-[10px] font-heading font-black text-zinc-900 dark:text-white">Active Offline AI</span>
+                                </div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold pl-5 leading-normal">
+                                  Correct stutters, repetitions, and grammar offline.
+                                </div>
+                              </div>
+                              {/* Sliding Toggle Switch */}
+                              <div 
+                                className={cn(
+                                  "w-7 h-4.5 rounded-full p-0.5 transition-colors duration-300 cursor-pointer shrink-0 flex items-center",
+                                  aiActive ? "bg-[#e01e41]" : "bg-zinc-200 dark:bg-zinc-800"
+                                )}
+                              >
+                                <motion.div 
+                                  animate={{ x: aiActive ? 10 : 0 }}
+                                  transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                                  className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" 
+                                />
+                              </div>
+                            </div>
+
+                            <div className="h-px bg-zinc-150 dark:bg-zinc-800" />
+
+                            {/* Section 3: Fast Mode / Smart Mode Switcher */}
+                            <div className="bg-[#f0ece5] dark:bg-zinc-950 p-0.5 rounded-lg relative flex items-center w-full">
+                              <div className="grid grid-cols-2 w-full text-center relative z-10 text-[8px] font-extrabold">
+                                <span className={cn("py-1 transition-colors", modeActive === "fast" ? "text-zinc-900 dark:text-white" : "text-zinc-450")}>Fast Mode</span>
+                                <span className={cn("py-1 transition-colors", modeActive === "smart" ? "text-zinc-900 dark:text-white" : "text-zinc-450")}>Smart Mode</span>
+                              </div>
+                              <motion.div 
+                                animate={{ x: modeActive === "smart" ? "100%" : "0%" }}
+                                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                className="absolute top-0.5 bottom-0.5 left-0.5 w-[calc(50%-4px)] bg-white dark:bg-zinc-900 rounded-md shadow-sm z-0"
+                              />
+                            </div>
+
+                            {/* Section 4: Basic Offline Ready Block */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center justify-between shadow-sm">
+                              <div className="space-y-0.5 min-w-0 leading-tight">
+                                <div className="text-[8.5px] font-heading font-black text-zinc-900 dark:text-white">Basic Offline Ready</div>
+                                <p className="text-[6.5px] text-zinc-450 font-semibold leading-normal truncate max-w-[200px]">
+                                  Private Offline AI model is not included in this build. Basic offline cleanup is still available.
+                                </p>
+                              </div>
+                              <span className="bg-[#f3efea] dark:bg-zinc-950 text-zinc-850 dark:text-white text-[7px] font-black px-2 py-0.5 rounded-md shrink-0">
+                                Basic
+                              </span>
+                            </div>
+
+                          </div>
+
+                          {/* Live Dictation Demo Box below settings card */}
+                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl shadow-sm relative min-h-[75px] flex flex-col justify-between">
+                            
+                            {/* Dictation Box Header */}
+                            <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1.5 mb-1.5 shrink-0">
+                              <span className="flex items-center gap-1">
+                                <span className={cn("w-1.5 h-1.5 rounded-full block animate-pulse", aiActive ? "bg-[#e01e41]" : "bg-zinc-400")} />
+                                <span>{aiActive ? "Offline AI Active" : "Direct Transcription"}</span>
+                              </span>
+                              <span className="uppercase tracking-widest text-[6px]">Output Text Field</span>
+                            </div>
+
+                            {/* Main output text */}
+                            <div className="text-[9px] font-semibold leading-relaxed text-[#1c1b19] dark:text-zinc-200 flex-grow pr-5">
+                              {demoText}
+                              <motion.span 
+                                animate={{ opacity: [1, 0, 1] }}
+                                transition={{ repeat: Infinity, duration: 0.8 }}
+                                className="inline-block w-1.5 h-3 bg-[#e01e41] ml-0.5 vertical-middle"
+                              />
+                            </div>
+
+                            {/* Status label at bottom of text area */}
+                            <div className="mt-1.5 flex justify-between items-center text-[7px] font-extrabold shrink-0 border-t border-zinc-100 dark:border-zinc-850 pt-1.5 text-zinc-450">
+                              <span>Double click to edit</span>
+                              <AnimatePresence mode="wait">
+                                {correctionState === "typing" && (
+                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-550 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-zinc-450" /> typing raw voice input...</motion.span>
+                                )}
+                                {correctionState === "waiting" && (
+                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-600 font-extrabold">awaiting cleanup...</motion.span>
+                                )}
+                                {correctionState === "correcting" && (
+                                  <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline cleanup...</motion.span>
+                                )}
+                                {correctionState === "clean" && (
+                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-600 font-black flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> corrected & finalized offline!</motion.span>
+                                )}
+                              </AnimatePresence>
+                            </div>
 
                           </div>
 
