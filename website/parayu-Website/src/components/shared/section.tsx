@@ -31,9 +31,11 @@ export function Section({
     glass: "bg-zinc-950/80 backdrop-blur-xl border-y border-white/5",
   };
 
+  const isOverflowHidden = !className?.includes("overflow-visible");
+
   return (
     <section
-      className={cn("relative py-16 md:py-24 overflow-hidden", backgroundClasses[background], className)}
+      className={cn("relative py-16 md:py-24", isOverflowHidden && "overflow-hidden", backgroundClasses[background], className)}
       {...props}
     >
       <div className={cn("mx-auto px-4 sm:px-6 lg:px-8 w-full", sizeClasses[size], containerClassName)}>

@@ -121,7 +121,7 @@ export default function HomePage() {
       </Section>
 
       {/* Product Walkthrough Section */}
-      <Section className="py-16 relative bg-card border-y border-border" size="lg">
+      <Section className="py-16 relative bg-card border-y border-border overflow-visible" size="lg">
         <div className="max-w-4xl mx-auto text-center mb-16">
           <span className="text-primary font-bold text-xs uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">On-Device Workflow</span>
           <h2 className="text-3xl md:text-5xl font-heading font-black mt-3 text-foreground">
