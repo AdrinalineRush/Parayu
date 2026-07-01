@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { 
   Sparkles, 
   Keyboard, 
@@ -30,7 +30,7 @@ const scrollSteps = [
     color: "#e01e41",
     tab: "Languages",
     icon: Languages,
-    image: "languages_anim" // Custom animated view
+    image: "languages_anim" // Custom animated dropdown scroll list
   },
   {
     id: "insights",
@@ -40,7 +40,7 @@ const scrollSteps = [
     color: "#e01e41",
     tab: "Home",
     icon: Sparkles,
-    image: "insights_anim" // Custom animated count-up close-up view matching screenshot
+    image: "insights_anim" // Custom animated count-up close-up view
   },
   {
     id: "history",
@@ -50,7 +50,7 @@ const scrollSteps = [
     color: "#a02bb0",
     tab: "Parayu History",
     icon: Clock,
-    image: "history.png"
+    image: "history_anim" // Custom double-click scroll copy animation view
   },
   {
     id: "dictionary",
@@ -105,6 +105,16 @@ const languageList = [
   { name: "Assamese", beta: true }
 ];
 
+// Exact text log from the user's conversation history screenshot
+const historyItems = [
+  { time: "06:16", text: "I told you I need this exact same thing animated." },
+  { time: "06:15", text: "The second option will be this area in close-up all the numbers are moving while scrolling like that first language selection is okay second one this one." },
+  { time: "06:15", text: "The second option will be this area in close-up all the numbers are moving while scrolling like that first language selection is okay second one this one." },
+  { time: "06:13", text: "First show this language selection from English, Malayalam and major Indian languages. Just show it like moving upwards, something like that, nice animation." },
+  { time: "06:13", text: "First show this language selection from english malayalam and major indian languages just show it like moving upwards something like that nice animation." },
+  { time: "06:11", text: "What you are opened now is a developer version. This is not the version we are shipping because we are not shipping with pro writing. That's it for today's video." }
+];
+
 // Lightweight count-up hook for moving numbers
 function Counter({ from, to, duration = 1.2, active }: { from: number, to: number, duration?: number, active: boolean }) {
   const [count, setCount] = useState(from);
@@ -134,6 +144,11 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [activeStep, setActiveStep] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  // Custom animation states for Step 3: History double-click copy
+  const [isCopied, setIsCopied] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   // Mouse coordinate values for premium interactive 3D parallax tilt
   const x = useMotionValue(0);
@@ -179,6 +194,59 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Trigger double-click copying automation loops for Step 3
+  useEffect(() => {
+    if (activeStep !== 2) {
+      setIsCopied(false);
+      setIsClicking(false);
+      setShowToast(false);
+      return;
+    }
+
+    // Timeline Loop:
+    // 0s - 2.5s: Scroll down/up
+    // 3.0s: Cursor dot moves to top card
+    // 3.5s: Double-click flash
+    // 3.7s: Copied badge & toast show
+    // 6.0s: Reset loop
+    const runAnimationLoop = () => {
+      setIsCopied(false);
+      setIsClicking(false);
+      setShowToast(false);
+
+      const clickTimer = setTimeout(() => {
+        setIsClicking(true);
+      }, 3500);
+
+      const copyTimer = setTimeout(() => {
+        setIsCopied(true);
+        setShowToast(true);
+      }, 3700);
+
+      const resetTimer = setTimeout(() => {
+        setShowToast(false);
+        const hideBadgeTimer = setTimeout(() => {
+          setIsCopied(false);
+          setIsClicking(false);
+        }, 300);
+      }, 5800);
+
+      return () => {
+        clearTimeout(clickTimer);
+        clearTimeout(copyTimer);
+        clearTimeout(resetTimer);
+      };
+    };
+
+    const cleanup = runAnimationLoop();
+    const interval = setInterval(runAnimationLoop, 6500);
+
+    return () => {
+      cleanup();
+      clearInterval(interval);
+    };
+  }, [activeStep]);
 
   // Track mouse movements over the mockup window to calculate 3D tilt coordinates
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -263,7 +331,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               }}
                               className="flex flex-col gap-0.5 text-xs font-semibold py-1 pr-1"
                             >
-                              {/* Render languages twice to achieve infinite seamless loop */}
                               {[...languageList, ...languageList].map((lang, idx) => (
                                 <div 
                                   key={idx} 
@@ -282,7 +349,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               ))}
                             </motion.div>
                             
-                            {/* Visual scrollbar mimicking screenshot */}
                             <div className="absolute right-0 top-2 bottom-2 w-1.5 rounded-full bg-zinc-200 dark:bg-zinc-850 flex justify-center py-1">
                               <div className="w-1 h-8 rounded-full bg-zinc-450 dark:bg-zinc-700" />
                             </div>
@@ -295,14 +361,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                   if (step.image === "insights_anim") {
                     return (
-                      /* CUSTOM ANIMATED INSIGHTS CLOSE-UP (Step 2) - Matches exact screenshot cards layout */
+                      /* CUSTOM ANIMATED INSIGHTS CLOSE-UP (Step 2) */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
                         <div className="space-y-[3%] w-full max-w-[490px] mx-auto scale-95 md:scale-100">
                           
                           {/* Top Row (4 Columns) */}
                           <div className="grid grid-cols-4 gap-2">
                             
-                            {/* Words Card */}
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
                               <div className="w-7 h-7 rounded-full bg-[#e01e41]/5 text-[#e01e41] flex items-center justify-center shrink-0">
                                 <Mic className="w-3.5 h-3.5 fill-[#e01e41]/10" />
@@ -315,7 +380,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
                             </div>
 
-                            {/* WPM Card */}
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
                               <div className="w-7 h-7 rounded-full bg-purple-500/5 text-purple-600 flex items-center justify-center shrink-0">
                                 <Clock className="w-3.5 h-3.5" />
@@ -328,7 +392,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
                             </div>
 
-                            {/* Fixes Card */}
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
                               <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-600 flex items-center justify-center shrink-0">
                                 <Pencil className="w-3.5 h-3.5" />
@@ -341,7 +404,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
                             </div>
 
-                            {/* Status Card */}
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
                               <div className="w-7 h-7 rounded-full bg-emerald-500/5 text-emerald-600 flex items-center justify-center shrink-0">
                                 <Check className="w-3.5 h-3.5" />
@@ -357,7 +419,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           {/* Bottom Row (3 Columns) */}
                           <div className="grid grid-cols-3 gap-2">
                             
-                            {/* TYPING SPEED Card */}
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Typing Speed</div>
                               <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-rose-500/10 text-rose-500 flex items-center justify-center bg-rose-500/5">
@@ -397,7 +458,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
                             </div>
 
-                            {/* SMART EDITING Card */}
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
                               <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-600 flex items-center justify-center bg-purple-500/5">
@@ -411,7 +471,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Fixes made by Parayu</div>
                               </div>
 
-                              {/* Nested rows inside smart editing */}
                               <div className="space-y-1 text-[8.5px] font-bold">
                                 <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
                                   <div className="flex items-center gap-1">
@@ -434,7 +493,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
                             </div>
 
-                            {/* DICTATION VOLUME Card */}
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Dictation Volume</div>
                               <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-600 flex items-center justify-center bg-emerald-500/5">
@@ -442,13 +500,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
 
                               <div className="my-1.5 leading-tight">
-                                <div className="text-[19px] font-heading font-black text-zinc-850 dark:text-zinc-100">
+                                <div className="text-[19px] font-heading font-black text-[#1c1b19] dark:text-white">
                                   <Counter from={1900} to={2068} active={activeStep === 1} />
                                 </div>
                                 <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Total words dictated</div>
                               </div>
 
-                              {/* Nested rows inside dictation volume */}
                               <div className="space-y-1 text-[8.5px] font-bold">
                                 <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
                                   <div className="flex items-center gap-1">
@@ -471,6 +528,128 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                           </div>
+
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (step.image === "history_anim") {
+                    return (
+                      /* CUSTOM ANIMATED HISTORY LOG SCROLL + DOUBLE CLICK COPY (Step 3) */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col p-[4%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[10px]">
+                        
+                        {/* Status / Instruction bar replicating screenshot */}
+                        <div className="flex justify-between items-center mb-3 shrink-0">
+                          <div className="flex items-center gap-2 text-zinc-400 font-bold">
+                            <span className="w-2 h-2 rounded-full bg-zinc-300" />
+                            <span>Press</span>
+                            <span className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-750 px-2 py-0.5 rounded font-mono font-extrabold text-[#1c1b19] dark:text-white">⌥ Option</span>
+                            <span>to start dictating</span>
+                          </div>
+                          {/* Dropdown replica */}
+                          <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[9.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1 cursor-default">
+                            <span>🌐 Malayalam</span>
+                            <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
+                          </div>
+                        </div>
+
+                        {/* History list wrapper */}
+                        <div className="flex-grow overflow-hidden relative">
+                          <motion.div
+                            animate={
+                              activeStep === 2
+                                ? { y: [0, -110, -110, 0] }
+                                : { y: 0 }
+                            }
+                            transition={{
+                              duration: 5.5,
+                              times: [0, 0.4, 0.75, 1],
+                              repeat: Infinity,
+                              repeatDelay: 1,
+                              ease: "easeInOut"
+                            }}
+                            className="space-y-3 pr-1 py-1"
+                          >
+                            {historyItems.map((h, i) => {
+                              const isTargetCard = i === 0; // Target the top card for copy animation
+                              return (
+                                <motion.div 
+                                  key={i}
+                                  animate={
+                                    isTargetCard && isCopied
+                                      ? { 
+                                          borderColor: "#e01e41", 
+                                          boxShadow: "0 0 0 1px #e01e41, 0 4px 20px rgba(0, 0, 0, 0.015)" 
+                                        }
+                                      : { 
+                                          borderColor: "#e8e5df", 
+                                          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.015)" 
+                                        }
+                                  }
+                                  className="bg-white dark:bg-zinc-900 border p-3 rounded-2xl flex flex-col justify-start relative transition-colors duration-200"
+                                >
+                                  <div className="flex justify-between items-center text-[8px] font-bold text-zinc-400 mb-1.5">
+                                    <span>{h.time}</span>
+                                    {/* Copied Badge matches index.html color: var(--accent) #e01e41 */}
+                                    <span 
+                                      className={cn(
+                                        "font-black text-[#e01e41] text-[8.5px] transition-opacity duration-150",
+                                        isTargetCard && isCopied ? "opacity-100" : "opacity-0"
+                                      )}
+                                    >
+                                      Copied
+                                    </span>
+                                  </div>
+                                  <p className="text-[10px] text-[#1c1b19] dark:text-zinc-200 leading-normal font-semibold">
+                                    {h.text}
+                                  </p>
+                                </motion.div>
+                              );
+                            })}
+                          </motion.div>
+
+                          {/* Circular pointer indicator simulating cursor dot double clicking */}
+                          <AnimatePresence>
+                            {activeStep === 2 && (
+                              <motion.div
+                                initial={{ opacity: 0, x: 260, y: 150 }}
+                                animate={{ 
+                                  opacity: 1,
+                                  x: [260, 180, 180, 260],
+                                  y: [150, 45, 45, 150],
+                                  scale: isClicking ? [1, 0.8, 1.1, 1] : 1
+                                }}
+                                exit={{ opacity: 0 }}
+                                transition={{
+                                  duration: 5.5,
+                                  times: [0, 0.5, 0.75, 1],
+                                  repeat: Infinity,
+                                  repeatDelay: 1,
+                                  ease: "easeInOut"
+                                }}
+                                className="absolute w-5 h-5 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
+                              >
+                                {/* Core clicking point */}
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#e01e41]" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          {/* Dynamic Toast popup mimicking feedback */}
+                          <AnimatePresence>
+                            {showToast && (
+                              <motion.div 
+                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                className="absolute top-12 left-1/2 -translate-x-1/2 bg-zinc-900 text-white font-bold text-[9px] px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 z-50 border border-white/10"
+                              >
+                                <Check className="w-3 h-3 text-emerald-500" />
+                                <span>Copied to clipboard!</span>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
 
                         </div>
                       </div>
