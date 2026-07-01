@@ -125,7 +125,7 @@ export default function PricingPage() {
       </Link>
       <ul className="space-y-4 text-sm mt-auto border-t border-border pt-6">
         {[
-          { bold: "2,500 words", normal: "English dictation / mo" },
+          { bold: "2,500 words", normal: "English dictation / week" },
           { bold: "LOW English Brain (0.07B parameters)", normal: "runs locally" },
           { bold: "System-wide paste", normal: "⌥ Space hotkey" },
         ].map((item, i) => (
@@ -414,9 +414,9 @@ export default function PricingPage() {
                   </thead>
                   <tbody className="divide-y divide-border text-muted-foreground">
                     <tr>
-                      <td className="p-4 font-bold text-foreground">Monthly Words Quota</td>
-                      <td className="p-4 font-semibold">2,500 words</td>
-                      <td className="p-4 font-semibold">5,000 words</td>
+                      <td className="p-4 font-bold text-foreground">Words Quota</td>
+                      <td className="p-4 font-semibold">2,500 words / week</td>
+                      <td className="p-4 font-semibold">5,000 words / month</td>
                       <td className="p-4 font-extrabold text-[#e01e41] dark:text-rose-400">Unlimited</td>
                       <td className="p-4 font-extrabold text-purple-600 dark:text-purple-400">Unlimited</td>
                     </tr>
@@ -497,7 +497,7 @@ export default function PricingPage() {
             <div>
               <h3 className="font-heading font-bold text-base text-foreground mb-2">Can I try before I buy?</h3>
               <p className="text-sm text-muted-foreground font-semibold leading-relaxed">
-                Absolutely. The Free plan gives you 2,500 words of English dictation.
+                Absolutely. The Free plan gives you 2,500 words of English dictation per week (resets every Monday).
                 Upgrade to Base or Pro when you need higher word limits, Malayalam access, or AI tone styling.
               </p>
             </div>

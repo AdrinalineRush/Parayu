@@ -37,7 +37,7 @@ const faqs = [
   },
   {
     q: "How much does Parayu cost compared to Wispr Flow?",
-    a: "Parayu offers a free tier (2,500 words/mo) with budget-friendly subscription plans (₹399/mo or approx. $5/mo) to unlock unlimited dictation, all AI models, and native Malayalam support offline. Wispr Flow is a subscription-based cloud service costing $15/month.",
+    a: "Parayu offers a free tier (2,500 words/week) with budget-friendly subscription plans (₹399/mo or approx. $5/mo) to unlock unlimited dictation, all AI models, and native Malayalam support offline. Wispr Flow is a subscription-based cloud service costing $15/month.",
   },
   {
     q: "Can Parayu handle Malayalam?",
@@ -101,8 +101,8 @@ export default function ParayuVsWisprFlowPage() {
   } else if (activeTab === "pricing") {
     parayuTitle = currency === "INR" ? "Free Tier + ₹399/mo Pro" : "Free Tier + $5/mo Pro";
     parayuDesc = currency === "INR" 
-      ? "Get started for free with 2,500 words/mo (100% offline). Unlock unlimited offline dictation, Malayalam support, and all AI models for ₹399/month."
-      : "Get started for free with 2,500 words/mo (100% offline). Unlock unlimited offline dictation, Malayalam support, and all AI models for $5/month.";
+      ? "Get started for free with 2,500 words/week (100% offline). Unlock unlimited offline dictation, Malayalam support, and all AI models for ₹399/month."
+      : "Get started for free with 2,500 words/week (100% offline). Unlock unlimited offline dictation, Malayalam support, and all AI models for $5/month.";
     wisprTitle = currency === "INR" ? "Free Tier + ₹1,250/mo Pro" : "Free Tier + $15/mo Pro";
     wisprDesc = currency === "INR"
       ? "Offers a capped cloud free tier (2,000 words/week). Unlimited cloud processing is available via their Pro subscription at approx. ₹1,250/month ($15/mo)."
@@ -121,7 +121,7 @@ export default function ParayuVsWisprFlowPage() {
     { feature: "AI Voice Commands", icon: Sparkles, parayuVal: "Built-in offline commands", parayuDesc: "Fast, private & on-device", parayuYes: true, wisprVal: "Cloud-based", wisprDesc: "AI Commands", wisprYes: true, isCloudIcon: true },
     { feature: "Native Malayalam Script", icon: Languages, parayuVal: "Yes (Optimized offline)", parayuDesc: "Built for Malayalam users", parayuYes: true, wisprVal: "Translates to English", wisprDesc: "Cloud only", wisprYes: false },
     { feature: "Personal Offline Dictionary", icon: Wallet, parayuVal: "Yes", parayuDesc: "Stays on your device", parayuYes: true, wisprVal: "No", wisprDesc: "Cloud synced", wisprYes: false },
-    { feature: "Free Tier Available", icon: Gift, parayuVal: "Yes (2,500 words/mo)", parayuDesc: "Completely offline", parayuYes: true, wisprVal: "Yes (2,000 words/week)", wisprDesc: "Cloud based", wisprYes: true, isCloudIcon: true },
+    { feature: "Free Tier Available", icon: Gift, parayuVal: "Yes (2,500 words/week)", parayuDesc: "Completely offline", parayuYes: true, wisprVal: "Yes (2,000 words/week)", wisprDesc: "Cloud based", wisprYes: true, isCloudIcon: true },
     { feature: "Pro Plan Price", icon: DollarSign, parayuVal: currency === "INR" ? "₹399/mo" : "$5/mo", parayuDesc: "Affordable & powerful", parayuYes: true, wisprVal: currency === "INR" ? "₹1,250/mo" : "$15/mo", wisprDesc: "More expensive", wisprYes: false }
   ];
 

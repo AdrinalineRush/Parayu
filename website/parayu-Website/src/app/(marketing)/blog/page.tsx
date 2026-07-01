@@ -94,7 +94,7 @@ const BLOG_POSTS: BlogPost[] = [
       "### 3. Cost & Subscriptions",
       "Pricing models vary significantly:",
       "- **Wispr Flow**: Offers a capped free tier (approx. 2,000 words/week) with Pro subscriptions at $15/month (or $144/year).",
-      "- **Parayu**: Offers a capped free tier (2,500 words/mo) with Pro subscriptions at ₹399/month (approx. $5/mo) to unlock unlimited dictation, all AI models, and native Malayalam support offline — saving you over 65% on Pro features.",
+      "- **Parayu**: Offers a capped free tier (2,500 words/week) with Pro subscriptions at ₹399/month (approx. $5/mo) to unlock unlimited dictation, all AI models, and native Malayalam support offline — saving you over 65% on Pro features.",
       "### Summary Recommendation",
       "If you need cross-device cloud sync and are comfortable with online audio processing, Wispr Flow is a solid choice. However, if privacy is your priority, you travel frequently, or you want to save over 65% on Pro subscription fees, Parayu provides a highly secure, native, offline-first alternative."
     ]

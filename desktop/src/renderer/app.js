@@ -394,7 +394,7 @@ function renderLimitBanner() {
           </div>
           <div>
             <div style="font-size: 13.5px; font-weight: 700; color: #1a202c; margin-bottom: 2px;">Word limit reached (2,500 words)</div>
-            <div style="font-size: 12px; color: #718096; line-height: 1.4;">You have dictated ${total.toLocaleString()} words this month. Upgrade to Pro for unlimited transcription.</div>
+            <div style="font-size: 12px; color: #718096; line-height: 1.4;">You have dictated ${total.toLocaleString()} words this week. Upgrade to Pro for unlimited transcription.</div>
           </div>
         </div>
         <button class="limit-btn" id="limit-upgrade-btn" style="background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap;">Upgrade Plan</button>
@@ -411,8 +411,8 @@ function renderLimitBanner() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 18px; height: 18px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           </div>
           <div>
-            <div style="font-size: 13.5px; font-weight: 700; color: #1a202c; margin-bottom: 2px;">Approaching monthly word limit</div>
-            <div style="font-size: 12px; color: #718096; line-height: 1.4;">You have used ${total.toLocaleString()} of your ${limit.toLocaleString()} monthly words. ${remaining} words remaining.</div>
+            <div style="font-size: 13.5px; font-weight: 700; color: #1a202c; margin-bottom: 2px;">Approaching weekly word limit</div>
+            <div style="font-size: 12px; color: #718096; line-height: 1.4;">You have used ${total.toLocaleString()} of your ${limit.toLocaleString()} weekly words. ${remaining} words remaining.</div>
           </div>
         </div>
         <button class="limit-btn" id="limit-upgrade-btn" style="background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap;">Upgrade Plan</button>
@@ -3676,7 +3676,7 @@ function pricingPlansForBilling() {
         desc: 'Essential local dictation features to test performance.',
         price: '₹0', suffix: '/month', cta: 'Get Started',
         features: [
-          '<strong>2,500 words</strong> English dictation / mo',
+          '<strong>2,500 words</strong> English dictation / week',
           '<strong>Tiny English Brain (0.04B parameters)</strong> runs locally',
           '<strong>System-wide paste</strong> ⌥ Space hotkey'
         ]
