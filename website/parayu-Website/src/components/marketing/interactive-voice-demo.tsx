@@ -368,7 +368,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     };
   }, [activeStep]);
 
-  // Trigger Offline AI toggling and automatic typing text correction animation loop for Step 4
+  // Trigger Offline AI toggling and automatic speech transcription block correction loop for Step 4
   useEffect(() => {
     if (activeStep !== 3) {
       setAiActive(false);
@@ -378,50 +378,44 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       return;
     }
 
+    // Sequence loop simulating real software transcription pop (not typewriter style)
+    // 0s - 1.2s: Silence / Recording (empty text box, flashing mic indicator)
+    // 1.2s: Transcribed raw text block pops in all at once!
+    // 2.2s: Active Offline AI switch slides ON (red)
+    // 2.8s: Mode switcher slides to Smart Mode
+    // 3.4s: Correction animation triggers (blur overlay)
+    // 3.8s: Corrected text block replaces stutter block instantly!
+    // 6.8s: Reset loop
     const runAiLoop = () => {
       setAiActive(false);
       setModeActive("fast");
       setCorrectionState("typing");
       setDemoText("");
 
-      // Typwriter simulation for stutter text
-      const rawText = "We need... we need to test... test the model offline... offline.";
-      let charIndex = 0;
-      let typerInterval: NodeJS.Timeout;
-
-      const startTyping = () => {
-        typerInterval = setInterval(() => {
-          if (charIndex <= rawText.length) {
-            setDemoText(rawText.slice(0, charIndex));
-            charIndex++;
-          } else {
-            clearInterval(typerInterval);
-            setCorrectionState("waiting");
-          }
-        }, 35);
-      };
-      
-      startTyping();
+      const transcriptionPopTimer = setTimeout(() => {
+        setCorrectionState("waiting");
+        setDemoText("We need... we need to test... test the model offline... offline.");
+      }, 1200);
 
       const toggleOnTimer = setTimeout(() => {
         setAiActive(true);
-      }, 3000);
+      }, 2400);
 
       const modeSmartTimer = setTimeout(() => {
         setModeActive("smart");
-      }, 3700);
+      }, 3100);
 
       const correctingTimer = setTimeout(() => {
         setCorrectionState("correcting");
-      }, 4300);
+      }, 3700);
 
       const correctedTimer = setTimeout(() => {
         setCorrectionState("clean");
         setDemoText("We need to test the model offline.");
-      }, 4800);
+      }, 4100);
 
       return () => {
-        clearInterval(typerInterval);
+        clearTimeout(transcriptionPopTimer);
         clearTimeout(toggleOnTimer);
         clearTimeout(modeSmartTimer);
         clearTimeout(correctingTimer);
@@ -430,7 +424,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     };
 
     const cleanup = runAiLoop();
-    const interval = setInterval(runAiLoop, 8000);
+    const interval = setInterval(runAiLoop, 7200);
 
     return () => {
       cleanup();
@@ -583,7 +577,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-650 flex items-center justify-center shrink-0">
+                              <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-655 flex items-center justify-center shrink-0">
                                 <Pencil className="w-3.5 h-3.5" />
                               </div>
                               <div className="min-w-0 leading-tight">
@@ -650,7 +644,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-650 flex items-center justify-center bg-purple-500/5">
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-655 flex items-center justify-center bg-purple-500/5">
                                 <Pencil className="w-3 h-3" />
                               </div>
 
@@ -711,7 +705,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse block shrink-0" />
                                     <span className="text-emerald-600 font-extrabold">Ready</span>
                                   </div>
-                                  <ChevronDown className="w-3 h-3 text-zinc-400" />
+                                  <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
                                 </div>
                               </div>
                             </div>
@@ -854,8 +848,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                   if (step.image === "offline_ai_anim") {
                     return (
-                      /* CUSTOM ANIMATED ACTIVE OFFLINE AI OPTIONS CARD + TYPING DICTATION CLEANUP (Step 4) */
-                      /* Features visual satisfying feedback of "turning on" (neon outline glow, radial pulse, background morph) */
+                      /* CUSTOM ANIMATED ACTIVE OFFLINE AI OPTIONS CARD + SPEECH TRANSCRIPTION POP & CLEANUP (Step 4) */
+                      /* Corrected text appears instantly (transcription pop) instead of slow typing, representing local dictation */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
                         <div className="space-y-[3%] w-full max-w-[390px] mx-auto scale-[0.88] md:scale-95 origin-center">
                           
@@ -1010,9 +1004,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   ? { filter: "blur(1px)", opacity: 0.6 }
                                   : { filter: "blur(0px)", opacity: 1 }
                               }
-                              className="text-[9px] font-semibold leading-relaxed text-[#1c1b19] dark:text-zinc-200 flex-grow pr-5"
+                              className="text-[9px] font-semibold leading-relaxed text-[#1c1b19] dark:text-zinc-200 flex-grow pr-5 min-h-[28px]"
                             >
-                              {demoText}
+                              {demoText ? (
+                                <span>{demoText}</span>
+                              ) : (
+                                <span className="text-zinc-350 dark:text-zinc-650 italic font-normal">Speak into your microphone...</span>
+                              )}
                               <motion.span 
                                 animate={{ opacity: [1, 0, 1] }}
                                 transition={{ repeat: Infinity, duration: 0.8 }}
@@ -1025,16 +1023,16 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <span>Auto-Correction Demo</span>
                               <AnimatePresence mode="wait">
                                 {correctionState === "typing" && (
-                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-550 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-zinc-450" /> typing voice input with stutters...</motion.span>
+                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-550 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-[#e01e41]" /> listening... speak now</motion.span>
                                 )}
                                 {correctionState === "waiting" && (
-                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-650 font-black">waiting for AI trigger...</motion.span>
+                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-600 font-black">raw transcription populated</motion.span>
                                 )}
                                 {correctionState === "correcting" && (
-                                  <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> turning on offline AI...</motion.span>
+                                  <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline AI...</motion.span>
                                 )}
                                 {correctionState === "clean" && (
-                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-650 font-black flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> cleaned instantly (100% offline!)</motion.span>
+                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-650 font-black flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> corrected & finalized offline!</motion.span>
                                 )}
                               </AnimatePresence>
                             </div>
