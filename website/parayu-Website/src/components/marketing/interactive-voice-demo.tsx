@@ -20,7 +20,10 @@ import {
   ShieldCheck,
   Home,
   Globe,
-  Calendar
+  Calendar,
+  Plus,
+  Trash2,
+  ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -75,7 +78,7 @@ const scrollSteps = [
     color: "#1f6f63",
     tab: "Dictionary",
     icon: BookOpen,
-    image: "dictionary.png"
+    image: "dictionary_anim" // Custom animated dictionary entry + speech rewrite loop WITH sidebar
   },
   {
     id: "snippets",
@@ -224,7 +227,7 @@ function MockSidebar({ activeView }: { activeView: string }) {
               <div className="text-[6.5px] text-zinc-450 font-bold truncate">Enterprise</div>
             </div>
           </div>
-          <ChevronDown className="w-2.5 h-2.5 text-zinc-450 shrink-0" />
+          <ChevronDown className="w-2.5 h-2.5 text-zinc-455 shrink-0" />
         </div>
 
         {/* App Version */}
@@ -269,7 +272,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [dropdownOpen, setDropdownOpen] = useState(true);
   const [selectedLang, setSelectedLang] = useState("English");
   const [langListScrollY, setLangListScrollY] = useState(0);
-  const [langCursor, setLangCursor] = useState({ x: 230, y: 150, opacity: 0, scale: 1 });
+  const [langCursor, setLangCursor] = useState({ x: 300, y: 110, opacity: 0, scale: 1 });
 
   // Custom animation states for Step 3: History double-click copy
   const [isCopied, setIsCopied] = useState(false);
@@ -281,6 +284,15 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [modeActive, setModeActive] = useState("fast"); // "fast" | "smart"
   const [demoText, setDemoText] = useState("");
   const [correctionState, setCorrectionState] = useState("typing"); // "typing" | "waiting" | "correcting" | "clean"
+
+  // Custom animation states for Step 5: Dictionary entry creation + translation rewrite example
+  const [misheardVal, setMisheardVal] = useState("");
+  const [correctVal, setCorrectVal] = useState("");
+  const [dictAdded, setDictAdded] = useState(false);
+  const [dictBtnPress, setDictBtnPress] = useState(false);
+  const [dictCursor, setDictCursor] = useState({ x: 260, y: 140, opacity: 0, scale: 1 });
+  const [dictDemoText, setDictDemoText] = useState("");
+  const [dictDemoState, setDictDemoState] = useState("silent"); // "silent" | "untranslated" | "scanning" | "translated"
 
   // Mouse coordinate values for premium interactive 3D parallax tilt
   const x = useMotionValue(0);
@@ -494,6 +506,112 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
     const cleanup = runAiLoop();
     const interval = setInterval(runAiLoop, 7200);
+
+    return () => {
+      cleanup();
+      clearInterval(interval);
+    };
+  }, [activeStep]);
+
+  // Trigger Step 5: Custom Dictionary Entry + Transcription morph loop animation
+  useEffect(() => {
+    if (activeStep !== 4) {
+      setMisheardVal("");
+      setCorrectVal("");
+      setDictAdded(false);
+      setDictBtnPress(false);
+      setDictCursor({ x: 260, y: 140, opacity: 0, scale: 1 });
+      setDictDemoText("");
+      setDictDemoState("silent");
+      return;
+    }
+
+    // Timed sequence loop:
+    // 0s - 0.5s: Silent rest state
+    // 0.5s: Cursor appears over Misheard input. Types "parayoo" (letter by letter simulation)
+    // 1.8s: Cursor moves to Correct word input. Types "Parayu"
+    // 3.0s: Cursor moves over black 'Add' button.
+    // 3.4s: Add button clicked (button scales, list row pops in)
+    // 4.2s: Dictation box pops up untranslated block: "Welcome to parayoo."
+    // 5.2s: Word replacement scan triggers. Highlight background.
+    // 5.7s: Text replaces instantly to: "Welcome to Parayu."
+    // 8.5s: Reset loop.
+    const runDictLoop = () => {
+      setMisheardVal("");
+      setCorrectVal("");
+      setDictAdded(false);
+      setDictBtnPress(false);
+      setDictCursor({ x: 260, y: 140, opacity: 0, scale: 1 });
+      setDictDemoText("");
+      setDictDemoState("silent");
+
+      const cursorShowTimer = setTimeout(() => {
+        setDictCursor(prev => ({ ...prev, opacity: 1, x: 200, y: 55 }));
+      }, 400);
+
+      // Typing "parayoo"
+      const typeMisheardTimer = setTimeout(() => {
+        setMisheardVal("parayoo");
+      }, 1000);
+
+      const cursorMoveCorrectTimer = setTimeout(() => {
+        setDictCursor(prev => ({ ...prev, x: 280, y: 55 }));
+      }, 1600);
+
+      // Typing "Parayu"
+      const typeCorrectTimer = setTimeout(() => {
+        setCorrectVal("Parayu");
+      }, 2100);
+
+      const cursorMoveAddTimer = setTimeout(() => {
+        setDictCursor(prev => ({ ...prev, x: 372, y: 55 }));
+      }, 2700);
+
+      // Click Add
+      const clickAddTimer = setTimeout(() => {
+        setDictCursor(prev => ({ ...prev, scale: 0.8 }));
+        setDictBtnPress(true);
+        setDictAdded(true);
+      }, 3305);
+
+      const releaseAddTimer = setTimeout(() => {
+        setDictCursor(prev => ({ ...prev, scale: 1, opacity: 0 }));
+        setDictBtnPress(false);
+      }, 3600);
+
+      // Dictation voice pop
+      const voicePopTimer = setTimeout(() => {
+        setDictDemoState("untranslated");
+        setDictDemoText("Welcome to parayoo.");
+      }, 4300);
+
+      // Scanning word match
+      const scannerTimer = setTimeout(() => {
+        setDictDemoState("scanning");
+      }, 5400);
+
+      // Word morph / replacepop
+      const morphTimer = setTimeout(() => {
+        setDictDemoState("translated");
+        setDictDemoText("Welcome to Parayu.");
+      }, 6000);
+
+      return () => {
+        clearTimeout(cursorShowTimer);
+        clearTimeout(typeMisheardTimer);
+        clearTimeout(cursorMoveCorrectTimer);
+        clearTimeout(typeCorrectTimer);
+        clearTimeout(cursorMoveAddTimer);
+        clearTimeout(clickAddTimer);
+        clearTimeout(releaseAddTimer);
+        clearTimeout(voicePopTimer);
+        clearTimeout(scannerTimer);
+        clearTimeout(morphTimer);
+      };
+    };
+
+    const cleanup = runDictLoop();
+    const interval = setInterval(runDictLoop, 9000);
 
     return () => {
       cleanup();
@@ -718,7 +836,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-emerald-500/5 text-emerald-600 flex items-center justify-center shrink-0">
+                              <div className="w-7 h-7 rounded-full bg-emerald-500/5 text-emerald-650 flex items-center justify-center shrink-0">
                                 <Check className="w-3.5 h-3.5" />
                               </div>
                               <div className="min-w-0 leading-tight">
@@ -734,7 +852,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Typing Speed</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-rose-500/10 text-rose-500 flex items-center justify-center bg-rose-500/5">
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-rose-500/10 text-rose-505 flex items-center justify-center bg-rose-505/5">
                                 <Clock className="w-3 h-3" />
                               </div>
                               
@@ -747,12 +865,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad5)" 
+                                    stroke="url(#insightsGrad6)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad5" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad6" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
@@ -773,7 +891,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-655 flex items-center justify-center bg-purple-500/5">
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-650 flex items-center justify-center bg-purple-500/5">
                                 <Pencil className="w-3 h-3" />
                               </div>
 
@@ -808,7 +926,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Dictation Volume</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-655 flex items-center justify-center bg-emerald-500/5">
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-650 flex items-center justify-center bg-emerald-500/5">
                                 <Mic className="w-3 h-3" />
                               </div>
 
@@ -1020,7 +1138,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <div className="pl-5 pt-0.5">
                                 <div className="inline-flex bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 p-0.5 rounded-lg">
                                   <button className="bg-white dark:bg-zinc-900 text-zinc-850 dark:text-white text-[8px] font-extrabold px-2.5 py-0.5 rounded-md shadow-sm">English</button>
-                                  <button className="text-zinc-450 text-[8px] font-bold px-2.5 py-0.5 rounded-md">Malayalam</button>
+                                  <button className="text-zinc-455 text-[8px] font-bold px-2.5 py-0.5 rounded-md">Malayalam</button>
                                 </div>
                               </div>
                             </div>
@@ -1058,8 +1176,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             {/* Section 3: Fast Mode / Smart Mode Switcher */}
                             <div className="bg-[#f0ece5] dark:bg-zinc-950 p-0.5 rounded-lg relative flex items-center w-full">
                               <div className="grid grid-cols-2 w-full text-center relative z-10 text-[8px] font-extrabold">
-                                <span className={cn("py-1 transition-colors duration-200", modeActive === "fast" ? "text-zinc-900 dark:text-white font-[800]" : "text-zinc-450")}>Fast Mode</span>
-                                <span className={cn("py-1 transition-colors duration-200", modeActive === "smart" ? "text-zinc-900 dark:text-white font-[800]" : "text-zinc-450")}>Smart Mode</span>
+                                <span className={cn("py-1 transition-colors duration-200", modeActive === "fast" ? "text-zinc-900 dark:text-white font-[800]" : "text-zinc-455")}>Fast Mode</span>
+                                <span className={cn("py-1 transition-colors duration-200", modeActive === "smart" ? "text-zinc-900 dark:text-white font-[800]" : "text-zinc-455")}>Smart Mode</span>
                               </div>
                               <motion.div 
                                 animate={{ 
@@ -1154,7 +1272,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-555 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-[#e01e41]" /> listening... speak now</motion.span>
                                 )}
                                 {correctionState === "waiting" && (
-                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-605 font-black">raw transcription populated</motion.span>
+                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-600 font-black">raw transcription populated</motion.span>
                                 )}
                                 {correctionState === "correcting" && (
                                   <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline AI...</motion.span>
@@ -1168,6 +1286,151 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           </motion.div>
 
                         </div>
+                      </div>
+                    );
+                  }
+
+                  if (step.image === "dictionary_anim") {
+                    return (
+                      /* CUSTOM ANIMATED DICTIONARY VIEW (Step 5) - Full macOS App Interface simulation */
+                      /* Shows Misheard Input, Correct Word, black Add button, list insertion, and speech replacement pop */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
+                        
+                        {/* Sidebar with active tab active */}
+                        <MockSidebar activeView="dictionary" />
+
+                        {/* Right Content area: Dictionary control panel */}
+                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[9.5px] overflow-hidden min-w-0 bg-[#faf9f7] dark:bg-zinc-950 relative">
+                          
+                          {/* Title */}
+                          <div className="text-[12px] font-heading font-black text-zinc-900 dark:text-white mb-2 shrink-0">
+                            Dictionary
+                          </div>
+
+                          {/* Add word pair inputs (replicates screenshot exactly) */}
+                          <div className="flex items-center gap-1.5 shrink-0 mb-3">
+                            {/* Misheard Input with red border focus */}
+                            <div className="relative border border-[#e01e41] rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm">
+                              <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", misheardVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-400")}>
+                                {misheardVal || "Misheard word"}
+                              </span>
+                            </div>
+
+                            {/* Correct Input with light border */}
+                            <div className="relative border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm">
+                              <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", correctVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-405")}>
+                                {correctVal || "Correct word"}
+                              </span>
+                            </div>
+
+                            {/* Add Button widget (clicks) */}
+                            <motion.button 
+                              animate={{ scale: dictBtnPress ? 0.95 : 1 }}
+                              className="bg-[#1c1b19] dark:bg-zinc-800 hover:bg-[#2b2a26] text-white font-extrabold text-[9px] px-3.5 py-1.5 rounded-lg shrink-0 shadow-sm transition-transform leading-none"
+                            >
+                              Add
+                            </motion.button>
+                          </div>
+
+                          {/* List of custom word mappings */}
+                          <div className="flex-grow overflow-hidden relative">
+                            <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wider mb-1.5">
+                              Custom Mappings List
+                            </div>
+
+                            <AnimatePresence mode="wait">
+                              {!dictAdded ? (
+                                <motion.div 
+                                  key="no-words"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  exit={{ opacity: 0 }}
+                                  className="text-[9px] text-zinc-405 font-bold pt-1 pl-0.5"
+                                >
+                                  No custom words yet.
+                                </motion.div>
+                              ) : (
+                                <motion.div 
+                                  key="words-list"
+                                  initial={{ opacity: 0, y: 5 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 p-2 rounded-xl flex items-center justify-between shadow-sm max-w-[280px]"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <span className="bg-red-500/10 text-[#e01e41] text-[8px] px-1.5 py-0.5 rounded font-extrabold">parayoo</span>
+                                    <ArrowRight className="w-3 h-3 text-zinc-400" />
+                                    <span className="bg-emerald-500/10 text-emerald-600 text-[8px] px-1.5 py-0.5 rounded font-extrabold">Parayu</span>
+                                  </div>
+                                  <Trash2 className="w-3.5 h-3.5 text-zinc-400" />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+
+                            {/* Dictation Example Demonstration overlay (showing speech replace pop) */}
+                            <AnimatePresence>
+                              {dictAdded && (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: 15 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="absolute bottom-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl shadow-md space-y-1.5"
+                                >
+                                  {/* Title bar */}
+                                  <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1">
+                                    <span className="flex items-center gap-1 text-[#1f6f63]">
+                                      <Mic className="w-2.5 h-2.5 text-zinc-450 animate-pulse" />
+                                      <span>Dictation Replacement Demo</span>
+                                    </span>
+                                    <span className="uppercase text-[6px]">Scanner</span>
+                                  </div>
+
+                                  {/* Speech transcription container */}
+                                  <div className="text-[8.5px] font-semibold leading-normal min-h-[14px]">
+                                    {dictDemoState === "untranslated" && (
+                                      <span>Welcome to <span className="bg-red-500/10 text-[#e01e41] px-1 rounded font-bold">parayoo</span>.</span>
+                                    )}
+                                    {dictDemoState === "scanning" && (
+                                      <span>Welcome to <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 0.4 }} className="bg-yellow-500/10 text-yellow-600 px-1 rounded font-bold">parayoo</motion.span>.</span>
+                                    )}
+                                    {dictDemoState === "translated" && (
+                                      <span>Welcome to <motion.span initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-emerald-500/10 text-emerald-600 px-1 rounded font-bold">Parayu</motion.span>.</span>
+                                    )}
+                                  </div>
+
+                                  {/* Status indicator bar */}
+                                  <div className="flex justify-between items-center text-[6.5px] font-black text-zinc-450 pt-1 border-t border-zinc-100 dark:border-zinc-850">
+                                    <span>Spoken input</span>
+                                    <AnimatePresence mode="wait">
+                                      {dictDemoState === "untranslated" && <span key="unt" className="text-zinc-500">populating raw transcription...</span>}
+                                      {dictDemoState === "scanning" && <span key="scan" className="text-[#e01e41] font-extrabold animate-pulse">scanning dictionary matches...</span>}
+                                      {dictDemoState === "translated" && <span key="trans" className="text-emerald-600 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> Auto-replaced!</span>}
+                                    </AnimatePresence>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+
+                          </div>
+
+                          {/* Cursor indicator simulating click-and-type interaction inside dictionary form */}
+                          <AnimatePresence>
+                            {dictCursor.opacity > 0 && (
+                              <motion.div
+                                animate={{ 
+                                  x: dictCursor.x, 
+                                  y: dictCursor.y, 
+                                  scale: dictCursor.scale,
+                                  opacity: dictCursor.opacity
+                                }}
+                                transition={{ type: "tween", ease: "easeInOut", duration: 0.6 }}
+                                className="absolute w-4.5 h-4.5 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
+                              >
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#e01e41]" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                        </div>
+
                       </div>
                     );
                   }
