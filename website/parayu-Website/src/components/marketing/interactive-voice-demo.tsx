@@ -372,9 +372,9 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     offset: ["start end", "end start"]
   });
 
-  // Scale and translate transforms
-  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.96, 1.03, 1.03, 0.96]);
-  const translateY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [30, 0, 0, -30]);
+  // Scale and translate transforms - Optimized scale and translation mapping for stable vertical centering fluid mechanics
+  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.98, 1.01, 1.01, 0.98]);
+  const translateY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [15, 0, 0, -15]);
 
   // Track scroll position to update active step index
   useEffect(() => {
@@ -898,13 +898,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   return (
     <div ref={containerRef} className={cn("max-w-6xl mx-auto px-4 relative", className)}>
       
-      {/* 2-Column Sticky Scrollytelling Layout - Improvised grid width (7 cols left, 5 cols right) */}
+      {/* 2-Column Sticky Scrollytelling Layout - Improvised grid width (8 cols left, 4 cols right) */}
       <div className="grid md:grid-cols-12 gap-8 items-start">
         
-        {/* Left Column: Sticky macOS Application Mockup Window (Spans 7 columns, enlarged and centered in viewport) */}
-        <div className="md:col-span-7 sticky top-36 h-[520px] flex items-center justify-center shrink-0 z-20">
+        {/* Left Column: Sticky macOS Application Mockup Window (Spans 8 columns, centered vertically with fluid calculations) */}
+        <div className="md:col-span-8 sticky top-[calc(50vh-275px)] h-[550px] flex items-center justify-center shrink-0 z-20">
           
-          {/* Frameless mockup window (Max width enlarged to 660px for premium readability) */}
+          {/* Frameless mockup window (Max width enlarged to 710px for premium layout footprint) */}
           <motion.div 
             ref={cardRef}
             onMouseMove={handleMouseMove}
@@ -917,7 +917,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
               transformStyle: "preserve-3d",
               perspective: 1200
             }}
-            className="w-full max-w-[660px] aspect-[1180/740] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300 cursor-grab active:cursor-grabbing"
+            className="w-full max-w-[710px] aspect-[1180/740] bg-[#fcfbfa] dark:bg-zinc-955 border border-[#e8e5df] dark:border-zinc-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300 cursor-grab active:cursor-grabbing"
           >
             
             {/* macOS Window Titlebar Traffic-Light Buttons (Overlayed on top of screens for authenticity) */}
@@ -985,8 +985,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 
                                 {/* Search bar inside red outline */}
                                 <div className="relative border border-[#e01e41] rounded-lg px-2 py-1.5 flex items-center gap-1.5 shrink-0 bg-white dark:bg-zinc-950 shadow-sm">
-                                  <Search className="w-3 h-3 text-zinc-400" />
-                                  <span className="text-[9.5px] text-zinc-400 dark:text-zinc-505 font-normal">Search language...</span>
+                                  <Search className="w-3 h-3 text-zinc-405" />
+                                  <span className="text-[9.5px] text-zinc-405 dark:text-zinc-505 font-normal">Search language...</span>
                                 </div>
 
                                 {/* Scrolling list containing options with beta badges */}
@@ -1109,7 +1109,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           <div className="grid grid-cols-3 gap-2">
                             
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
-                              <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Typing Speed</div>
+                              <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wide">Typing Speed</div>
                               <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-rose-500/10 text-rose-505 flex items-center justify-center bg-rose-505/5">
                                 <Clock className="w-3 h-3" />
                               </div>
@@ -1123,12 +1123,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad9)" 
+                                    stroke="url(#insightsGrad10)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad9" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad10" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
@@ -1148,13 +1148,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
-                              <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
+                              <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wide">Smart Editing</div>
                               <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-655 flex items-center justify-center bg-purple-500/5">
                                 <Pencil className="w-3 h-3" />
                               </div>
 
                               <div className="my-1.5 leading-tight">
-                                <div className="text-[19px] font-heading font-black text-zinc-850 dark:text-zinc-100">
+                                <div className="text-[19px] font-heading font-black text-zinc-855 dark:text-zinc-100">
                                   <Counter from={20} to={40} active={activeStep === 1} />
                                 </div>
                                 <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Fixes made by Parayu</div>
@@ -1183,7 +1183,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
-                              <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Dictation Volume</div>
+                              <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wide">Dictation Volume</div>
                               <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-650 flex items-center justify-center bg-emerald-500/5">
                                 <Mic className="w-3 h-3" />
                               </div>
@@ -1283,7 +1283,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     }
                                     className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl flex flex-col justify-start relative transition-colors duration-200"
                                   >
-                                    <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 mb-1.5">
+                                    <div className="flex justify-between items-center text-[7px] font-bold text-zinc-455 mb-1.5">
                                       <span>{h.time}</span>
                                       <span 
                                         className={cn(
@@ -1536,7 +1536,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline AI...</motion.span>
                                 )}
                                 {correctionState === "clean" && (
-                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-650 font-black flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> corrected & finalized offline!</motion.span>
+                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-655 font-black flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> corrected & finalized offline!</motion.span>
                                 )}
                               </AnimatePresence>
                             </div>
@@ -1629,10 +1629,10 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 <motion.div 
                                   initial={{ opacity: 0, y: 15 }}
                                   animate={{ opacity: 1, y: 0 }}
-                                  className="absolute bottom-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl shadow-md space-y-1.5"
+                                  className="absolute bottom-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 p-2.5 rounded-xl shadow-md space-y-1.5"
                                 >
                                   {/* Title bar */}
-                                  <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1">
+                                  <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-855 pb-1">
                                     <span className="flex items-center gap-1 text-[#1f6f63]">
                                       <Mic className="w-2.5 h-2.5 text-zinc-450 animate-pulse" />
                                       <span>Dictation Replacement Demo</span>
@@ -1769,7 +1769,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                       <span className="font-extrabold text-zinc-900 dark:text-white text-[9.5px]">my link</span>
                                       <ArrowRight className="w-3.5 h-3.5 text-zinc-405 shrink-0" />
                                     </div>
-                                    <div className="text-[8px] font-bold text-zinc-450 truncate">
+                                    <div className="text-[8px] font-bold text-zinc-455 truncate">
                                       calendly.com/dev-demo
                                     </div>
                                   </div>
@@ -1789,9 +1789,9 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   className="absolute bottom-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-805 p-2.5 rounded-xl shadow-md space-y-1.5"
                                 >
                                   {/* Title bar */}
-                                  <div className="flex justify-between items-center text-[7px] font-bold text-zinc-455 border-b border-zinc-100 dark:border-zinc-850 pb-1">
+                                  <div className="flex justify-between items-center text-[7px] font-bold text-zinc-455 border-b border-zinc-100 dark:border-zinc-855 pb-1">
                                     <span className="flex items-center gap-1 text-[#ff8a1f]">
-                                      <Mic className="w-2.5 h-2.5 text-zinc-450 animate-pulse" />
+                                      <Mic className="w-2.5 h-2.5 text-zinc-455 animate-pulse" />
                                       <span>Macro Shorthand Expansion Demo</span>
                                     </span>
                                     <span className="uppercase text-[6px]">Detector</span>
@@ -1814,7 +1814,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <div className="flex justify-between items-center text-[6.5px] font-black text-zinc-455 pt-1 border-t border-zinc-100 dark:border-zinc-850">
                                     <span>Voice command</span>
                                     <AnimatePresence mode="wait">
-                                      {snipDemoState === "unexpanded" && <span key="une" className="text-zinc-500">populating raw transcription...</span>}
+                                      {snipDemoState === "unexpanded" && <span key="une" className="text-zinc-550">populating raw transcription...</span>}
                                       {snipDemoState === "matching" && <span key="match" className="text-[#ff8a1f] font-extrabold animate-pulse">expanding shortcut trigger...</span>}
                                       {snipDemoState === "expanded" && <span key="exp" className="text-emerald-655 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> expanded macro successfully!</span>}
                                     </AnimatePresence>
@@ -1893,7 +1893,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                           ? { scale: 1, borderColor: "#e01e41", boxShadow: "0 0 0 1px #e01e41" }
                                           : { scale: 1, borderColor: "rgba(228,228,231,1)", boxShadow: "0 0 0 0px transparent" }
                                     }
-                                    className="bg-white dark:bg-zinc-950 border rounded-xl py-1 px-3 flex items-center justify-between transition-all duration-200 cursor-pointer"
+                                    className="bg-white dark:bg-zinc-955 border rounded-xl py-1 px-3 flex items-center justify-between transition-all duration-200 cursor-pointer"
                                   >
                                     <div className="flex items-center min-w-0 leading-none">
                                       <span className="text-[9.5px] font-black text-zinc-900 dark:text-white">{opt.name}</span>
@@ -1916,7 +1916,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             {/* Lower Info detail card explaining model features (Morphs details dynamically) */}
-                            <div className="bg-[#faf8f5] dark:bg-zinc-950/50 border border-zinc-150 dark:border-zinc-850 p-2.5 rounded-xl flex-grow flex flex-col justify-between min-h-[90px]">
+                            <div className="bg-[#faf8f5] dark:bg-zinc-955/50 border border-zinc-150 dark:border-zinc-850 p-2.5 rounded-xl flex-grow flex flex-col justify-between min-h-[90px]">
                               <div className="space-y-1">
                                 <div className="flex items-center gap-1.5 leading-none">
                                   <span className="text-[9.5px] font-black text-zinc-900 dark:text-white">
@@ -1939,7 +1939,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <div className="h-px bg-zinc-150 dark:bg-zinc-800 my-1" />
 
                               {/* Status row action */}
-                              <div className="flex justify-between items-center text-[7.5px] font-black text-zinc-450">
+                              <div className="flex justify-between items-center text-[7.5px] font-black text-zinc-455">
                                 <span>{brainOptions[selectedBrain].status}</span>
                                 {brainOptions[selectedBrain].actionText === "Download" ? (
                                   <button className="bg-[#ece7df] dark:bg-zinc-800 hover:bg-[#dedad2] text-zinc-850 dark:text-white text-[7.5px] font-extrabold px-2.5 py-1 rounded-md shadow-sm flex items-center gap-0.5 leading-none">
@@ -1999,8 +1999,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
           </motion.div>
         </div>
 
-        {/* Right Column: Scrollable Steps explaining each tab (Spans 5 columns for layout balance) */}
-        <div className="md:col-span-5 space-y-16 py-12">
+        {/* Right Column: Scrollable Steps explaining each tab (Spans 4 columns for layout balance) */}
+        <div className="md:col-span-4 space-y-16 py-12">
           {scrollSteps.map((step, idx) => {
             const isActive = activeStep === idx;
             return (
