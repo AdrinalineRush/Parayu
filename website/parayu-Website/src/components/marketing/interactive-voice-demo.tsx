@@ -14,7 +14,10 @@ import {
   MessageSquare,
   Keyboard,
   Cpu,
-  Volume2
+  Volume2,
+  Brain,
+  Settings,
+  Flame
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -22,10 +25,10 @@ import { toast } from "sonner";
 const MANGLISH_INPUT = "Innalathe meetingil njan paranja karyangal ormayundo? Athil chila changes undu. Project timeline kurachude lag aavan chance undu...";
 const TRANSLATED_OUTPUT = "Hey, do you remember what I said in yesterday's sync? There are a few changes. The timeline might get delayed a bit...";
 
-type AppType = "notion" | "slack" | "vscode" | "gmail";
+type AppType = "parayu" | "notion" | "slack" | "vscode" | "gmail";
 
 export function InteractiveVoiceDemo({ className }: { className?: string }) {
-  const [activeApp, setActiveApp] = useState<AppType>("notion");
+  const [activeApp, setActiveApp] = useState<AppType>("parayu");
   const [step, setStep] = useState<"idle" | "recording" | "processing" | "completed">("idle");
   const [typedText, setTypedText] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -94,6 +97,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       <div className="flex flex-wrap items-center justify-center gap-2 mb-6 select-none z-10">
         <span className="text-xs font-bold text-muted-foreground mr-2">Select Active Focused App:</span>
         {[
+          { id: "parayu", label: "Parayu macOS", icon: <Brain className="w-3.5 h-3.5 text-[#e01e41]" /> },
           { id: "notion", label: "Notion", icon: <FileText className="w-3.5 h-3.5" /> },
           { id: "slack", label: "Slack", icon: <MessageSquare className="w-3.5 h-3.5" /> },
           { id: "vscode", label: "VS Code", icon: <Code className="w-3.5 h-3.5" /> },
@@ -131,7 +135,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
             </div>
             
             {/* Dynamic Window Title */}
-            <span className="text-[10px] text-muted-foreground font-mono tracking-tight">
+            <span className="text-[10px] text-muted-foreground font-mono tracking-tight font-semibold">
+              {activeApp === "parayu" && "Parayu Desktop App - Dashboard"}
               {activeApp === "notion" && "Notion - 📄 meeting_notes.md"}
               {activeApp === "slack" && "Slack Workspace - #project-updates"}
               {activeApp === "vscode" && "VS Code - app.js"}
@@ -143,6 +148,135 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
           {/* Focused App window body content */}
           <div className="flex-grow p-5 overflow-y-auto flex flex-col bg-background">
             
+            {/* Parayu UI */}
+            {activeApp === "parayu" && (
+              <div className="flex-grow flex -mx-5 -my-5 h-full bg-[#fcfbfa] dark:bg-zinc-950 font-sans text-xs">
+                {/* Left Sidebar */}
+                <div className="w-[140px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-3 flex flex-col justify-between shrink-0">
+                  <div className="space-y-4">
+                    {/* Logo & Brand */}
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-[#e01e41] flex items-center justify-center text-white font-black text-xs">
+                        P
+                      </div>
+                      <span className="font-heading font-black text-[13px] tracking-tight dark:text-white">Parayu</span>
+                    </div>
+
+                    {/* Nav Items */}
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 px-2 py-1 rounded bg-[#e01e41]/10 text-[#e01e41] font-bold text-[11px] cursor-default">
+                        <Brain className="w-3.5 h-3.5" />
+                        <span>Dashboard</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1 rounded text-zinc-500 dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40">
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>History</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1 rounded text-zinc-500 dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40">
+                        <Code className="w-3.5 h-3.5" />
+                        <span>Pro Writing</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1 rounded text-zinc-500 dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40">
+                        <Settings className="w-3.5 h-3.5" />
+                        <span>Settings</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Account state */}
+                  <div className="flex items-center gap-1.5 border-t border-[#e8e5df] dark:border-zinc-800 pt-2 text-[10px]">
+                    <div className="w-4 h-4 rounded-full bg-[#7c5cff] text-white flex items-center justify-center font-black">A</div>
+                    <span className="font-bold text-zinc-700 dark:text-zinc-350 truncate">Adarsh</span>
+                  </div>
+                </div>
+
+                {/* Right Content */}
+                <div className="flex-grow p-4 overflow-y-auto space-y-4">
+                  {/* Greeting */}
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="font-heading font-black text-xs text-[#1c1b19] dark:text-white leading-tight">Welcome back, Adarsh</h4>
+                      <p className="text-[9px] text-zinc-400 dark:text-zinc-500 font-medium">All local speech brains ready.</p>
+                    </div>
+                    {/* Active Brain Badge */}
+                    <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-2 py-0.5 rounded-full text-[9px] font-bold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>PRO Brain Active</span>
+                    </div>
+                  </div>
+
+                  {/* KPI Grid */}
+                  <div className="grid grid-cols-4 gap-2">
+                    <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-2 rounded-xl text-center">
+                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Total Words</div>
+                      <div className="text-xs font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">
+                        {step === "completed" ? "14,844" : "14,820"}
+                      </div>
+                    </div>
+                    <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-2 rounded-xl text-center">
+                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Speed</div>
+                      <div className="text-xs font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">87 WPM</div>
+                    </div>
+                    <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-2 rounded-xl text-center">
+                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Fixes Made</div>
+                      <div className="text-xs font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">324</div>
+                    </div>
+                    <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-2 rounded-xl text-center">
+                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Streak</div>
+                      <div className="text-xs font-heading font-black text-[#e01e41] dark:text-rose-400 mt-0.5 flex items-center justify-center gap-0.5">
+                        <Flame className="w-3.5 h-3.5 fill-[#e01e41] stroke-[#e01e41]" />
+                        <span>12d</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Visual Row with Heatmap & Quick note */}
+                  <div className="grid grid-cols-5 gap-3">
+                    {/* WPM / Integrations Visual */}
+                    <div className="col-span-3 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-3 rounded-xl flex flex-col justify-between h-[105px]">
+                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2">Desktop Integration</div>
+                      <div className="space-y-1.5">
+                        {[
+                          { label: "Slack", pct: "45%", w: "w-[45%]", color: "bg-[#e01e41]" },
+                          { label: "VS Code", pct: "30%", w: "w-[30%]", color: "bg-[#7c5cff]" },
+                          { label: "Chrome", pct: "15%", w: "w-[15%]", color: "bg-emerald-500" },
+                        ].map((item) => (
+                          <div key={item.label} className="space-y-0.5">
+                            <div className="flex justify-between text-[9px] font-bold text-zinc-600 dark:text-zinc-400">
+                              <span>{item.label}</span>
+                              <span>{item.pct}</span>
+                            </div>
+                            <div className="w-full bg-[#f6f4f0] dark:bg-zinc-800 h-1 rounded-full overflow-hidden">
+                              <div className={cn("h-full rounded-full", item.color, item.w)} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Quick Dictation Panel */}
+                    <div className="col-span-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-3 rounded-xl flex flex-col justify-between h-[105px] relative overflow-hidden">
+                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Quick Dictation Note</div>
+                      <div className="text-[10px] text-zinc-700 dark:text-zinc-350 leading-relaxed font-semibold pr-1 py-1 flex-grow overflow-y-auto">
+                        {typedText ? (
+                          <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{typedText}</motion.span>
+                        ) : (
+                          <span className="text-zinc-400 dark:text-zinc-500 italic">Dictated text will type here...</span>
+                        )}
+                        {step !== "completed" && step !== "idle" && (
+                          <motion.span
+                            animate={{ opacity: [1, 0, 1] }}
+                            transition={{ repeat: Infinity, duration: 0.8 }}
+                            className="inline-block w-1.5 h-3.5 ml-0.5 bg-primary"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Notion UI */}
             {activeApp === "notion" && (
               <div className="space-y-4">
