@@ -120,15 +120,15 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Main Interactive Demo (System-Wide Active App simulator) */}
-      <Section className="py-12 relative bg-card border-y border-border" size="lg">
-        <div className="max-w-4xl mx-auto text-center mb-10">
-          <span className="text-primary font-bold text-xs uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">Interactive Demo</span>
+      {/* Product Walkthrough Section */}
+      <Section className="py-16 relative bg-card border-y border-border" size="lg">
+        <div className="max-w-4xl mx-auto text-center mb-16">
+          <span className="text-primary font-bold text-xs uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">On-Device Workflow</span>
           <h2 className="text-3xl md:text-5xl font-heading font-black mt-3 text-foreground">
-            See how it pastes globally
+            How Parayu works
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-sm md:text-base font-semibold mt-2">
-            Try clicking below to play the Malayalam voice clip. Watch the floating overlay transcribe and type the final English translation block directly into the focused window.
+            Sits in your menu bar. Triggers in two seconds. Clean offline speech translation.
           </p>
         </div>
         
