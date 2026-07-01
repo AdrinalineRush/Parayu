@@ -15,7 +15,10 @@ import {
   Check,
   Mic,
   Pencil,
-  ChevronDown
+  ChevronDown,
+  Lock,
+  ShieldCheck,
+  Home
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -107,7 +110,7 @@ const languageList = [
 
 // Mockup logs demonstrating actual software product usage instead of dev conversation screenshot text
 const mockupHistoryItems = [
-  { time: "11:24", text: "ഇന്നലെ ഞാൻ അയച്ച ഇമെയിൽ വായിച്ചുനോക്കിയോ? (Did you read the email I sent yesterday?)" },
+  { time: "11:24", text: "ഇന്നലെ ഞാൻ അയച്ച ഇമെയിൽ വായിച്ചുനോക്കിയോ? അജണ്ടയിൽ ചില മാറ്റങ്ങൾ വരുത്തേണ്ടതുണ്ട്. (Did you read the email I sent yesterday? We need to make changes to the agenda.)" },
   { time: "11:15", text: "We need to finalize the product requirements document and deploy the local models." },
   { time: "11:08", text: "സുപ്രഭാതം, ഇന്നത്തെ മീറ്റിംഗിന്റെ അജണ്ട ഒന്ന് അയച്ചുതരാൻ താല്പര്യപ്പെടുന്നു. (Good morning, please send today's meeting agenda.)" },
   { time: "10:52", text: "The translation engine will compile offline directly on the CPU without network requests." },
@@ -116,14 +119,16 @@ const mockupHistoryItems = [
 
 // Reusable mock navigation item style definition for sidebar menu sync
 const sidebarMenuItems = [
-  { view: "home", label: "Home", icon: Sparkles },
-  { view: "history", label: "Parayu History", icon: Clock },
-  { view: "dictionary", label: "Dictionary", icon: BookOpen },
-  { view: "snippets", label: "Snippets", icon: Keyboard },
-  { view: "settings", label: "Settings", icon: Settings }
+  { view: "home", label: "Home", icon: Home, showBadge: false },
+  { view: "history", label: "Parayu History", icon: Clock, showBadge: false },
+  { view: "dictionary", label: "Dictionary", icon: BookOpen, showBadge: false },
+  { view: "snippets", label: "Snippets", icon: Keyboard, showBadge: false },
+  { view: "screenwriting", label: "Pro Writing", icon: Pencil, showBadge: true },
+  { view: "settings", label: "Settings", icon: Settings, showBadge: false },
+  { view: "admin", label: "Admin", icon: ShieldCheck, showBadge: false }
 ];
 
-// Custom Sidebar Component replicating macOS side card structure exactly
+// Custom Sidebar Component replicating macOS side card structure exactly (pinpoint matching screenshot)
 function MockSidebar({ activeView }: { activeView: string }) {
   return (
     <div className="w-[23%] bg-[#f6f4f0] dark:bg-zinc-950 border-r border-[#e8e5df] dark:border-zinc-800 flex flex-col justify-between p-2.5 h-full shrink-0 font-sans select-none">
@@ -132,8 +137,14 @@ function MockSidebar({ activeView }: { activeView: string }) {
       <div className="space-y-4">
         {/* Brand logo & title */}
         <div className="flex items-center gap-1.5 px-1 py-0.5">
-          <div className="w-5 h-5 rounded bg-zinc-900 flex items-center justify-center text-white font-extrabold text-[10px]">P</div>
-          <span className="text-[12px] font-heading font-black tracking-tight text-zinc-850 dark:text-white">Parayu</span>
+          {/* Logo container matching exact black rounded square layout */}
+          <div className="w-5.5 h-5.5 rounded-lg bg-zinc-950 flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 19v4M8 23h8" />
+            </svg>
+          </div>
+          <span className="text-[12.5px] font-heading font-black tracking-tight text-zinc-900 dark:text-white">Parayu</span>
         </div>
 
         {/* Sidebar Nav Links */}
@@ -145,14 +156,21 @@ function MockSidebar({ activeView }: { activeView: string }) {
               <div 
                 key={item.view}
                 className={cn(
-                  "flex items-center gap-2 py-1.5 px-2 text-[9px] font-bold rounded-lg transition-all cursor-pointer relative",
+                  "flex items-center justify-between py-1.5 px-2 text-[9px] font-bold rounded-lg transition-all cursor-pointer relative",
                   isActive
                     ? "bg-[#e01e41]/5 text-[#e01e41] border-l-[3px] border-[#e01e41] rounded-l-none"
-                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 hover:text-zinc-850 dark:hover:text-white"
+                    : "text-zinc-650 dark:text-zinc-400 hover:bg-zinc-200/50 hover:text-zinc-850 dark:hover:text-white"
                 )}
               >
-                <Icon className={cn("w-3.5 h-3.5", isActive ? "text-[#e01e41]" : "text-zinc-500")} />
-                <span>{item.label}</span>
+                <div className="flex items-center gap-2">
+                  <Icon className={cn("w-3.5 h-3.5", isActive ? "text-[#e01e41]" : "text-zinc-500")} />
+                  <span>{item.label}</span>
+                </div>
+                {item.showBadge && (
+                  <span className="bg-[#a02bb0]/10 text-[#a02bb0] text-[6.5px] font-extrabold px-1 rounded-sm tracking-wide">
+                    PRO
+                  </span>
+                )}
               </div>
             );
           })}
@@ -160,23 +178,42 @@ function MockSidebar({ activeView }: { activeView: string }) {
       </div>
 
       {/* Footer Area */}
-      <div className="space-y-2">
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl text-center shadow-sm">
-          <div className="text-[8px] font-black text-[#e01e41] uppercase tracking-wider mb-0.5">Pro Active</div>
-          <div className="text-[7px] font-bold text-zinc-400">On-device dictation active</div>
+      <div className="space-y-2.5">
+        {/* Enterprise Plan Card matching user screenshot */}
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl shadow-sm space-y-2">
+          <div className="flex items-start gap-2">
+            <div className="w-5.5 h-5.5 rounded bg-purple-500/10 text-purple-650 flex items-center justify-center shrink-0">
+              <Lock className="w-3 h-3" />
+            </div>
+            <div className="min-w-0 leading-tight">
+              <div className="text-[8.5px] font-extrabold text-zinc-900 dark:text-zinc-200">Enterprise Plan</div>
+              <p className="text-[6.5px] font-semibold text-zinc-450 mt-0.5 leading-normal">
+                Team-wide volumes active. Contact your IT administrator.
+              </p>
+            </div>
+          </div>
+          <button className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 hover:bg-zinc-50 text-[#e01e41] text-[7.5px] font-extrabold py-1 rounded-lg transition-colors shadow-sm">
+            License details
+          </button>
         </div>
 
-        <div className="flex items-center gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-2">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#e81f3a] to-[#ff9b3d] flex items-center justify-center text-white text-[8px] font-black shrink-0">
-            SR
+        {/* User profile widget matching Dev Demo avatar */}
+        <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 pt-2 px-0.5">
+          <div className="flex items-center gap-2 min-w-0">
+            {/* Red DD initials circle */}
+            <div className="w-6 h-6 rounded-full bg-[#e01e41] text-white flex items-center justify-center text-[7.5px] font-black shrink-0">
+              DD
+            </div>
+            <div className="min-w-0 leading-tight">
+              <div className="text-[8.5px] font-extrabold truncate text-zinc-900 dark:text-white">Dev Demo</div>
+              <div className="text-[7.5px] text-zinc-450 font-bold truncate">Enterprise</div>
+            </div>
           </div>
-          <div className="min-w-0 leading-tight">
-            <div className="text-[8px] font-extrabold truncate text-zinc-850 dark:text-white">Sanjay Raj</div>
-            <div className="text-[7px] text-[#e01e41] font-bold">Pro Plan</div>
-          </div>
+          <ChevronDown className="w-3 h-3 text-zinc-400 shrink-0" />
         </div>
 
-        <div className="text-[7px] text-zinc-445 font-bold text-center">Parayu v1.0.0</div>
+        {/* App Version */}
+        <div className="text-[7px] text-zinc-400 font-bold text-center">Parayu v1.0.0</div>
       </div>
 
     </div>
@@ -616,7 +653,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
                             {/* Dropdown replica */}
                             <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1 rounded-lg shadow-sm text-[8.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1 cursor-default">
-                              <span>🌐 Malayalam</span>
+                              <span>🌐 English</span>
                               <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
                             </div>
                           </div>
