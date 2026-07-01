@@ -90,8 +90,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const y = useMotionValue(0);
 
   // Physics springs to make mouse hover tilt butter-smooth
-  const rotateXSpring = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), { stiffness: 150, damping: 25 });
-  const rotateYSpring = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), { stiffness: 150, damping: 25 });
+  const rotateXSpring = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { stiffness: 150, damping: 25 });
+  const rotateYSpring = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), { stiffness: 150, damping: 25 });
 
   // Bind scroll progress for scaling entry transitions
   const { scrollYProgress } = useScroll({
@@ -99,8 +99,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     offset: ["start end", "end start"]
   });
 
-  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.94, 1.02, 1.02, 0.94]);
-  const translateY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [40, 0, 0, -40]);
+  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.95, 1.02, 1.02, 0.95]);
+  const translateY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [30, 0, 0, -30]);
 
   // Track scroll position to update active step index
   useEffect(() => {
@@ -157,12 +157,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     <div ref={containerRef} className={cn("max-w-6xl mx-auto px-4 relative", className)}>
       
       {/* 2-Column Sticky Scrollytelling Layout */}
-      <div className="grid md:grid-cols-2 gap-12 items-start">
+      <div className="grid md:grid-cols-12 gap-12 items-start">
         
         {/* Left Column: Sticky macOS Application Mockup Window */}
-        <div className="sticky top-28 h-[480px] flex items-center justify-center shrink-0 z-20">
+        <div className="md:col-span-6 sticky top-28 h-[480px] flex items-center justify-center shrink-0 z-20">
           
-          {/* Frameless macOS app mockup window with 3D tilt hover and scroll zoom animation */}
+          {/* Frameless macOS app mockup window in default 1180:740 ratio with 3D tilt animations */}
           <motion.div 
             ref={cardRef}
             onMouseMove={handleMouseMove}
@@ -175,45 +175,45 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
               transformStyle: "preserve-3d",
               perspective: 1200
             }}
-            className="w-full max-w-[470px] h-[390px] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300 cursor-grab active:cursor-grabbing"
+            className="w-full max-w-[550px] aspect-[1180/740] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300 cursor-grab active:cursor-grabbing"
           >
             
-            {/* Left Sidebar Navigation - Replicates exact desktop Nav style */}
-            <div className="w-[160px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-4 pt-10 flex flex-col justify-between shrink-0 relative">
+            {/* Left Sidebar Navigation - Replicates exact default ratio width 21.7% */}
+            <div className="w-[21.7%] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-[3%] pt-[7%] flex flex-col justify-between shrink-0 relative h-full">
               {/* macOS Window Dots */}
-              <div className="absolute top-4 left-4 flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+              <div className="absolute top-[5%] left-[6%] flex gap-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#ff5f56]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#ffbd2e]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#27c93f]" />
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-[15%]">
                 {/* Brand Header */}
-                <div className="flex items-center gap-2 pt-1">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-zinc-200 shadow-sm bg-white">
+                <div className="flex items-center gap-[6%] pt-[4%]">
+                  <div className="w-[22%] aspect-square rounded-md overflow-hidden shrink-0 border border-zinc-200 shadow-sm bg-white">
                     <img src="/logo.png" alt="Parayu Logo" className="w-full h-full object-contain" />
                   </div>
-                  <span className="font-heading font-black text-[15px] tracking-tight text-[#1c1b19] dark:text-white">Parayu</span>
+                  <span className="font-heading font-black text-[1.4vw] md:text-[0.9vw] xl:text-[13px] tracking-tight text-[#1c1b19] dark:text-white">Parayu</span>
                 </div>
 
-                {/* Nav Items List - Exact CSS classes from desktop index.html */}
-                <div className="space-y-0.5 relative text-[11px]">
+                {/* Nav Items List */}
+                <div className="space-y-[2%] relative text-[1vw] md:text-[0.65vw] xl:text-[9.5px]">
                   {[
-                    { label: "Home", idx: 0, icon: <Brain className="w-4 h-4" /> },
-                    { label: "Parayu History", idx: 1, icon: <Clock className="w-4 h-4" /> },
-                    { label: "Dictionary", idx: 2, icon: <BookOpen className="w-4 h-4" /> },
-                    { label: "Snippets", idx: 3, icon: <Keyboard className="w-4 h-4" /> },
-                    { label: "Pro Writing", idx: 4, icon: <Code className="w-4 h-4" />, badge: "PRO" },
-                    { label: "Settings", idx: 5, icon: <Settings className="w-4 h-4" /> }
+                    { label: "Home", idx: 0, icon: <Brain className="w-3 h-3 md:w-3.5 md:h-3.5" /> },
+                    { label: "Parayu History", idx: 1, icon: <Clock className="w-3 h-3 md:w-3.5 md:h-3.5" /> },
+                    { label: "Dictionary", idx: 2, icon: <BookOpen className="w-3 h-3 md:w-3.5 md:h-3.5" /> },
+                    { label: "Snippets", idx: 3, icon: <Keyboard className="w-3 h-3 md:w-3.5 md:h-3.5" /> },
+                    { label: "Pro Writing", idx: 4, icon: <Code className="w-3 h-3 md:w-3.5 md:h-3.5" />, badge: "PRO" },
+                    { label: "Settings", idx: 5, icon: <Settings className="w-3 h-3 md:w-3.5 md:h-3.5" /> }
                   ].map((item) => {
                     const isActive = activeStep === item.idx;
                     return (
                       <div 
                         key={item.label}
                         className={cn(
-                          "relative flex items-center gap-2.5 px-3 py-2 rounded-lg font-bold transition-all duration-200 cursor-default",
+                          "relative flex items-center gap-[8%] px-[8%] py-[6%] rounded-lg font-bold transition-all duration-200 cursor-default",
                           isActive 
-                            ? "bg-[#e01e41]/5 text-[#e01e41] before:content-[''] before:absolute before:left-[5px] before:top-1/2 before:-translate-y-1/2 before:w-[3px] before:height-[14px] before:rounded-full before:bg-gradient-to-b before:from-[#e81f3a] before:to-[#a02bb0]"
+                            ? "bg-[#e01e41]/5 text-[#e01e41] before:content-[''] before:absolute before:left-[4px] before:top-1/2 before:-translate-y-1/2 before:w-[2.5px] before:height-[45%] before:rounded-full before:bg-gradient-to-b before:from-[#e81f3a] before:to-[#a02bb0]"
                             : "text-[#706b61] dark:text-zinc-400 hover:bg-zinc-150/30"
                         )}
                       >
@@ -221,8 +221,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                         <span className="truncate">{item.label}</span>
                         {item.badge && (
                           <span className={cn(
-                            "ml-auto text-[7px] px-1.5 py-0.2 rounded-full font-black",
-                            isActive ? "bg-purple-100 text-[#a02bb0]" : "bg-zinc-200 dark:bg-zinc-800 text-zinc-500"
+                            "ml-auto text-[0.8vw] md:text-[0.5vw] xl:text-[7px] px-[5%] py-[2%] rounded-full font-black",
+                            isActive ? "bg-[#a02bb0]/10 text-[#a02bb0]" : "bg-zinc-200 dark:bg-zinc-800 text-zinc-500"
                           )}>
                             {item.badge}
                           </span>
@@ -233,63 +233,64 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                 </div>
               </div>
 
-              {/* Sidebar Dev Profile Widget */}
-              <div className="flex flex-col gap-1.5 border-t border-[#e8e5df] dark:border-zinc-800 pt-3 shrink-0 text-[10px]">
-                <div className="flex items-center gap-2">
-                  <div className="w-6.5 h-6.5 rounded-full bg-[#ff5b5b] text-white flex items-center justify-center font-black text-[9px] shadow-sm">DD</div>
+              {/* Sidebar Sanjay Raj Release Profile Widget */}
+              <div className="flex flex-col gap-[8%] border-t border-[#e8e5df] dark:border-zinc-800 pt-[8%] shrink-0 text-[1vw] md:text-[0.6vw] xl:text-[8.5px]">
+                <div className="flex items-center gap-[8%]">
+                  {/* Release avatar with actual CSS background gradient: linear-gradient(135deg, #e81f3a, #ff9b3d) */}
+                  <div className="w-[20%] aspect-square rounded-full bg-gradient-to-br from-[#e81f3a] to-[#ff9b3d] text-white flex items-center justify-center font-black shadow-sm">SR</div>
                   <div className="min-w-0 leading-tight">
-                    <div className="font-extrabold text-[#1c1b19] dark:text-zinc-350 truncate">Dev Demo</div>
-                    <div className="text-[8px] text-[#706b61] dark:text-zinc-500 font-bold">Enterprise</div>
+                    <div className="font-extrabold text-[#1c1b19] dark:text-zinc-350 truncate">Sanjay Raj</div>
+                    <div className="text-[0.9vw] md:text-[0.55vw] xl:text-[7.5px] text-[#706b61] dark:text-zinc-500 font-bold">Pro Plan</div>
                   </div>
                 </div>
-                <span className="text-[8px] text-[#706b61] dark:text-zinc-500 pl-0.5 font-semibold">Parayu v0.1.0</span>
+                <span className="text-[0.8vw] md:text-[0.5vw] xl:text-[7px] text-[#706b61] dark:text-zinc-500 pl-[2%] font-semibold">Parayu v1.0.0</span>
               </div>
             </div>
 
-            {/* Right Screen Area: Smooth sliding frames animation representing exact app tabs */}
-            <div className="flex-grow h-full overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950">
+            {/* Right Screen Area: Smooth sliding frames animation - Replicates exact default ratio width 78.3% */}
+            <div className="w-[78.3%] h-full overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950">
               <motion.div
-                animate={{ y: -activeStep * 390 }}
+                animate={{ y: `-${activeStep * 100}%` }}
                 transition={{ type: "spring", stiffness: 90, damping: 20 }}
-                className="w-full flex flex-col"
+                className="w-full h-full flex flex-col"
               >
                 
                 {/* 01. INSIGHTS FRAME */}
-                <div className="h-[390px] w-full p-5 flex flex-col justify-between shrink-0 text-[10px]">
+                <div className="h-full w-full p-[4%] flex flex-col justify-between shrink-0 text-[1.4vw] md:text-[0.8vw] xl:text-[9.5px]">
                   <div className="flex justify-between items-center shrink-0">
-                    <div className="flex items-center gap-1.5">
-                      <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Insights</h4>
-                      <span className="w-4.5 h-4.5 rounded-full bg-[#e01e41] flex items-center justify-center text-white shrink-0 shadow-sm">
-                        <Sparkles className="w-2.5 h-2.5 fill-white stroke-none" />
+                    <div className="flex items-center gap-[4%]">
+                      <h4 className="text-[1.8vw] md:text-[1vw] xl:text-[11px] font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Insights</h4>
+                      <span className="w-[12%] aspect-square rounded-full bg-[#e01e41] flex items-center justify-center text-white shrink-0 shadow-sm">
+                        <Sparkles className="w-[60%] h-[60%] fill-white stroke-none" />
                       </span>
                     </div>
-                    <span className="text-[7.5px] text-[#706b61] dark:text-zinc-500 font-bold">1 Jul 2026 · 5:55 am</span>
+                    <span className="text-[1vw] md:text-[0.55vw] xl:text-[7.5px] text-[#706b61] dark:text-zinc-500 font-bold">1 Jul 2026 · 5:55 am</span>
                   </div>
 
                   {/* KPI card row */}
-                  <div className="grid grid-cols-3 gap-1.5 shrink-0 text-center">
-                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-2 rounded-lg font-extrabold text-[#1c1b19] dark:text-white shadow-sm">
-                      <div>1,648</div>
-                      <div className="text-[7px] text-[#706b61] uppercase mt-0.5">words</div>
+                  <div className="grid grid-cols-3 gap-[3%] shrink-0 text-center">
+                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-[6%] rounded-lg font-extrabold text-[#1c1b19] dark:text-white shadow-sm">
+                      <div className="text-[1.8vw] md:text-[1vw] xl:text-[11px]">1,648</div>
+                      <div className="text-[1vw] md:text-[0.55vw] xl:text-[7px] text-[#706b61] uppercase mt-[4%]">words</div>
                     </div>
-                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-2 rounded-lg font-extrabold text-[#1c1b19] dark:text-white shadow-sm">
-                      <div>104</div>
-                      <div className="text-[7px] text-[#706b61] uppercase mt-0.5">wpm</div>
+                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-[6%] rounded-lg font-extrabold text-[#1c1b19] dark:text-white shadow-sm">
+                      <div className="text-[1.8vw] md:text-[1vw] xl:text-[11px]">104</div>
+                      <div className="text-[1vw] md:text-[0.55vw] xl:text-[7px] text-[#706b61] uppercase mt-[4%]">wpm</div>
                     </div>
-                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-2 rounded-lg font-extrabold text-[#1c1b19] dark:text-white shadow-sm">
-                      <div>33</div>
-                      <div className="text-[7px] text-[#706b61] uppercase mt-0.5">fixes</div>
+                    <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-[6%] rounded-lg font-extrabold text-[#1c1b19] dark:text-white shadow-sm">
+                      <div className="text-[1.8vw] md:text-[1vw] xl:text-[11px]">33</div>
+                      <div className="text-[1vw] md:text-[0.55vw] xl:text-[7px] text-[#706b61] uppercase mt-[4%]">fixes</div>
                     </div>
                   </div>
 
                   {/* Semicircular Speed Gauge */}
-                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[82px] shrink-0 shadow-sm">
-                    <div className="flex justify-between items-center text-[7.5px] font-bold text-[#706b61] uppercase">
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-[3.5%] rounded-xl flex flex-col justify-between h-[21%] shrink-0 shadow-sm">
+                    <div className="flex justify-between items-center text-[1vw] md:text-[0.55vw] xl:text-[7px] font-bold text-[#706b61] uppercase">
                       <span>Typing Speed</span>
                       <span className="text-rose-500 font-black">+18% vs last week</span>
                     </div>
-                    <div className="relative w-full flex justify-center mt-0.5">
-                      <svg viewBox="0 0 170 96" className="w-[85px] h-[45px]">
+                    <div className="relative w-full flex justify-center mt-[1%]">
+                      <svg viewBox="0 0 170 96" className="w-[30%] aspect-[170/96]">
                         <path d="M 15 85 A 70 70 0 0 1 155 85" fill="none" stroke="#ebe7df" strokeWidth="12" strokeLinecap="round" />
                         <motion.path 
                           initial={{ pathLength: 0 }}
@@ -309,25 +310,25 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                         </defs>
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-end">
-                        <span className="text-[12px] font-black leading-none text-[#1c1b19] dark:text-white">104</span>
-                        <span className="text-[6.5px] font-bold text-[#706b61] uppercase">wpm</span>
+                        <span className="text-[1.8vw] md:text-[1.05vw] xl:text-[11px] font-black leading-none text-[#1c1b19] dark:text-white">104</span>
+                        <span className="text-[1vw] md:text-[0.5vw] xl:text-[6.5px] font-bold text-[#706b61] uppercase">wpm</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Integrations */}
-                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl space-y-1.5 flex-grow shadow-sm">
-                    <div className="text-[7.5px] font-black text-[#706b61] uppercase mb-1">Desktop Integration</div>
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-[3.5%] rounded-xl space-y-[2%] flex-grow shadow-sm">
+                    <div className="text-[1vw] md:text-[0.55vw] xl:text-[7px] font-black text-[#706b61] uppercase mb-[1%]">Desktop Integration</div>
                     {[
                       { label: "Antigravity", words: "592 words", color: "bg-[#e01e41]", w: "85%" },
                       { label: "Claude", words: "557 words", color: "bg-orange-500", w: "80%" }
                     ].map((item) => (
-                      <div key={item.label} className="space-y-0.5">
-                        <div className="flex justify-between text-[7.5px] font-bold text-zinc-650 dark:text-zinc-450">
+                      <div key={item.label} className="space-y-[1%]">
+                        <div className="flex justify-between text-[1vw] md:text-[0.55vw] xl:text-[7.5px] font-bold text-zinc-650 dark:text-zinc-450">
                           <span>{item.label}</span>
                           <span>{item.words}</span>
                         </div>
-                        <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-[12%] rounded-full overflow-hidden">
                           <motion.div 
                             initial={{ width: "0%" }}
                             animate={activeStep === 0 ? { width: item.w } : { width: "0%" }}
@@ -341,17 +342,17 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                 </div>
 
                 {/* 02. PARAYU HISTORY FRAME */}
-                <div className="h-[390px] w-full p-5 flex flex-col justify-between shrink-0 text-[10px]">
+                <div className="h-full w-full p-[4%] flex flex-col justify-between shrink-0 text-[1.4vw] md:text-[0.8vw] xl:text-[9.5px]">
                   <div className="flex justify-between items-center shrink-0">
-                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Parayu History</h4>
-                    <span className="text-[7px] font-black px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600">Free Tier</span>
+                    <h4 className="text-[1.8vw] md:text-[1vw] xl:text-[11px] font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Parayu History</h4>
+                    <span className="text-[1vw] md:text-[0.55vw] xl:text-[7.5px] font-black px-[3%] py-[1%] rounded-full bg-emerald-500/10 text-emerald-600">Free Tier</span>
                   </div>
 
-                  <div className="text-[8px] text-[#706b61] font-semibold italic border-l-2 border-[#e01e41] pl-2 shrink-0 my-1">
+                  <div className="text-[1.1vw] md:text-[0.6vw] xl:text-[8px] text-[#706b61] font-semibold italic border-l-2 border-[#e01e41] pl-[2%] shrink-0 my-[1.5%]">
                     Double-click any card below to instantly copy details to clipboard.
                   </div>
 
-                  <div className="space-y-2.5 flex-grow overflow-y-auto pr-0.5 py-1">
+                  <div className="space-y-[3%] flex-grow overflow-y-auto pr-[1%] py-[1%]">
                     {[
                       { time: "10:45 AM", text: "Hey, do you remember what I said in yesterday's sync? The project timeline will delay by 2 weeks." },
                       { time: "Yesterday", text: "We need to update the pricing matrix to changes to the free word limits and push." }
@@ -359,14 +360,14 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                       <div 
                         key={i}
                         onDoubleClick={() => handleCopyHistory(h.text)}
-                        className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl shadow-sm hover:border-[#e01e41]/35 cursor-pointer select-none group transition-all"
+                        className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-[3.5%] rounded-xl shadow-sm hover:border-[#e01e41]/35 cursor-pointer select-none group transition-all"
                         title="Double-click to copy"
                       >
-                        <div className="flex justify-between items-center text-[7.5px] font-bold text-[#706b61] mb-1">
+                        <div className="flex justify-between items-center text-[1vw] md:text-[0.55vw] xl:text-[7.5px] font-bold text-[#706b61] mb-[1.5%]">
                           <span>{h.time}</span>
-                          <span className="text-[7px] text-[#e01e41] opacity-0 group-hover:opacity-100 transition-opacity font-black">Double-click to copy</span>
+                          <span className="text-[1vw] md:text-[0.5vw] xl:text-[7px] text-[#e01e41] opacity-0 group-hover:opacity-100 transition-opacity font-black">Double-click to copy</span>
                         </div>
-                        <p className="text-[9px] text-[#1c1b19] dark:text-zinc-200 leading-normal font-semibold">
+                        <p className="text-[1.3vw] md:text-[0.75vw] xl:text-[9px] text-[#1c1b19] dark:text-zinc-200 leading-normal font-semibold">
                           {h.text}
                         </p>
                       </div>
@@ -375,94 +376,94 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                 </div>
 
                 {/* 03. DICTIONARY FRAME */}
-                <div className="h-[390px] w-full p-5 flex flex-col justify-between shrink-0 text-[10px]">
+                <div className="h-full w-full p-[4%] flex flex-col justify-between shrink-0 text-[1.4vw] md:text-[0.8vw] xl:text-[9.5px]">
                   <div className="flex justify-between items-center shrink-0">
-                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Dictionary</h4>
-                    <span className="text-[7.5px] text-[#706b61] font-bold">Auto-replacements</span>
+                    <h4 className="text-[1.8vw] md:text-[1vw] xl:text-[11px] font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Dictionary</h4>
+                    <span className="text-[1.1vw] md:text-[0.6vw] xl:text-[8px] text-[#706b61] font-bold">Auto-replacements</span>
                   </div>
 
-                  <div className="grid grid-cols-5 gap-1.5 shrink-0 my-1">
-                    <input readOnly placeholder="Misheard word" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1.5 rounded text-[8px] focus:outline-none" />
-                    <input readOnly placeholder="Correct word" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1.5 rounded text-[8px] focus:outline-none" />
-                    <button className="bg-[#e01e41] text-white rounded flex items-center justify-center shadow-sm"><Plus className="w-3.5 h-3.5" /></button>
+                  <div className="grid grid-cols-5 gap-[1.5%] shrink-0 my-[1.5%]">
+                    <input readOnly placeholder="Misheard word" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-[4%] py-[3%] rounded text-[1.1vw] md:text-[0.6vw] xl:text-[8px] focus:outline-none" />
+                    <input readOnly placeholder="Correct word" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-[4%] py-[3%] rounded text-[1.1vw] md:text-[0.6vw] xl:text-[8px] focus:outline-none" />
+                    <button className="bg-[#e01e41] text-white rounded flex items-center justify-center shadow-sm"><Plus className="w-[45%] h-[45%]" /></button>
                   </div>
 
-                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5 py-1">
+                  <div className="space-y-[2%] flex-grow overflow-y-auto pr-[1%] py-[1%]">
                     {[
                       { from: "ennale", to: "yesterday" },
                       { from: "karyangal", to: "things" },
                       { from: "lag", to: "delay" }
                     ].map((row) => (
-                      <div key={row.from} className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-2 rounded-xl flex items-center justify-between shadow-sm">
+                      <div key={row.from} className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-[4%] py-[3%] rounded-xl flex items-center justify-between shadow-sm">
                         <span className="font-bold text-[#1c1b19] dark:text-zinc-200">
-                          {row.from} <span className="text-[#706b61] font-normal mx-1">→</span> {row.to}
+                          {row.from} <span className="text-[#706b61] font-normal mx-[1.5%]">→</span> {row.to}
                         </span>
-                        <span className="text-[7px] font-black uppercase text-rose-500 hover:underline cursor-default">remove</span>
+                        <span className="text-[1vw] md:text-[0.55vw] xl:text-[7.5px] font-black uppercase text-rose-500 hover:underline cursor-default">remove</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* 04. SNIPPETS FRAME */}
-                <div className="h-[390px] w-full p-5 flex flex-col justify-between shrink-0 text-[10px]">
+                <div className="h-full w-full p-[4%] flex flex-col justify-between shrink-0 text-[1.4vw] md:text-[0.8vw] xl:text-[9.5px]">
                   <div className="flex justify-between items-center shrink-0">
-                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Snippets</h4>
-                    <span className="text-[7.5px] text-[#706b61] font-bold">Text expansions</span>
+                    <h4 className="text-[1.8vw] md:text-[1vw] xl:text-[11px] font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Snippets</h4>
+                    <span className="text-[1.1vw] md:text-[0.6vw] xl:text-[8px] text-[#706b61] font-bold">Text expansions</span>
                   </div>
 
-                  <div className="grid grid-cols-5 gap-1.5 shrink-0 my-1">
-                    <input readOnly placeholder="trigger" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1.5 rounded text-[8px] focus:outline-none" />
-                    <input readOnly placeholder="expands to" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1.5 rounded text-[8px] focus:outline-none" />
-                    <button className="bg-[#e01e41] text-white rounded flex items-center justify-center shadow-sm"><Plus className="w-3.5 h-3.5" /></button>
+                  <div className="grid grid-cols-5 gap-[1.5%] shrink-0 my-[1.5%]">
+                    <input readOnly placeholder="trigger" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-[4%] py-[3%] rounded text-[1.1vw] md:text-[0.6vw] xl:text-[8px] focus:outline-none" />
+                    <input readOnly placeholder="expands to" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-[4%] py-[3%] rounded text-[1.1vw] md:text-[0.6vw] xl:text-[8px] focus:outline-none" />
+                    <button className="bg-[#e01e41] text-white rounded flex items-center justify-center shadow-sm"><Plus className="w-[45%] h-[45%]" /></button>
                   </div>
 
-                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5 py-1">
+                  <div className="space-y-[2%] flex-grow overflow-y-auto pr-[1%] py-[1%]">
                     {[
                       { trigger: "mysig", val: "Kind regards, Adarsh" },
                       { trigger: "timeline", val: "The project timeline will lag by 2 weeks." }
                     ].map((row) => (
-                      <div key={row.trigger} className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-2 rounded-xl flex items-center justify-between shadow-sm">
+                      <div key={row.trigger} className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-[4%] py-[3%] rounded-xl flex items-center justify-between shadow-sm">
                         <div className="min-w-0 leading-tight">
                           <div className="font-extrabold text-[#e01e41]">{row.trigger}</div>
-                          <div className="text-[8px] text-[#706b61] dark:text-zinc-500 truncate mt-0.5">{row.val}</div>
+                          <div className="text-[1vw] md:text-[0.55vw] xl:text-[7.5px] text-[#706b61] dark:text-zinc-500 truncate mt-[1.5%]">{row.val}</div>
                         </div>
-                        <span className="text-[7px] font-black uppercase text-rose-500 cursor-default">remove</span>
+                        <span className="text-[1vw] md:text-[0.55vw] xl:text-[7.5px] font-black uppercase text-rose-500 cursor-default">remove</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* 05. PRO WRITING FRAME */}
-                <div className="h-[390px] w-full p-5 flex flex-col justify-between shrink-0 text-[10px]">
+                <div className="h-full w-full p-[4%] flex flex-col justify-between shrink-0 text-[1.4vw] md:text-[0.8vw] xl:text-[9.5px]">
                   <div className="flex justify-between items-center shrink-0">
-                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Pro Writing</h4>
-                    <span className="text-[7.5px] px-1.5 py-0.2 rounded-full bg-purple-500/10 text-purple-600 font-extrabold">PRO Mode</span>
+                    <h4 className="text-[1.8vw] md:text-[1vw] xl:text-[11px] font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Pro Writing</h4>
+                    <span className="text-[1.1vw] md:text-[0.6vw] xl:text-[8px] px-[3%] py-[1%] rounded-full bg-purple-500/10 text-purple-600 font-extrabold">PRO Mode</span>
                   </div>
 
-                  <div className="flex-grow bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-xl flex flex-col justify-start font-mono text-[8px] leading-relaxed text-zinc-700 dark:text-zinc-400 overflow-y-auto space-y-2 my-1 shadow-sm">
-                    <div className="text-center font-bold text-[#1c1b19] dark:text-white mb-2">SCENE 1: SYNCHRONIZATION</div>
+                  <div className="flex-grow bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-[3.5%] rounded-xl flex flex-col justify-start font-mono text-[1.1vw] md:text-[0.6vw] xl:text-[8px] leading-relaxed text-zinc-700 dark:text-zinc-400 overflow-y-auto space-y-[2.5%] my-[1.5%] shadow-sm">
+                    <div className="text-center font-bold text-[#1c1b19] dark:text-white mb-[3%]">SCENE 1: SYNCHRONIZATION</div>
                     <div>INT. MEETING ROOM - DAY</div>
-                    <div className="pl-6 font-bold text-[#1c1b19] dark:text-white">ADARSH</div>
-                    <div className="pl-12">
+                    <div className="pl-[6%] font-bold text-[#1c1b19] dark:text-white">ADARSH</div>
+                    <div className="pl-[12%]">
                       Innalathe meetingil njan paranja karyangal ormayundo? Athil chila changes undu...
                     </div>
                   </div>
                 </div>
 
                 {/* 06. SETTINGS FRAME */}
-                <div className="h-[390px] w-full p-5 flex flex-col justify-between shrink-0 text-[10px]">
+                <div className="h-full w-full p-[4%] flex flex-col justify-between shrink-0 text-[1.4vw] md:text-[0.8vw] xl:text-[9.5px]">
                   <div className="flex justify-between items-center shrink-0">
-                    <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Settings</h4>
-                    <span className="text-[7.5px] text-[#706b61] font-bold">App Config</span>
+                    <h4 className="text-[1.8vw] md:text-[1vw] xl:text-[11px] font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Settings</h4>
+                    <span className="text-[1.1vw] md:text-[0.6vw] xl:text-[8px] text-[#706b61] font-bold">App Config</span>
                   </div>
 
-                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl shrink-0 flex items-center justify-between my-1 shadow-sm">
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-[3.5%] rounded-xl shrink-0 flex items-center justify-between my-[1.5%] shadow-sm">
                     <span className="font-bold text-[#706b61] dark:text-zinc-450">Record Hotkey</span>
-                    <span className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-750 px-2 py-0.5 rounded font-mono font-extrabold text-[#1c1b19] dark:text-white">⌥ Space</span>
+                    <span className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-750 px-[3%] py-[1.5%] rounded font-mono font-extrabold text-[#1c1b19] dark:text-white">⌥ Space</span>
                   </div>
 
-                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5 py-1">
-                    <div className="text-[7.5px] font-black text-[#706b61] uppercase mb-1">Brain Switch catalog</div>
+                  <div className="space-y-[2%] flex-grow overflow-y-auto pr-[1%] py-[1%]">
+                    <div className="text-[1vw] md:text-[0.55vw] xl:text-[7.5px] font-black text-[#706b61] uppercase mb-[1.5%]">Brain Switch catalog</div>
                     {[
                       { name: "LOW", size: "190 MB", desc: "Fast & lightweight bilingual translation" },
                       { name: "MEDIUM", size: "539 MB", desc: "Malayalam Optimized balanced understanding" },
@@ -471,20 +472,20 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                       <div 
                         key={model.name}
                         className={cn(
-                          "px-2.5 py-1.5 rounded-xl border flex items-center justify-between shadow-sm",
+                          "px-[3.5%] py-[2.5%] rounded-xl border flex items-center justify-between shadow-sm",
                           model.active
                             ? "border-[#e01e41] bg-[#e01e41]/5 text-[#e01e41]"
                             : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-650"
                         )}
                       >
                         <div className="min-w-0">
-                          <div className="font-black text-[9px] flex items-center gap-1">
+                          <div className="font-black text-[1vw] md:text-[0.6vw] xl:text-[8.5px] flex items-center gap-[4%]">
                             <span>{model.name}</span>
-                            <span className="text-[7px] font-normal opacity-60">· {model.size}</span>
+                            <span className="text-[0.9vw] md:text-[0.5vw] xl:text-[7.2px] font-normal opacity-60">· {model.size}</span>
                           </div>
-                          <p className="text-[7.5px] opacity-75 truncate mt-0.5">{model.desc}</p>
+                          <p className="text-[0.9vw] md:text-[0.5vw] xl:text-[7.5px] opacity-75 truncate mt-[1.5%]">{model.desc}</p>
                         </div>
-                        {model.active && <Check className="w-3.5 h-3.5 text-[#e01e41]" />}
+                        {model.active && <Check className="w-[12%] aspect-square text-[#e01e41]" />}
                       </div>
                     ))}
                   </div>
@@ -495,8 +496,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
           </motion.div>
         </div>
 
-        {/* Right Column: Scrollable Steps explaining each tab */}
-        <div className="space-y-16 py-12">
+        {/* Right Column: Scrollable Steps explaining each tab (Spans 6 columns) */}
+        <div className="md:col-span-6 space-y-16 py-12">
           {scrollSteps.map((step, idx) => {
             const isActive = activeStep === idx;
             return (
