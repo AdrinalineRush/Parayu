@@ -260,7 +260,7 @@ function MockSidebar({ activeView }: { activeView: string }) {
               </p>
             </div>
           </div>
-          <button className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 hover:bg-zinc-50 text-[#e01e41] text-[6.5px] font-extrabold py-0.5 rounded transition-colors shadow-sm">
+          <button className="w-full bg-white dark:bg-zinc-955 border border-zinc-200 dark:border-zinc-850 hover:bg-zinc-50 text-[#e01e41] text-[6.5px] font-extrabold py-0.5 rounded transition-colors shadow-sm">
             License details
           </button>
         </div>
@@ -623,7 +623,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
       // Click Add
       const clickAddTimer = setTimeout(() => {
-        setDictCursor(prev => ({ ...prev, scale: 0.8 }));
+        setDictCursor(prev => ({ ...prev, scale: 0.85 }));
         setDictBtnPress(true);
         setDictAdded(true);
       }, 3305);
@@ -719,7 +719,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
       // Click Add
       const clickAddTimer = setTimeout(() => {
-        setSnipCursor(prev => ({ ...prev, scale: 0.8 }));
+        setSnipCursor(prev => ({ ...prev, scale: 0.85 }));
         setSnipBtnPress(true);
         setSnipAdded(true);
       }, 3300);
@@ -778,17 +778,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       return;
     }
 
-    // Sequence loop:
-    // 0s: LOW (190MB) is active. Cursor hidden.
-    // 1.5s: Cursor appears, moves to MEDIUM (539MB).
-    // 2.0s: Clicks MEDIUM. Selected brain updates. Lower details card updates.
-    // 3.4s: Cursor moves to HIGH (844MB).
-    // 3.9s: Clicks HIGH.
-    // 5.3s: Cursor moves to PRO (2.9GB).
-    // 5.8s: Clicks PRO.
-    // 7.2s: Cursor moves to LOW (190MB).
-    // 7.7s: Clicks LOW.
-    // 9.5s: Loop resets.
     const runBrainLoop = () => {
       setSelectedBrain(0);
       setBrainBtnPress(false);
@@ -912,10 +901,10 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       {/* 2-Column Sticky Scrollytelling Layout - Improvised grid width (7 cols left, 5 cols right) */}
       <div className="grid md:grid-cols-12 gap-8 items-start">
         
-        {/* Left Column: Sticky macOS Application Mockup Window (Spans 7 columns for wider visual space) */}
-        <div className="md:col-span-7 sticky top-28 h-[480px] flex items-center justify-center shrink-0 z-20">
+        {/* Left Column: Sticky macOS Application Mockup Window (Spans 7 columns, enlarged and centered in viewport) */}
+        <div className="md:col-span-7 sticky top-36 h-[520px] flex items-center justify-center shrink-0 z-20">
           
-          {/* Frameless mockup window in default 1180:740 ratio with 3D tilt animations (Max width expanded to 610px) */}
+          {/* Frameless mockup window (Max width enlarged to 660px for premium readability) */}
           <motion.div 
             ref={cardRef}
             onMouseMove={handleMouseMove}
@@ -928,7 +917,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
               transformStyle: "preserve-3d",
               perspective: 1200
             }}
-            className="w-full max-w-[610px] aspect-[1180/740] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300 cursor-grab active:cursor-grabbing"
+            className="w-full max-w-[660px] aspect-[1180/740] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300 cursor-grab active:cursor-grabbing"
           >
             
             {/* macOS Window Titlebar Traffic-Light Buttons (Overlayed on top of screens for authenticity) */}
@@ -1088,7 +1077,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 <div className="text-[12px] font-heading font-black truncate">
                                   <Counter from={80} to={102} active={activeStep === 1} />
                                 </div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold uppercase mt-0.5">WPM</div>
+                                <div className="text-[7.5px] text-zinc-455 font-bold uppercase mt-0.5">WPM</div>
                               </div>
                             </div>
 
@@ -1134,12 +1123,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad8)" 
+                                    stroke="url(#insightsGrad9)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad8" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad9" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
@@ -1160,7 +1149,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-650 flex items-center justify-center bg-purple-500/5">
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-655 flex items-center justify-center bg-purple-500/5">
                                 <Pencil className="w-3 h-3" />
                               </div>
 
@@ -1349,7 +1338,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
                                   className="absolute top-10 left-1/2 -translate-x-1/2 bg-zinc-900 text-white font-bold text-[8.5px] px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 z-50 border border-white/10"
                                 >
-                                  <Check className="w-2.5 h-2.5 text-emerald-500" />
+                                  <Check className="w-2.5 h-2.5 text-emerald-505" />
                                   <span>Copied to clipboard!</span>
                                 </motion.div>
                               )}
@@ -1365,7 +1354,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                   if (step.image === "offline_ai_anim") {
                     return (
                       /* CUSTOM ANIMATED ACTIVE OFFLINE AI OPTIONS CARD + SPEECH TRANSCRIPTION POP & CLEANUP (Step 4) */
-                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-955 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
                         <div className="space-y-[3%] w-full max-w-[390px] mx-auto scale-[0.88] md:scale-95 origin-center">
                           
                           {/* Exact Options Card from User Screenshot */}
@@ -1412,7 +1401,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
                             </div>
 
-                            <div className="h-px bg-zinc-150 dark:bg-zinc-800" />
+                            <div className="h-px bg-zinc-150 dark:bg-zinc-855" />
 
                             {/* Section 2: Active Offline AI */}
                             <div className="flex items-center justify-between">
@@ -1440,7 +1429,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
                             </div>
 
-                            <div className="h-px bg-zinc-150 dark:bg-zinc-800" />
+                            <div className="h-px bg-zinc-150 dark:bg-zinc-855" />
 
                             {/* Section 3: Fast Mode / Smart Mode Switcher */}
                             <div className="bg-[#f0ece5] dark:bg-zinc-950 p-0.5 rounded-lg relative flex items-center w-full">
@@ -1488,7 +1477,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     background: "rgba(250, 250, 250, 0.7)"
                                   }
                             }
-                            className="border p-3 rounded-2xl shadow-sm relative min-h-[75px] flex flex-col justify-between transition-all duration-300"
+                            className="border p-3 rounded-2xl shadow-sm relative min-h-[75px] flex flex-col justify-between transition-all duration-305"
                           >
                             
                             {/* Glow pulse overlay on text box activation */}
@@ -1512,7 +1501,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <span className="uppercase tracking-widest text-[6px]">Live Output</span>
                             </div>
 
-                            {/* Main text box showing Pop timing */}
+                            {/* Main text box showing Pop transcription */}
                             <motion.div 
                               animate={
                                 correctionState === "correcting" 
@@ -1541,7 +1530,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-555 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-[#e01e41]" /> listening... speak now</motion.span>
                                 )}
                                 {correctionState === "waiting" && (
-                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-605 font-black">raw transcription populated</motion.span>
+                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-600 font-black">raw transcription populated</motion.span>
                                 )}
                                 {correctionState === "correcting" && (
                                   <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline AI...</motion.span>
@@ -1562,7 +1551,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                   if (step.image === "dictionary_anim") {
                     return (
                       /* CUSTOM ANIMATED DICTIONARY VIEW (Step 5) - Full macOS App Interface simulation */
-                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-955 flex flex-row">
                         
                         {/* Sidebar with active tab active */}
                         <MockSidebar activeView="dictionary" />
@@ -1579,13 +1568,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           <div className="flex items-center gap-1.5 shrink-0 mb-3">
                             {/* Misheard Input with red border focus */}
                             <div className="relative border border-[#e01e41] rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm">
-                              <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", misheardVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-400")}>
+                              <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", misheardVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-404")}>
                                 {misheardVal || "Misheard word"}
                               </span>
                             </div>
 
                             {/* Correct Input with light border */}
-                            <div className="relative border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm">
+                            <div className="relative border border-zinc-200 dark:border-zinc-850 rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm">
                               <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", correctVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-405")}>
                                 {correctVal || "Correct word"}
                               </span>
@@ -1706,7 +1695,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                   if (step.image === "snippets_anim") {
                     return (
                       /* CUSTOM ANIMATED SNIPPETS VIEW (Step 6) - Replicates screenshot with new useful example */
-                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-955 flex flex-row">
                         
                         {/* Sidebar with active tab active */}
                         <MockSidebar activeView="snippets" />
@@ -1725,7 +1714,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             <div 
                               className={cn(
                                 "relative border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm transition-colors",
-                                snipTriggerVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-800"
+                                snipTriggerVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-805"
                               )}
                             >
                               <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", snipTriggerVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-400")}>
@@ -1737,7 +1726,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             <div 
                               className={cn(
                                 "relative border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-900 flex-grow max-w-[125px] shadow-sm transition-colors",
-                                snipExpandVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-800"
+                                snipExpandVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-805"
                               )}
                             >
                               <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", snipExpandVal ? "text-zinc-800 dark:text-zinc-200" : "text-zinc-405")}>
@@ -1773,7 +1762,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   key="snips-list"
                                   initial={{ opacity: 0, y: 5 }}
                                   animate={{ opacity: 1, y: 0 }}
-                                  className="bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 p-2.5 rounded-xl flex items-center justify-between shadow-md max-w-[340px]"
+                                  className="bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-855 p-2.5 rounded-xl flex items-center justify-between shadow-md max-w-[340px]"
                                 >
                                   <div className="flex flex-col gap-1 min-w-0 leading-tight">
                                     <div className="flex items-center gap-1">
@@ -1797,10 +1786,10 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 <motion.div 
                                   initial={{ opacity: 0, y: 15 }}
                                   animate={{ opacity: 1, y: 0 }}
-                                  className="absolute bottom-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl shadow-md space-y-1.5"
+                                  className="absolute bottom-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-805 p-2.5 rounded-xl shadow-md space-y-1.5"
                                 >
                                   {/* Title bar */}
-                                  <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1">
+                                  <div className="flex justify-between items-center text-[7px] font-bold text-zinc-455 border-b border-zinc-100 dark:border-zinc-850 pb-1">
                                     <span className="flex items-center gap-1 text-[#ff8a1f]">
                                       <Mic className="w-2.5 h-2.5 text-zinc-450 animate-pulse" />
                                       <span>Macro Shorthand Expansion Demo</span>
@@ -1863,8 +1852,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                   if (step.image === "settings_anim") {
                     return (
                       /* CUSTOM ANIMATED SETTINGS BRAIN SWITCH VIEW (Step 7) - Full macOS App Interface simulation */
-                      /* Cycles selection LOW -> MEDIUM -> HIGH -> PRO, updating details card values dynamically */
-                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-955 flex flex-row">
                         
                         {/* Sidebar with active tab active */}
                         <MockSidebar activeView="settings" />
@@ -1913,7 +1901,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     </div>
                                     <div className="shrink-0 flex items-center">
                                       {opt.rightIcon === "download" && (
-                                        <Download className="w-3 h-3 text-zinc-450" />
+                                        <Download className="w-3 h-3 text-zinc-455" />
                                       )}
                                       {opt.rightIcon === "green-check" && (
                                         <Check className="w-3 h-3 text-emerald-600 font-extrabold" />
