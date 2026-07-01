@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { 
   Mic, 
   Square, 
@@ -84,6 +84,16 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [activeStep, setActiveStep] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Bind scroll progress for 3D tilt & scale transition
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.95, 1.02, 1.02, 0.95]);
+  const rotateX = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [8, 0, 0, -8]);
+  const rotateY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [-8, 0, 0, 8]);
+
   // Monitor scroll positioning to update active step highlight
   useEffect(() => {
     const handleScroll = () => {
@@ -127,8 +137,17 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
         {/* Left Column: Sticky macOS Application Mockup Window */}
         <div className="sticky top-28 h-[480px] flex items-center justify-center shrink-0 z-20">
           
-          {/* Frameless macOS app mockup window */}
-          <div className="w-full max-w-[460px] h-[390px] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-2xl rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300">
+          {/* Frameless macOS app mockup window with 3D tilt scroll animation */}
+          <motion.div 
+            style={{ 
+              scale,
+              rotateX,
+              rotateY,
+              transformStyle: "preserve-3d",
+              perspective: 1000
+            }}
+            className="w-full max-w-[460px] h-[390px] bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 shadow-2xl rounded-2xl flex flex-row overflow-hidden select-none relative animate-in fade-in duration-300"
+          >
             
             {/* Left Sidebar Navigation */}
             <div className="w-[145px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-3 pt-9 flex flex-col justify-between shrink-0 relative">
@@ -233,7 +252,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                     </div>
                   </div>
 
-                  {/* Semicircular typing gauge card */}
+                  {/* Semicircular typing gauge card with stroke animation */}
                   <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[80px] shrink-0">
                     <div className="flex justify-between items-center text-[7.5px] font-bold text-[#706b61] uppercase">
                       <span>Typing Speed</span>
@@ -243,7 +262,16 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                     <div className="relative w-full flex justify-center mt-0.5">
                       <svg viewBox="0 0 170 96" className="w-[80px] h-[44px]">
                         <path d="M 15 85 A 70 70 0 0 1 155 85" fill="none" stroke="#ebe7df" strokeWidth="12" strokeLinecap="round" />
-                        <path d="M 15 85 A 70 70 0 0 1 112 20" fill="none" stroke="url(#gGrad)" strokeWidth="12" strokeLinecap="round" />
+                        <motion.path 
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 1.2, ease: "easeOut" }}
+                          d="M 15 85 A 70 70 0 0 1 112 20" 
+                          fill="none" 
+                          stroke="url(#gGrad)" 
+                          strokeWidth="12" 
+                          strokeLinecap="round" 
+                        />
                         <defs>
                           <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#e81f3a" />
@@ -258,12 +286,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                     </div>
                   </div>
 
-                  {/* Integration list */}
+                  {/* Integration list with progressive width animation */}
                   <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl space-y-1.5 flex-grow">
                     <div className="text-[7.5px] font-black text-[#706b61] uppercase mb-1">Desktop Integration</div>
                     {[
-                      { label: "Antigravity", words: "592 words", color: "bg-[#e01e41]", pct: "w-[85%]" },
-                      { label: "Claude", words: "557 words", color: "bg-orange-500", pct: "w-[80%]" }
+                      { label: "Antigravity", words: "592 words", color: "bg-[#e01e41]", w: "85%" },
+                      { label: "Claude", words: "557 words", color: "bg-orange-500", w: "80%" }
                     ].map((item) => (
                       <div key={item.label} className="space-y-0.5">
                         <div className="flex justify-between text-[7.5px] font-bold text-zinc-650 dark:text-zinc-400">
@@ -271,7 +299,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           <span>{item.words}</span>
                         </div>
                         <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1 rounded-full overflow-hidden">
-                          <div className={cn("h-full rounded-full", item.color, item.pct)} />
+                          <motion.div 
+                            initial={{ width: "0%" }}
+                            animate={{ width: item.w }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className={cn("h-full rounded-full", item.color)} 
+                          />
                         </div>
                       </div>
                     ))}
@@ -404,7 +437,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                     <div>INT. MEETING ROOM - DAY</div>
                     <div className="pl-6 font-bold text-[#1c1b19] dark:text-white">ADARSH</div>
                     <div className="pl-12">
-                      Innalathe meetingil njan paranja karyangal ormayundo? Athil chila changes undu.
+                      Innalathe meetingil njan paranja karyangal ormayundo? Athil chila changes undu...
                     </div>
                   </div>
                 </motion.div>
@@ -458,7 +491,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
               )}
 
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Right Column: Scrollable Steps explaining each tab */}
