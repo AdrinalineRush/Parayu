@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { 
   Sparkles, 
-  Keyboard, 
+  FileText, 
   Languages, 
   Monitor, 
   Flame,
@@ -72,7 +72,7 @@ const scrollSteps = [
     description: "Create text macro templates. Dictate custom trigger phrases like 'my signature' or 'project update' to instantly expand into long multiline email templates or boilerplate code blocks.",
     color: "#ff8a1f",
     tab: "Snippets",
-    icon: Keyboard,
+    icon: FileText,
     image: "snippets.png"
   },
   {
@@ -122,33 +122,29 @@ const sidebarMenuItems = [
   { view: "home", label: "Home", icon: Home, showBadge: false },
   { view: "history", label: "Parayu History", icon: Clock, showBadge: false },
   { view: "dictionary", label: "Dictionary", icon: BookOpen, showBadge: false },
-  { view: "snippets", label: "Snippets", icon: Keyboard, showBadge: false },
+  { view: "snippets", label: "Snippets", icon: FileText, showBadge: false }, 
   { view: "screenwriting", label: "Pro Writing", icon: Pencil, showBadge: true },
   { view: "settings", label: "Settings", icon: Settings, showBadge: false },
   { view: "admin", label: "Admin", icon: ShieldCheck, showBadge: false }
 ];
 
-// Custom Sidebar Component replicating macOS side card structure exactly (pinpoint matching screenshot)
+// Custom Sidebar Component replicating macOS side card structure exactly (de-congested formatting)
 function MockSidebar({ activeView }: { activeView: string }) {
   return (
-    <div className="w-[23%] bg-[#f6f4f0] dark:bg-zinc-950 border-r border-[#e8e5df] dark:border-zinc-800 flex flex-col justify-between p-2.5 h-full shrink-0 font-sans select-none">
+    <div className="w-[21.7%] bg-[#f6f4f0] dark:bg-zinc-950 border-r border-[#e8e5df] dark:border-zinc-800 flex flex-col justify-between p-2 h-full shrink-0 font-sans select-none">
       
       {/* Upper Area */}
-      <div className="space-y-4">
+      <div className="space-y-2">
         {/* Brand logo & title */}
-        <div className="flex items-center gap-1.5 px-1 py-0.5">
-          {/* Logo container matching exact black rounded square layout */}
-          <div className="w-5.5 h-5.5 rounded-lg bg-zinc-950 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-              <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 19v4M8 23h8" />
-            </svg>
-          </div>
-          <span className="text-[12.5px] font-heading font-black tracking-tight text-zinc-900 dark:text-white">Parayu</span>
+        <div className="flex items-center gap-1 px-0.5 py-0.5">
+          <img src="/logo.png" alt="Parayu Logo" className="w-4.5 h-4.5 rounded-lg object-contain shrink-0" />
+          <span className="text-[10px] font-heading font-black tracking-tight text-zinc-900 dark:text-white leading-none">
+            Paray<span className="text-[#e01e41]">u</span>
+          </span>
         </div>
 
         {/* Sidebar Nav Links */}
-        <div className="space-y-0.5">
+        <div className="space-y-0">
           {sidebarMenuItems.map((item) => {
             const isActive = item.view === activeView;
             const Icon = item.icon;
@@ -156,18 +152,25 @@ function MockSidebar({ activeView }: { activeView: string }) {
               <div 
                 key={item.view}
                 className={cn(
-                  "flex items-center justify-between py-1.5 px-2 text-[9px] font-bold rounded-lg transition-all cursor-pointer relative",
+                  "flex items-center justify-between py-1 px-1.5 text-[7.5px] font-semibold rounded-[6px] transition-all cursor-pointer relative",
                   isActive
-                    ? "bg-[#e01e41]/5 text-[#e01e41] border-l-[3px] border-[#e01e41] rounded-l-none"
-                    : "text-zinc-650 dark:text-zinc-400 hover:bg-zinc-200/50 hover:text-zinc-850 dark:hover:text-white"
+                    ? "bg-[#e01e41]/5 text-[#e01e41] font-[800] pl-[13px]"
+                    : "text-zinc-650 dark:text-zinc-400 hover:bg-zinc-200/50 hover:text-zinc-900 hover:pl-[13px]"
                 )}
               >
-                <div className="flex items-center gap-2">
-                  <Icon className={cn("w-3.5 h-3.5", isActive ? "text-[#e01e41]" : "text-zinc-500")} />
-                  <span>{item.label}</span>
+                {/* Active indicator line on the left side of the nav item itself */}
+                {isActive && (
+                  <div 
+                    className="absolute left-[4px] top-1/2 -translate-y-1/2 w-[2.5px] h-[12px] rounded-full" 
+                    style={{ background: "linear-gradient(135deg, #e81f3a 0%, #d81d54 58%, #a02bb0 100%)" }}
+                  />
+                )}
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Icon className={cn("w-2.5 h-2.5 shrink-0", isActive ? "text-[#e01e41]" : "text-zinc-550")} />
+                  <span className="truncate">{item.label}</span>
                 </div>
                 {item.showBadge && (
-                  <span className="bg-[#a02bb0]/10 text-[#a02bb0] text-[6.5px] font-extrabold px-1 rounded-sm tracking-wide">
+                  <span className="bg-[#a02bb0]/10 text-[#a02bb0] text-[5.5px] font-extrabold px-1 rounded-sm tracking-wide shrink-0 scale-90 origin-right">
                     PRO
                   </span>
                 )}
@@ -178,42 +181,42 @@ function MockSidebar({ activeView }: { activeView: string }) {
       </div>
 
       {/* Footer Area */}
-      <div className="space-y-2.5">
-        {/* Enterprise Plan Card matching user screenshot */}
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl shadow-sm space-y-2">
-          <div className="flex items-start gap-2">
-            <div className="w-5.5 h-5.5 rounded bg-purple-500/10 text-purple-650 flex items-center justify-center shrink-0">
-              <Lock className="w-3 h-3" />
+      <div className="space-y-1.5">
+        {/* Enterprise Plan Card matching user screenshot (scaled down) */}
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-1.5 rounded-lg shadow-sm space-y-1">
+          <div className="flex items-start gap-1.5">
+            <div className="w-4.5 h-4.5 rounded bg-purple-500/10 text-purple-650 flex items-center justify-center shrink-0">
+              <Lock className="w-2.5 h-2.5" />
             </div>
             <div className="min-w-0 leading-tight">
-              <div className="text-[8.5px] font-extrabold text-zinc-900 dark:text-zinc-200">Enterprise Plan</div>
-              <p className="text-[6.5px] font-semibold text-zinc-450 mt-0.5 leading-normal">
-                Team-wide volumes active. Contact your IT administrator.
+              <div className="text-[7.5px] font-extrabold text-zinc-900 dark:text-zinc-200">Enterprise Plan</div>
+              <p className="text-[5.5px] font-medium text-zinc-450 mt-0.5 leading-normal">
+                Team active. Contact IT admin.
               </p>
             </div>
           </div>
-          <button className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 hover:bg-zinc-50 text-[#e01e41] text-[7.5px] font-extrabold py-1 rounded-lg transition-colors shadow-sm">
+          <button className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 hover:bg-zinc-50 text-[#e01e41] text-[6.5px] font-extrabold py-0.5 rounded transition-colors shadow-sm">
             License details
           </button>
         </div>
 
         {/* User profile widget matching Dev Demo avatar */}
-        <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 pt-2 px-0.5">
-          <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 pt-1.5 px-0.5">
+          <div className="flex items-center gap-1.5 min-w-0">
             {/* Red DD initials circle */}
-            <div className="w-6 h-6 rounded-full bg-[#e01e41] text-white flex items-center justify-center text-[7.5px] font-black shrink-0">
+            <div className="w-5.5 h-5.5 rounded-full bg-[#e01e41] text-white flex items-center justify-center text-[6.5px] font-black shrink-0">
               DD
             </div>
             <div className="min-w-0 leading-tight">
-              <div className="text-[8.5px] font-extrabold truncate text-zinc-900 dark:text-white">Dev Demo</div>
-              <div className="text-[7.5px] text-zinc-450 font-bold truncate">Enterprise</div>
+              <div className="text-[7.5px] font-extrabold truncate text-zinc-900 dark:text-white">Dev Demo</div>
+              <div className="text-[6.5px] text-zinc-450 font-bold truncate">Enterprise</div>
             </div>
           </div>
-          <ChevronDown className="w-3 h-3 text-zinc-400 shrink-0" />
+          <ChevronDown className="w-2.5 h-2.5 text-zinc-450 shrink-0" />
         </div>
 
         {/* App Version */}
-        <div className="text-[7px] text-zinc-400 font-bold text-center">Parayu v1.0.0</div>
+        <div className="text-[6px] text-zinc-400 font-bold text-center">Parayu v1.0.0</div>
       </div>
 
     </div>
@@ -559,7 +562,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-600 flex items-center justify-center bg-purple-500/5">
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-650 flex items-center justify-center bg-purple-500/5">
                                 <Pencil className="w-3 h-3" />
                               </div>
 
@@ -594,7 +597,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
                               <div className="text-[8px] font-black text-zinc-450 uppercase tracking-wide">Dictation Volume</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-600 flex items-center justify-center bg-emerald-500/5">
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-650 flex items-center justify-center bg-emerald-500/5">
                                 <Mic className="w-3 h-3" />
                               </div>
 
@@ -641,14 +644,14 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                         <MockSidebar activeView="history" />
 
                         {/* Right Content area */}
-                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[9.5px] overflow-hidden min-w-0">
+                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[9.5px] overflow-hidden min-w-0 bg-[#faf9f7] dark:bg-zinc-950">
                           
                           {/* Status / Instruction bar replicating screenshot */}
-                          <div className="flex justify-between items-center mb-2.5 shrink-0">
-                            <div className="flex items-center gap-1.5 text-zinc-400 font-bold">
+                          <div className="flex justify-between items-center mb-2.5 shrink-0 px-1">
+                            <div className="flex items-center gap-1.5 text-zinc-450 font-bold">
                               <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 animate-pulse" />
                               <span>Press</span>
-                              <span className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-1.5 py-0.5 rounded font-mono font-extrabold text-[#1c1b19] dark:text-white">⌥ Option</span>
+                              <span className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-1.5 py-0.5 rounded font-mono font-extrabold text-[#1c1b19] dark:text-white">⌥ Option</span>
                               <span>to start dictating</span>
                             </div>
                             {/* Dropdown replica */}
@@ -659,7 +662,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           </div>
 
                           {/* History list wrapper */}
-                          <div className="flex-grow overflow-hidden relative">
+                          <div className="flex-grow overflow-hidden relative px-1">
                             <motion.div
                               animate={
                                 activeStep === 2
@@ -673,7 +676,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 repeatDelay: 1,
                                 ease: "easeInOut"
                               }}
-                              className="space-y-2 pr-1 py-1"
+                              className="space-y-2.5 pr-1 py-1"
                             >
                               {mockupHistoryItems.map((h, i) => {
                                 const isTargetCard = i === 0; // Target the top card for copy animation
@@ -691,9 +694,9 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.015)" 
                                           }
                                     }
-                                    className="bg-white dark:bg-zinc-900 border p-2.5 rounded-xl flex flex-col justify-start relative transition-colors duration-200"
+                                    className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl flex flex-col justify-start relative transition-colors duration-200"
                                   >
-                                    <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 mb-1">
+                                    <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 mb-1.5">
                                       <span>{h.time}</span>
                                       <span 
                                         className={cn(
