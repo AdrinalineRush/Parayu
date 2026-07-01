@@ -11,7 +11,8 @@ import {
   Clock,
   BookOpen,
   Settings,
-  Search
+  Search,
+  Check
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -31,12 +32,12 @@ const scrollSteps = [
   {
     id: "insights",
     badge: "02. Insights Dashboard",
-    title: "Track Your Speech Metrics",
+    title: "Real-Time Speech Diagnostics",
     description: "Our core Insights panel summarizes your daily dictation volume, average typing speed (WPM), and fixes made by Parayu. Monitor integrations and view your daily activity streak heatmap completely offline.",
     color: "#e01e41",
     tab: "Home",
     icon: Sparkles,
-    image: "home.png"
+    image: "insights_anim" // Custom animated count-up close-up view
   },
   {
     id: "history",
@@ -100,6 +101,31 @@ const languageList = [
   { name: "Armenian", beta: true },
   { name: "Assamese", beta: true }
 ];
+
+// Lightweight count-up hook for moving numbers
+function Counter({ from, to, duration = 1.2, active }: { from: number, to: number, duration?: number, active: boolean }) {
+  const [count, setCount] = useState(from);
+
+  useEffect(() => {
+    if (!active) {
+      setCount(from);
+      return;
+    }
+
+    let startTimestamp: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / (duration * 1000), 1);
+      setCount(Math.floor(progress * (to - from) + from));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }, [from, to, duration, active]);
+
+  return <span>{count.toLocaleString()}</span>;
+}
 
 export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [activeStep, setActiveStep] = useState(0);
@@ -211,7 +237,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                 {scrollSteps.map((step) => {
                   if (step.image === "languages_anim") {
                     return (
-                      /* CUSTOM ANIMATED LANGUAGE SELECTOR FRAME */
+                      /* CUSTOM ANIMATED LANGUAGE SELECTOR FRAME (Step 1) */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex items-center justify-center p-[6%]">
                         
                         {/* High-fidelity dropdown window reproducing user's exact screenshot */}
@@ -257,6 +283,75 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             <div className="absolute right-0 top-2 bottom-2 w-1.5 rounded-full bg-zinc-200 dark:bg-zinc-850 flex justify-center py-1">
                               <div className="w-1 h-8 rounded-full bg-zinc-450 dark:bg-zinc-700" />
                             </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (step.image === "insights_anim") {
+                    return (
+                      /* CUSTOM ANIMATED INSIGHTS COUNT-UP CLOSE-UP (Step 2) */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[6%] select-none">
+                        <div className="space-y-4 w-full max-w-sm mx-auto">
+                          
+                          {/* Close-up header */}
+                          <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-850 pb-2">
+                            <span className="text-xs font-heading font-black text-foreground flex items-center gap-1.5">
+                              <Sparkles className="w-4 h-4 text-[#e01e41] fill-[#e01e41]/10" />
+                              <span>Live Insights Panel</span>
+                            </span>
+                            <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Diagnostics</span>
+                          </div>
+
+                          {/* Dynamic counting-up KPI cards close-up */}
+                          <div className="grid grid-cols-3 gap-3">
+                            
+                            {/* Words Counter */}
+                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-2xl text-center shadow-md flex flex-col justify-center min-h-[90px] transition-all">
+                              <div className="text-[8px] font-bold text-zinc-450 uppercase tracking-wider mb-1">Words</div>
+                              <div className="text-xl font-heading font-black text-[#e01e41]">
+                                <Counter from={1450} to={1648} active={activeStep === 1} />
+                              </div>
+                              <div className="text-[7.5px] font-bold text-emerald-600 mt-1 bg-emerald-500/10 px-1.5 py-0.5 rounded-full inline-block mx-auto leading-none">
+                                +24 today
+                              </div>
+                            </div>
+
+                            {/* Speed Counter */}
+                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-2xl text-center shadow-md flex flex-col justify-center min-h-[90px] transition-all">
+                              <div className="text-[8px] font-bold text-zinc-450 uppercase tracking-wider mb-1">Speed</div>
+                              <div className="text-xl font-heading font-black text-[#1c1b19] dark:text-white">
+                                <Counter from={75} to={104} active={activeStep === 1} />
+                              </div>
+                              <div className="text-[7px] font-black text-zinc-400 mt-1 uppercase tracking-wide">
+                                wpm avg
+                              </div>
+                            </div>
+
+                            {/* Fixes Counter */}
+                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-2xl text-center shadow-md flex flex-col justify-center min-h-[90px] transition-all">
+                              <div className="text-[8px] font-bold text-zinc-450 tracking-wider uppercase mb-1">Fixes</div>
+                              <div className="text-xl font-heading font-black text-purple-600 dark:text-purple-400">
+                                <Counter from={10} to={33} active={activeStep === 1} />
+                              </div>
+                              <div className="text-[7.5px] font-bold text-purple-600 dark:text-purple-400 mt-1 bg-purple-500/10 px-1.5 py-0.5 rounded-full inline-block mx-auto leading-none">
+                                AI active
+                              </div>
+                            </div>
+
+                          </div>
+                          
+                          {/* Streak preview card below counters */}
+                          <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-xl flex items-center justify-between text-[10px] shadow-sm">
+                            <span className="font-bold text-[#1c1b19] dark:text-zinc-200 flex items-center gap-1.5">
+                              <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
+                              <span>Streak: 2 days</span>
+                            </span>
+                            <span className="text-[8.5px] font-extrabold text-[#e01e41] bg-[#e01e41]/5 px-2 py-0.5 rounded-lg border border-[#e01e41]/10">
+                              Target speed: 120 wpm
+                            </span>
                           </div>
 
                         </div>
