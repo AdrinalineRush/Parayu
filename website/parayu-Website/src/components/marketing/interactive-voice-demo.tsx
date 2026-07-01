@@ -265,7 +265,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Custom animation states for Step 1: Language selection within surrounding dashboard
+  // Custom animation states for Step 1: Language selection with clean app-hints surrounding layout
   const [dropdownOpen, setDropdownOpen] = useState(true);
   const [selectedLang, setSelectedLang] = useState("English");
   const [langListScrollY, setLangListScrollY] = useState(0);
@@ -328,13 +328,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Trigger Step 1: Language selection with surrounding dashboard layout animation loops
+  // Trigger Step 1: Language selection with clean app-hints surrounding layout animation loops
   useEffect(() => {
     if (activeStep !== 0) {
       setDropdownOpen(true);
       setSelectedLang("English");
       setLangListScrollY(0);
-      setLangCursor({ x: 230, y: 150, opacity: 0, scale: 1 });
+      setLangCursor({ x: 300, y: 110, opacity: 0, scale: 1 });
       return;
     }
 
@@ -342,24 +342,24 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       setDropdownOpen(true);
       setSelectedLang("English");
       setLangListScrollY(0);
-      setLangCursor({ x: 230, y: 150, opacity: 0, scale: 1 });
+      setLangCursor({ x: 300, y: 110, opacity: 0, scale: 1 });
 
       // 0.8s: Cursor appears
       const showCursorTimer = setTimeout(() => {
-        setLangCursor(prev => ({ ...prev, opacity: 1, x: 230, y: 120 }));
+        setLangCursor(prev => ({ ...prev, opacity: 1, x: 300, y: 90 }));
       }, 800);
 
       // 1.5s - 2.8s: List scrolls upwards (simulating list scroll to Malayalam)
       const scrollTimer = setTimeout(() => {
-        setLangListScrollY(-26); // Shift scroll window upwards
+        setLangListScrollY(-26); 
       }, 1500);
 
-      // 3.0s: Cursor moves directly over Malayalam choice row
+      // 3.0s: Cursor moves directly over Malayalam choice row inside dropdown
       const moveCursorTimer = setTimeout(() => {
-        setLangCursor(prev => ({ ...prev, x: 220, y: 105 }));
+        setLangCursor(prev => ({ ...prev, x: 280, y: 92 }));
       }, 3000);
 
-      // 3.6s: Click Malayalam (cursor shrinks, select state changes)
+      // 3.6s: Click Malayalam (cursor clicks, select state changes)
       const clickTimer = setTimeout(() => {
         setLangCursor(prev => ({ ...prev, scale: 0.8 }));
         setSelectedLang("Malayalam");
@@ -561,66 +561,39 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                 {scrollSteps.map((step) => {
                   if (step.image === "languages_anim") {
                     return (
-                      /* CUSTOM ANIMATED LANGUAGE SELECTOR FRAME (Step 1) - WITH Sidebar and Dashboard Surrounding Areas */
-                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
+                      /* CUSTOM ANIMATED LANGUAGE SELECTOR FRAME (Step 1) - Focused drop-down trigger with top header hints only */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#faf9f7] dark:bg-zinc-950 flex flex-col p-[4%] justify-start">
                         
-                        {/* Sidebar included to make it feel like it belongs to the app */}
-                        <MockSidebar activeView="home" />
-
-                        {/* Right Content area: Dashboard Header & upper card columns */}
-                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[9.5px] overflow-hidden min-w-0 bg-[#faf9f7] dark:bg-zinc-950 relative">
-                          
-                          {/* Header Bar containing Language button, Date button, and green Ready pill */}
-                          <div className="flex justify-between items-center mb-3 shrink-0 px-1 border-b border-zinc-150 dark:border-zinc-850 pb-2">
-                            {/* Green model status badge */}
-                            <div className="border border-emerald-600/20 bg-emerald-600/5 text-emerald-600 font-extrabold text-[7.5px] px-2 py-0.5 rounded-md flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse block" />
-                              <span>Ready</span>
-                            </div>
-
-                            {/* Dropdown triggers on the right side */}
-                            <div className="flex items-center gap-2">
-                              {/* Language dropdown button mimicking screenshot */}
-                              <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1 rounded-xl shadow-sm text-[8.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1 cursor-default relative">
-                                <span>🌐 {selectedLang}</span>
-                                <ChevronDown className="w-3 h-3 text-zinc-500" />
-                              </div>
-
-                              {/* Date card widget mimicking screenshot */}
-                              <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1 rounded-xl shadow-sm text-[8.5px] font-bold text-zinc-500 flex items-center gap-1 cursor-default">
-                                <Calendar className="w-3 h-3 text-zinc-400" />
-                                <span className="font-extrabold text-zinc-700 dark:text-zinc-300">1 Jul 2026</span>
-                              </div>
-                            </div>
+                        {/* Header Bar containing Language button, Date button, and green Ready pill (app header suggestions) */}
+                        <div className="flex justify-between items-center mb-4 shrink-0 px-2 border-b border-zinc-200/60 dark:border-zinc-850 pb-3 mt-4">
+                          {/* Green model status badge */}
+                          <div className="border border-emerald-600/20 bg-emerald-600/5 text-emerald-600 font-extrabold text-[8px] px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse block" />
+                            <span>Ready</span>
                           </div>
 
-                          {/* Top part of Dashboard Cards (Smart Editing & Dictation Volume) */}
-                          <div className="grid grid-cols-2 gap-2.5 px-1 relative z-0">
-                            
-                            {/* Smart Editing Card */}
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-2xl flex flex-col justify-between h-[120px] shadow-sm relative">
-                              <div className="text-[7.5px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-650 flex items-center justify-center bg-purple-500/5">
-                                <Pencil className="w-3 h-3" />
-                              </div>
-                              <div className="my-1.5 leading-tight">
-                                <div className="text-[20px] font-heading font-black text-zinc-850 dark:text-zinc-100">42</div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">fixes made by Parayu</div>
-                              </div>
+                          {/* Dropdown triggers on the right side */}
+                          <div className="flex items-center gap-2.5">
+                            {/* Language dropdown button mimicking screenshot */}
+                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[9.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1.5 cursor-default relative">
+                              <span>🌐 {selectedLang}</span>
+                              <ChevronDown className="w-3 h-3 text-zinc-500 animate-bounce" />
                             </div>
 
-                            {/* Dictation Volume Card */}
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-2xl flex flex-col justify-between h-[120px] shadow-sm relative">
-                              <div className="text-[7.5px] font-black text-zinc-450 uppercase tracking-wide">Dictation Volume</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-650 flex items-center justify-center bg-emerald-500/5">
-                                <Mic className="w-3 h-3" />
-                              </div>
-                              <div className="my-1.5 leading-tight">
-                                <div className="text-[20px] font-heading font-black text-zinc-850 dark:text-zinc-100">2,518</div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Total words dictated</div>
-                              </div>
+                            {/* Date card widget mimicking screenshot */}
+                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[9.5px] font-bold text-zinc-505 flex items-center gap-1.5 cursor-default">
+                              <Calendar className="w-3 h-3 text-zinc-400" />
+                              <span className="font-extrabold text-zinc-705 dark:text-zinc-300">1 Jul 2026</span>
                             </div>
+                          </div>
+                        </div>
 
+                        {/* Clean background area below the header bar suggestion */}
+                        <div className="flex-grow flex items-center justify-center border border-dashed border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl bg-white/40 dark:bg-zinc-950/20 m-2 relative">
+                          
+                          <div className="text-center space-y-1 opacity-25">
+                            <Languages className="w-8 h-8 text-zinc-400 mx-auto" />
+                            <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Language selection overlay</p>
                           </div>
 
                           {/* Floating Language selection dropdown menu box overlaying dashboard */}
@@ -631,13 +604,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -4, scale: 0.98 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute top-[38px] right-[75px] w-[185px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-800 dark:text-zinc-200 font-sans p-2.5 gap-2 z-50 h-[190px]"
+                                className="absolute top-[-10px] right-[40px] w-[200px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-800 dark:text-zinc-200 font-sans p-2.5 gap-2.5 z-50 h-[200px]"
                               >
                                 
                                 {/* Search bar inside red outline */}
                                 <div className="relative border border-[#e01e41] rounded-lg px-2 py-1.5 flex items-center gap-1.5 shrink-0 bg-white dark:bg-zinc-950 shadow-sm">
                                   <Search className="w-3 h-3 text-zinc-400" />
-                                  <span className="text-[9px] text-zinc-400 dark:text-zinc-500 font-normal">Search language...</span>
+                                  <span className="text-[9.5px] text-zinc-400 dark:text-zinc-500 font-normal">Search language...</span>
                                 </div>
 
                                 {/* Scrolling list containing options with beta badges */}
@@ -645,7 +618,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <motion.div
                                     animate={{ y: langListScrollY }}
                                     transition={{ type: "tween", ease: "easeInOut", duration: 1.2 }}
-                                    className="flex flex-col gap-0.5 text-[9px] font-bold py-0.5 pr-1"
+                                    className="flex flex-col gap-0.5 text-[9.5px] font-bold py-0.5 pr-1"
                                   >
                                     {languageList.map((lang, idx) => (
                                       <div 
@@ -657,7 +630,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                       >
                                         <span>{lang.name}</span>
                                         {lang.beta && (
-                                          <span className="text-[6px] font-black uppercase text-zinc-450 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1 py-0.2 rounded-sm scale-90 origin-right">
+                                          <span className="text-[6.5px] font-black uppercase text-zinc-450 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1 py-0.2 rounded-sm scale-90 origin-right">
                                             BETA
                                           </span>
                                         )}
@@ -694,6 +667,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           </AnimatePresence>
 
                         </div>
+
                       </div>
                     );
                   }
@@ -739,7 +713,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 <div className="text-[12px] font-heading font-black truncate">
                                   <Counter from={15} to={40} active={activeStep === 1} />
                                 </div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold uppercase mt-0.5">Fixes</div>
+                                <div className="text-[7.5px] text-zinc-455 font-bold uppercase mt-0.5">Fixes</div>
                               </div>
                             </div>
 
@@ -773,12 +747,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad4)" 
+                                    stroke="url(#insightsGrad5)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad5" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
@@ -1177,10 +1151,10 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <span>Auto-Correction Demo</span>
                               <AnimatePresence mode="wait">
                                 {correctionState === "typing" && (
-                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-550 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-[#e01e41]" /> listening... speak now</motion.span>
+                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-555 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-[#e01e41]" /> listening... speak now</motion.span>
                                 )}
                                 {correctionState === "waiting" && (
-                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-600 font-black">raw transcription populated</motion.span>
+                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-605 font-black">raw transcription populated</motion.span>
                                 )}
                                 {correctionState === "correcting" && (
                                   <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline AI...</motion.span>
