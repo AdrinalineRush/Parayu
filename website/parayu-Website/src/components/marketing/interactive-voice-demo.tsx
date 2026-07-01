@@ -151,7 +151,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
             
             {/* Left Sidebar Navigation */}
             <div className="w-[145px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-3 pt-9 flex flex-col justify-between shrink-0 relative">
-              {/* macOS Red, Yellow, Green Window Dots */}
+              {/* macOS Window Dots */}
               <div className="absolute top-3.5 left-3.5 flex gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
@@ -217,14 +217,16 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
               </div>
             </div>
 
-            {/* Right Screen: Renders View corresponding to activeStep */}
-            <div className="flex-grow p-4.5 overflow-y-auto space-y-4 flex flex-col justify-start bg-[#fcfbfa] dark:bg-zinc-950">
-              
-              {/* ========================================== */}
-              {/* VIEW 01: INSIGHTS DASHBOARD                */}
-              {/* ========================================== */}
-              {activeStep === 0 && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+            {/* Right Screen: Smooth sliding panels representing all UI frames */}
+            <div className="flex-grow h-full overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950">
+              <motion.div
+                animate={{ y: -activeStep * 390 }}
+                transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                className="w-full flex flex-col"
+              >
+                
+                {/* 01. INSIGHTS FRAME */}
+                <div className="h-[390px] w-full p-4.5 flex flex-col justify-between shrink-0 text-[10px]">
                   <div className="flex justify-between items-center shrink-0">
                     <div className="flex items-center gap-1.5">
                       <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Insights</h4>
@@ -232,11 +234,9 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                         <Sparkles className="w-2.5 h-2.5 fill-white stroke-none" />
                       </span>
                     </div>
-                    {/* Timezone */}
                     <span className="text-[7.5px] text-[#706b61] dark:text-zinc-500 font-bold">1 Jul 2026 · 5:55 am</span>
                   </div>
 
-                  {/* KPIs */}
                   <div className="grid grid-cols-3 gap-1.5 shrink-0 text-center">
                     <div className="bg-[#f6f4f0] dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 py-1.5 rounded-lg font-extrabold text-[#1c1b19] dark:text-white">
                       <div>1,648</div>
@@ -252,19 +252,17 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                     </div>
                   </div>
 
-                  {/* Semicircular typing gauge card with stroke animation */}
                   <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[80px] shrink-0">
                     <div className="flex justify-between items-center text-[7.5px] font-bold text-[#706b61] uppercase">
                       <span>Typing Speed</span>
                       <span className="text-rose-500">+18% vs last week</span>
                     </div>
-                    
                     <div className="relative w-full flex justify-center mt-0.5">
                       <svg viewBox="0 0 170 96" className="w-[80px] h-[44px]">
                         <path d="M 15 85 A 70 70 0 0 1 155 85" fill="none" stroke="#ebe7df" strokeWidth="12" strokeLinecap="round" />
                         <motion.path 
                           initial={{ pathLength: 0 }}
-                          animate={{ pathLength: 1 }}
+                          animate={activeStep === 0 ? { pathLength: 1 } : { pathLength: 0 }}
                           transition={{ duration: 1.2, ease: "easeOut" }}
                           d="M 15 85 A 70 70 0 0 1 112 20" 
                           fill="none" 
@@ -286,7 +284,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                     </div>
                   </div>
 
-                  {/* Integration list with progressive width animation */}
                   <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl space-y-1.5 flex-grow">
                     <div className="text-[7.5px] font-black text-[#706b61] uppercase mb-1">Desktop Integration</div>
                     {[
@@ -301,7 +298,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                         <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1 rounded-full overflow-hidden">
                           <motion.div 
                             initial={{ width: "0%" }}
-                            animate={{ width: item.w }}
+                            animate={activeStep === 0 ? { width: item.w } : { width: "0%" }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
                             className={cn("h-full rounded-full", item.color)} 
                           />
@@ -309,25 +306,20 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              )}
+                </div>
 
-              {/* ========================================== */}
-              {/* VIEW 02: PARAYU HISTORY (DOUBLE CLICK)     */}
-              {/* ========================================== */}
-              {activeStep === 1 && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start">
+                {/* 02. PARAYU HISTORY FRAME */}
+                <div className="h-[390px] w-full p-4.5 flex flex-col justify-between shrink-0 text-[10px]">
                   <div className="flex justify-between items-center shrink-0">
                     <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Parayu History</h4>
                     <span className="text-[7px] font-black px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600">Free Tier</span>
                   </div>
 
-                  <div className="text-[8px] text-[#706b61] font-semibold italic border-l-2 border-[#e01e41] pl-2 shrink-0">
+                  <div className="text-[8px] text-[#706b61] font-semibold italic border-l-2 border-[#e01e41] pl-2 shrink-0 my-1">
                     Double-click any card below to instantly copy details to clipboard.
                   </div>
 
-                  {/* List of dictation cards */}
-                  <div className="space-y-2 flex-grow overflow-y-auto pr-0.5">
+                  <div className="space-y-2.5 flex-grow overflow-y-auto pr-0.5 py-1">
                     {[
                       { time: "10:45 AM", text: "Hey, do you remember what I said in yesterday's sync? The project timeline will delay by 2 weeks." },
                       { time: "Yesterday", text: "We need to update the pricing matrix to changes to the free word limits and push." }
@@ -348,28 +340,22 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              )}
+                </div>
 
-              {/* ========================================== */}
-              {/* VIEW 03: DICTIONARY MAPPING                */}
-              {/* ========================================== */}
-              {activeStep === 2 && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                {/* 03. DICTIONARY FRAME */}
+                <div className="h-[390px] w-full p-4.5 flex flex-col justify-between shrink-0 text-[10px]">
                   <div className="flex justify-between items-center shrink-0">
                     <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Dictionary</h4>
                     <span className="text-[7.5px] text-[#706b61] font-bold">Auto-replacements</span>
                   </div>
 
-                  {/* Entry form mock */}
-                  <div className="grid grid-cols-5 gap-1 shrink-0">
+                  <div className="grid grid-cols-5 gap-1 shrink-0 my-1">
                     <input readOnly placeholder="Misheard word" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded text-[8px] focus:outline-none" />
                     <input readOnly placeholder="Correct word" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded text-[8px] focus:outline-none" />
                     <button className="bg-[#e01e41] text-white rounded flex items-center justify-center"><Plus className="w-3.5 h-3.5" /></button>
                   </div>
 
-                  {/* Dictionary rows */}
-                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5">
+                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5 py-1">
                     {[
                       { from: "ennale", to: "yesterday" },
                       { from: "karyangal", to: "things" },
@@ -383,28 +369,22 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              )}
+                </div>
 
-              {/* ========================================== */}
-              {/* VIEW 04: SNIPPETS                          */}
-              {/* ========================================== */}
-              {activeStep === 3 && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                {/* 04. SNIPPETS FRAME */}
+                <div className="h-[390px] w-full p-4.5 flex flex-col justify-between shrink-0 text-[10px]">
                   <div className="flex justify-between items-center shrink-0">
                     <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Snippets</h4>
                     <span className="text-[7.5px] text-[#706b61] font-bold">Text expansions</span>
                   </div>
 
-                  {/* Input trigger form */}
-                  <div className="grid grid-cols-5 gap-1 shrink-0">
+                  <div className="grid grid-cols-5 gap-1 shrink-0 my-1">
                     <input readOnly placeholder="trigger" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded text-[8px] focus:outline-none" />
                     <input readOnly placeholder="expands to" className="col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded text-[8px] focus:outline-none" />
                     <button className="bg-[#e01e41] text-white rounded flex items-center justify-center"><Plus className="w-3.5 h-3.5" /></button>
                   </div>
 
-                  {/* Snippet list */}
-                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5">
+                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5 py-1">
                     {[
                       { trigger: "mysig", val: "Kind regards, Adarsh" },
                       { trigger: "timeline", val: "The project timeline will lag by 2 weeks." }
@@ -418,21 +398,16 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              )}
+                </div>
 
-              {/* ========================================== */}
-              {/* VIEW 05: PRO WRITING                       */}
-              {/* ========================================== */}
-              {activeStep === 4 && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                {/* 05. PRO WRITING FRAME */}
+                <div className="h-[390px] w-full p-4.5 flex flex-col justify-between shrink-0 text-[10px]">
                   <div className="flex justify-between items-center shrink-0">
                     <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Pro Writing</h4>
                     <span className="text-[7.5px] px-1.5 py-0.2 rounded-full bg-purple-500/10 text-purple-600 font-extrabold">PRO Mode</span>
                   </div>
 
-                  {/* Editor view screenwriting */}
-                  <div className="flex-grow bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-xl flex flex-col justify-start font-mono text-[8px] leading-relaxed text-zinc-700 dark:text-zinc-400 overflow-y-auto space-y-2">
+                  <div className="flex-grow bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-3 rounded-xl flex flex-col justify-start font-mono text-[8px] leading-relaxed text-zinc-700 dark:text-zinc-400 overflow-y-auto space-y-2 my-1">
                     <div className="text-center font-bold text-[#1c1b19] dark:text-white mb-2">SCENE 1: SYNCHRONIZATION</div>
                     <div>INT. MEETING ROOM - DAY</div>
                     <div className="pl-6 font-bold text-[#1c1b19] dark:text-white">ADARSH</div>
@@ -440,27 +415,21 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                       Innalathe meetingil njan paranja karyangal ormayundo? Athil chila changes undu...
                     </div>
                   </div>
-                </motion.div>
-              )}
+                </div>
 
-              {/* ========================================== */}
-              {/* VIEW 06: SETTINGS (BRAIN SWITCH)           */}
-              {/* ========================================== */}
-              {activeStep === 5 && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3.5 flex-grow flex flex-col justify-start text-[10px]">
+                {/* 06. SETTINGS FRAME */}
+                <div className="h-[390px] w-full p-4.5 flex flex-col justify-between shrink-0 text-[10px]">
                   <div className="flex justify-between items-center shrink-0">
                     <h4 className="text-xs font-heading font-black text-[#1c1b19] dark:text-white leading-tight">Settings</h4>
                     <span className="text-[7.5px] text-[#706b61] font-bold">App Config</span>
                   </div>
 
-                  {/* Hotkey trigger setting input */}
-                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl shrink-0 flex items-center justify-between">
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl shrink-0 flex items-center justify-between my-1">
                     <span className="font-bold text-[#706b61] dark:text-zinc-400">Record Hotkey</span>
                     <span className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-750 px-2 py-0.5 rounded font-mono font-extrabold text-[#1c1b19] dark:text-white">⌥ Space</span>
                   </div>
 
-                  {/* Brain switch catalog list */}
-                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5">
+                  <div className="space-y-1.5 flex-grow overflow-y-auto pr-0.5 py-1">
                     <div className="text-[7.5px] font-black text-[#706b61] uppercase mb-1">Brain Switch catalog</div>
                     {[
                       { name: "LOW", size: "190 MB", desc: "Fast & lightweight bilingual translation" },
@@ -487,9 +456,9 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              )}
+                </div>
 
+              </motion.div>
             </div>
           </motion.div>
         </div>
