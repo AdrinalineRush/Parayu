@@ -274,7 +274,7 @@ function MockSidebar({ activeView }: { activeView: string }) {
             </div>
             <div className="min-w-0 leading-tight">
               <div className="text-[7.5px] font-extrabold truncate text-zinc-900 dark:text-white">Dev Demo</div>
-              <div className="text-[6.5px] text-zinc-450 font-bold truncate">Enterprise</div>
+              <div className="text-[6.5px] text-zinc-455 font-bold truncate">Enterprise</div>
             </div>
           </div>
           <ChevronDown className="w-2.5 h-2.5 text-zinc-455 shrink-0" />
@@ -422,17 +422,17 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
       // 0.8s: Cursor appears
       const showCursorTimer = setTimeout(() => {
-        setLangCursor(prev => ({ ...prev, opacity: 1, x: 300, y: 90 }));
+        setLangCursor(prev => ({ ...prev, opacity: 1, x: 320, y: 110 }));
       }, 800);
 
       // 1.5s - 2.8s: List scrolls upwards (simulating list scroll to Malayalam)
       const scrollTimer = setTimeout(() => {
-        setLangListScrollY(-26); 
+        setLangListScrollY(-30); 
       }, 1500);
 
       // 3.0s: Cursor moves directly over Malayalam choice row inside dropdown
       const moveCursorTimer = setTimeout(() => {
-        setLangCursor(prev => ({ ...prev, x: 280, y: 92 }));
+        setLangCursor(prev => ({ ...prev, x: 300, y: 112 }));
       }, 3000);
 
       // 3.6s: Click Malayalam (cursor clicks, select state changes)
@@ -609,7 +609,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       }, 1000);
 
       const cursorMoveCorrectTimer = setTimeout(() => {
-        setDictCursor(prev => ({ ...prev, x: 260, y: 65 }));
+        setDictCursor(prev => ({ ...prev, x: 310, y: 65 }));
       }, 1600);
 
       // Typing "Parayu"
@@ -618,7 +618,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       }, 2100);
 
       const cursorMoveAddTimer = setTimeout(() => {
-        setDictCursor(prev => ({ ...prev, x: 350, y: 65 }));
+        setDictCursor(prev => ({ ...prev, x: 440, y: 65 }));
       }, 2700);
 
       // Click Add
@@ -705,7 +705,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       }, 1000);
 
       const cursorMoveExpandTimer = setTimeout(() => {
-        setSnipCursor(prev => ({ ...prev, x: 260, y: 65 }));
+        setSnipCursor(prev => ({ ...prev, x: 310, y: 65 }));
       }, 1600);
 
       // Typing expansion text "calendly.com/dev-demo"
@@ -714,7 +714,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       }, 2100);
 
       const cursorMoveAddTimer = setTimeout(() => {
-        setSnipCursor(prev => ({ ...prev, x: 350, y: 65 }));
+        setSnipCursor(prev => ({ ...prev, x: 450, y: 65 }));
       }, 2700);
 
       // Click Add
@@ -943,7 +943,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                         {/* Header Bar containing Language button, Date button, and green Ready pill (app header suggestions) */}
                         <div className="flex justify-between items-center mb-4 shrink-0 px-2 border-b border-zinc-200/60 dark:border-zinc-850 pb-3 mt-4">
                           {/* Green model status badge */}
-                          <div className="border border-emerald-600/20 bg-emerald-600/5 text-emerald-600 font-extrabold text-[8px] px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+                          <div className="border border-emerald-600/20 bg-emerald-600/5 text-emerald-600 font-extrabold text-[10px] px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse block" />
                             <span>Ready</span>
                           </div>
@@ -951,14 +951,14 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           {/* Dropdown triggers on the right side */}
                           <div className="flex items-center gap-2.5">
                             {/* Language dropdown button mimicking screenshot */}
-                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[9.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1.5 cursor-default relative">
+                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[11px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1.5 cursor-default relative">
                               <span>🌐 {selectedLang}</span>
-                              <ChevronDown className="w-3 h-3 text-zinc-500 animate-bounce" />
+                              <ChevronDown className="w-3.5 h-3.5 text-zinc-500 animate-bounce" />
                             </div>
 
                             {/* Date card widget mimicking screenshot */}
-                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[9.5px] font-bold text-zinc-505 flex items-center gap-1.5 cursor-default">
-                              <Calendar className="w-3 h-3 text-zinc-405" />
+                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[11px] font-bold text-zinc-505 flex items-center gap-1.5 cursor-default">
+                              <Calendar className="w-3.5 h-3.5 text-zinc-405" />
                               <span className="font-extrabold text-zinc-705 dark:text-zinc-300">1 Jul 2026</span>
                             </div>
                           </div>
@@ -980,13 +980,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -4, scale: 0.98 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute top-[-10px] right-[40px] w-[200px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-800 dark:text-zinc-200 font-sans p-2.5 gap-2.5 z-50 h-[200px]"
+                                className="absolute top-[-10px] right-[40px] w-[230px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-800 dark:text-zinc-200 font-sans p-2.5 gap-2.5 z-50 h-[220px]"
                               >
                                 
                                 {/* Search bar inside red outline */}
                                 <div className="relative border border-[#e01e41] rounded-lg px-2 py-1.5 flex items-center gap-1.5 shrink-0 bg-white dark:bg-zinc-950 shadow-sm">
                                   <Search className="w-3 h-3 text-zinc-405" />
-                                  <span className="text-[9.5px] text-zinc-405 dark:text-zinc-550 font-normal">Search language...</span>
+                                  <span className="text-[10.5px] text-zinc-405 dark:text-zinc-550 font-normal">Search language...</span>
                                 </div>
 
                                 {/* Scrolling list containing options with beta badges */}
@@ -994,7 +994,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <motion.div
                                     animate={{ y: langListScrollY }}
                                     transition={{ type: "tween", ease: "easeInOut", duration: 1.2 }}
-                                    className="flex flex-col gap-0.5 text-[9.5px] font-bold py-0.5 pr-1"
+                                    className="flex flex-col gap-0.5 text-[10.5px] font-bold py-0.5 pr-1"
                                   >
                                     {languageList.map((lang, idx) => (
                                       <div 
@@ -1006,7 +1006,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                       >
                                         <span>{lang.name}</span>
                                         {lang.beta && (
-                                          <span className="text-[6.5px] font-black uppercase text-zinc-450 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1 py-0.2 rounded-sm scale-90 origin-right">
+                                          <span className="text-[7.5px] font-black uppercase text-zinc-450 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1 py-0.2 rounded-sm scale-90 origin-right">
                                             BETA
                                           </span>
                                         )}
@@ -1015,7 +1015,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   </motion.div>
 
                                   {/* Custom scrollbar */}
-                                  <div className="absolute right-0 top-1 bottom-1 w-1 rounded-full bg-zinc-100 dark:bg-zinc-850 flex justify-center">
+                                  <div className="absolute right-0 top-1 bottom-1 w-1 rounded-full bg-zinc-100 dark:bg-zinc-855 flex justify-center">
                                     <div className="w-0.8 h-10 rounded-full bg-zinc-300 dark:bg-zinc-700 mt-1" />
                                   </div>
                                 </div>
@@ -1050,72 +1050,72 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                   if (step.image === "insights_anim") {
                     return (
-                      /* CUSTOM ANIMATED INSIGHTS CLOSE-UP (Step 2) - Close-up without sidebar */
+                      /* CUSTOM ANIMATED INSIGHTS CLOSE-UP (Step 2) - Close-up without sidebar, enlarged to fit frame */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[6%] select-none font-sans text-zinc-800 dark:text-zinc-250">
-                        <div className="space-y-4 w-full max-w-sm mx-auto">
+                        <div className="space-y-4 w-full max-w-lg mx-auto">
                           
                           {/* Top Row (4 Columns) */}
-                          <div className="grid grid-cols-4 gap-2">
+                          <div className="grid grid-cols-4 gap-2.5">
                             
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-[#e01e41]/5 text-[#e01e41] flex items-center justify-center shrink-0">
-                                <Mic className="w-3.5 h-3.5 fill-[#e01e41]/10" />
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center gap-2.5 shadow-sm min-w-0">
+                              <div className="w-8 h-8 rounded-full bg-[#e01e41]/5 text-[#e01e41] flex items-center justify-center shrink-0">
+                                <Mic className="w-4 h-4 fill-[#e01e41]/10" />
                               </div>
                               <div className="min-w-0 leading-tight">
-                                <div className="text-[12px] font-heading font-black truncate">
+                                <div className="text-[14px] font-heading font-black truncate">
                                   <Counter from={1900} to={2068} active={activeStep === 1} />
                                 </div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold uppercase mt-0.5">Words</div>
+                                <div className="text-[8.5px] text-zinc-450 font-bold uppercase mt-0.5">Words</div>
                               </div>
                             </div>
 
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-purple-500/5 text-purple-655 flex items-center justify-center shrink-0">
-                                <Clock className="w-3.5 h-3.5" />
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center gap-2.5 shadow-sm min-w-0">
+                              <div className="w-8 h-8 rounded-full bg-purple-500/5 text-purple-655 flex items-center justify-center shrink-0">
+                                <Clock className="w-4 h-4" />
                               </div>
                               <div className="min-w-0 leading-tight">
-                                <div className="text-[12px] font-heading font-black truncate">
+                                <div className="text-[14px] font-heading font-black truncate">
                                   <Counter from={80} to={102} active={activeStep === 1} />
                                 </div>
-                                <div className="text-[7.5px] text-zinc-455 font-bold uppercase mt-0.5">WPM</div>
+                                <div className="text-[8.5px] text-zinc-455 font-bold uppercase mt-0.5">WPM</div>
                               </div>
                             </div>
 
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-orange-500/5 text-orange-655 flex items-center justify-center shrink-0">
-                                <Pencil className="w-3.5 h-3.5" />
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center gap-2.5 shadow-sm min-w-0">
+                              <div className="w-8 h-8 rounded-full bg-orange-500/5 text-orange-655 flex items-center justify-center shrink-0">
+                                <Pencil className="w-4 h-4" />
                               </div>
                               <div className="min-w-0 leading-tight">
-                                <div className="text-[12px] font-heading font-black truncate">
+                                <div className="text-[14px] font-heading font-black truncate">
                                   <Counter from={15} to={40} active={activeStep === 1} />
                                 </div>
-                                <div className="text-[7.5px] text-zinc-455 font-bold uppercase mt-0.5">Fixes</div>
+                                <div className="text-[8.5px] text-zinc-455 font-bold uppercase mt-0.5">Fixes</div>
                               </div>
                             </div>
 
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-emerald-500/5 text-emerald-650 flex items-center justify-center shrink-0">
-                                <Check className="w-3.5 h-3.5" />
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center gap-2.5 shadow-sm min-w-0">
+                              <div className="w-8 h-8 rounded-full bg-emerald-500/5 text-emerald-650 flex items-center justify-center shrink-0">
+                                <Check className="w-4 h-4" />
                               </div>
                               <div className="min-w-0 leading-tight">
-                                <div className="text-[11px] font-heading font-black text-emerald-600 truncate">Ready</div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold uppercase mt-0.5">Model ready</div>
+                                <div className="text-[13px] font-heading font-black text-emerald-600 truncate">Ready</div>
+                                <div className="text-[8.5px] text-zinc-450 font-bold uppercase mt-0.5">Model ready</div>
                               </div>
                             </div>
 
                           </div>
 
                           {/* Bottom Row (3 Columns) */}
-                          <div className="grid grid-cols-3 gap-2">
+                          <div className="grid grid-cols-3 gap-2.5">
                             
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
-                              <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wide">Typing Speed</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-rose-500/10 text-rose-505 flex items-center justify-center bg-rose-505/5">
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-2xl flex flex-col justify-between h-[155px] shadow-sm relative">
+                              <div className="text-[9px] font-black text-zinc-450 uppercase tracking-wide">Typing Speed</div>
+                              <div className="absolute top-3 right-3 w-5 h-5 rounded-full border border-rose-500/10 text-rose-505 flex items-center justify-center bg-rose-505/5">
                                 <Clock className="w-3 h-3" />
                               </div>
                               
                               <div className="relative w-full flex justify-center mt-1">
-                                <svg viewBox="0 0 170 96" className="w-[82px] h-[44px]">
+                                <svg viewBox="0 0 170 96" className="w-[110px] h-[60px]">
                                   <path d="M 15 85 A 70 70 0 0 1 155 85" fill="none" stroke="#ebe7df" strokeWidth="12" strokeLinecap="round" />
                                   <motion.path 
                                     initial={{ pathLength: 0 }}
@@ -1123,47 +1123,47 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad11)" 
+                                    stroke="url(#insightsGrad12)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad11" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad12" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
                                   </defs>
                                 </svg>
                                 <div className="absolute inset-0 flex flex-col items-center justify-end">
-                                  <span className="text-[12px] font-black leading-none text-[#1c1b19] dark:text-white">
+                                  <span className="text-[15px] font-black leading-none text-[#1c1b19] dark:text-white">
                                     <Counter from={80} to={102} active={activeStep === 1} />
                                   </span>
-                                  <span className="text-[6.5px] font-bold text-[#706b61] uppercase mt-0.5">wpm</span>
+                                  <span className="text-[7.5px] font-bold text-[#706b61] uppercase mt-0.5">wpm</span>
                                 </div>
                               </div>
-                              <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-500 border-t border-zinc-150 pt-1.5 mt-1 shrink-0">
+                              <div className="flex justify-between items-center text-[8px] font-bold text-zinc-500 border-t border-zinc-150 pt-1.5 mt-1 shrink-0">
                                 <span>Target 120 wpm</span>
                                 <span className="font-extrabold text-[#e01e41]">18 to goal</span>
                               </div>
                             </div>
 
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
-                              <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wide">Smart Editing</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-655 flex items-center justify-center bg-purple-500/5">
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-2xl flex flex-col justify-between h-[155px] shadow-sm relative">
+                              <div className="text-[9px] font-black text-zinc-455 uppercase tracking-wide">Smart Editing</div>
+                              <div className="absolute top-3 right-3 w-5 h-5 rounded-full border border-purple-500/10 text-purple-655 flex items-center justify-center bg-purple-500/5">
                                 <Pencil className="w-3 h-3" />
                               </div>
 
-                              <div className="my-1.5 leading-tight">
-                                <div className="text-[19px] font-heading font-black text-zinc-855 dark:text-zinc-100">
+                              <div className="my-1 leading-tight">
+                                <div className="text-[21px] font-heading font-black text-zinc-855 dark:text-zinc-100">
                                   <Counter from={20} to={40} active={activeStep === 1} />
                                 </div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Fixes made by Parayu</div>
+                                <div className="text-[8px] text-zinc-450 font-bold mt-0.5">Fixes made by Parayu</div>
                               </div>
 
-                              <div className="space-y-1 text-[8.5px] font-bold">
+                              <div className="space-y-1 text-[10px] font-bold">
                                 <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
-                                  <div className="flex items-center gap-1">
-                                    <Check className="w-3 h-3 text-emerald-600" />
+                                  <div className="flex items-center gap-1.5">
+                                    <Check className="w-3.5 h-3.5 text-emerald-600" />
                                     <span>
                                       <Counter from={15} to={33} active={activeStep === 1} /> corrections
                                     </span>
@@ -1171,8 +1171,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <ChevronDown className="w-3 h-3 text-zinc-400" />
                                 </div>
                                 <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
-                                  <div className="flex items-center gap-1">
-                                    <BookOpen className="w-3 h-3 text-[#a02bb0]" />
+                                  <div className="flex items-center gap-1.5">
+                                    <BookOpen className="w-3.5 h-3.5 text-[#a02bb0]" />
                                     <span>
                                       <Counter from={2} to={7} active={activeStep === 1} /> dictionary
                                     </span>
@@ -1182,31 +1182,31 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </div>
                             </div>
 
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl flex flex-col justify-between h-[135px] shadow-sm relative">
-                              <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wide">Dictation Volume</div>
-                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-650 flex items-center justify-center bg-emerald-500/5">
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-2xl flex flex-col justify-between h-[155px] shadow-sm relative">
+                              <div className="text-[9px] font-black text-zinc-455 uppercase tracking-wide">Dictation Volume</div>
+                              <div className="absolute top-3 right-3 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-650 flex items-center justify-center bg-emerald-500/5">
                                 <Mic className="w-3 h-3" />
                               </div>
 
-                              <div className="my-1.5 leading-tight">
-                                <div className="text-[19px] font-heading font-black text-[#1c1b19] dark:text-white">
+                              <div className="my-1 leading-tight">
+                                <div className="text-[21px] font-heading font-black text-[#1c1b19] dark:text-white">
                                   <Counter from={1900} to={2068} active={activeStep === 1} />
                                 </div>
-                                <div className="text-[7.5px] text-zinc-455 font-bold mt-0.5">Total words dictated</div>
+                                <div className="text-[8px] text-zinc-455 font-bold mt-0.5">Total words dictated</div>
                               </div>
 
-                              <div className="space-y-1 text-[8.5px] font-bold">
+                              <div className="space-y-1 text-[10px] font-bold">
                                 <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
-                                  <div className="flex items-center gap-1">
-                                    <Monitor className="w-3 h-3 text-[#e01e41]" />
+                                  <div className="flex items-center gap-1.5">
+                                    <Monitor className="w-3.5 h-3.5 text-[#e01e41]" />
                                     <span>
-                                      <Counter from={1900} to={2068} active={activeStep === 1} /> words pasted
+                                      <Counter from={1900} to={2068} active={activeStep === 1} /> pasted
                                     </span>
                                   </div>
                                   <ChevronDown className="w-3 h-3 text-zinc-400" />
                                 </div>
                                 <div className="flex items-center justify-between bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850 px-2 py-1 rounded-lg">
-                                  <div className="flex items-center gap-1">
+                                  <div className="flex items-center gap-1.5">
                                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse block shrink-0" />
                                     <span className="text-emerald-600 font-extrabold">Ready</span>
                                   </div>
@@ -1231,18 +1231,18 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                         <MockSidebar activeView="history" />
 
                         {/* Right Content area */}
-                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[9.5px] overflow-hidden min-w-0 bg-[#faf9f7] dark:bg-zinc-950">
+                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[10.5px] overflow-hidden min-w-0 bg-[#faf9f7] dark:bg-zinc-955">
                           
                           {/* Status / Instruction bar replicating screenshot */}
                           <div className="flex justify-between items-center mb-2.5 shrink-0 px-1">
-                            <div className="flex items-center gap-1.5 text-zinc-450 font-bold">
+                            <div className="flex items-center gap-1.5 text-zinc-450 font-bold text-[9px]">
                               <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 animate-pulse" />
                               <span>Press</span>
                               <span className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-1.5 py-0.5 rounded font-mono font-extrabold text-[#1c1b19] dark:text-white">⌥ Option</span>
                               <span>to start dictating</span>
                             </div>
                             {/* Dropdown replica */}
-                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1 rounded-lg shadow-sm text-[8.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1 cursor-default">
+                            <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1 rounded-lg shadow-sm text-[9.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1 cursor-default">
                               <span>🌐 English</span>
                               <ChevronDown className="w-3.5 h-3.5 text-zinc-505" />
                             </div>
@@ -1283,18 +1283,18 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     }
                                     className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl flex flex-col justify-start relative transition-colors duration-200"
                                   >
-                                    <div className="flex justify-between items-center text-[7px] font-bold text-zinc-455 mb-1.5">
+                                    <div className="flex justify-between items-center text-[8px] font-bold text-zinc-455 mb-1.5">
                                       <span>{h.time}</span>
                                       <span 
                                         className={cn(
-                                          "font-black text-[#e01e41] text-[8px] transition-opacity duration-150",
+                                          "font-black text-[#e01e41] text-[9px] transition-opacity duration-150",
                                           isTargetCard && isCopied ? "opacity-100" : "opacity-0"
                                         )}
                                       >
                                         Copied
                                       </span>
                                     </div>
-                                    <p className="text-[9.5px] text-[#1c1b19] dark:text-zinc-200 leading-normal font-semibold">
+                                    <p className="text-[10.5px] text-[#1c1b19] dark:text-zinc-200 leading-normal font-semibold">
                                       {h.text}
                                     </p>
                                   </motion.div>
@@ -1336,7 +1336,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   initial={{ opacity: 0, y: -20, scale: 0.95 }}
                                   animate={{ opacity: 1, y: 0, scale: 1 }}
                                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                  className="absolute top-10 left-1/2 -translate-x-1/2 bg-zinc-900 text-white font-bold text-[8.5px] px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 z-50 border border-white/10"
+                                  className="absolute top-10 left-1/2 -translate-x-1/2 bg-zinc-900 text-white font-bold text-[9.5px] px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 z-50 border border-white/10"
                                 >
                                   <Check className="w-2.5 h-2.5 text-emerald-505" />
                                   <span>Copied to clipboard!</span>
@@ -1353,9 +1353,9 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                   if (step.image === "offline_ai_anim") {
                     return (
-                      /* CUSTOM ANIMATED ACTIVE OFFLINE AI OPTIONS CARD + SPEECH TRANSCRIPTION POP & CLEANUP (Step 4) */
+                      /* CUSTOM ANIMATED ACTIVE OFFLINE AI OPTIONS CARD + SPEECH TRANSCRIPTION POP & CLEANUP (Step 4) - Enlarged to reduce side gaps */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-955 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
-                        <div className="space-y-[3%] w-full max-w-[390px] mx-auto scale-[0.88] md:scale-95 origin-center">
+                        <div className="space-y-[3%] w-full max-w-[500px] mx-auto origin-center">
                           
                           {/* Exact Options Card from User Screenshot */}
                           <motion.div 
@@ -1370,7 +1370,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05)"
                                   }
                             }
-                            className="bg-white dark:bg-zinc-900 border p-3 rounded-2xl space-y-3 relative overflow-hidden transition-all duration-300"
+                            className="bg-white dark:bg-zinc-900 border p-3 rounded-2xl space-y-3.5 relative overflow-hidden transition-all duration-300"
                           >
                             
                             {/* Radial Glow pulse sweeping when AI activates */}
@@ -1389,14 +1389,14 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             {/* Section 1: Speech language */}
                             <div className="space-y-1.5">
                               <div className="flex items-center gap-1.5">
-                                <Globe className="w-3.5 h-3.5 text-[#e01e41]" />
-                                <span className="text-[10px] font-heading font-black text-zinc-900 dark:text-white">Speech language</span>
+                                <Globe className="w-4 h-4 text-[#e01e41]" />
+                                <span className="text-[11.5px] font-heading font-black text-zinc-900 dark:text-white">Speech language</span>
                               </div>
-                              <div className="text-[7.5px] text-zinc-450 font-bold pl-5 leading-none">English transcribes directly.</div>
+                              <div className="text-[9px] text-zinc-450 font-bold pl-5 leading-none">English transcribes directly.</div>
                               <div className="pl-5 pt-0.5">
                                 <div className="inline-flex bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 p-0.5 rounded-lg">
-                                  <button className="bg-white dark:bg-zinc-900 text-zinc-850 dark:text-white text-[8px] font-extrabold px-2.5 py-0.5 rounded-md shadow-sm">English</button>
-                                  <button className="text-zinc-455 text-[8px] font-bold px-2.5 py-0.5 rounded-md">Malayalam</button>
+                                  <button className="bg-white dark:bg-zinc-900 text-zinc-855 dark:text-white text-[9px] font-extrabold px-3 py-1 rounded-md shadow-sm">English</button>
+                                  <button className="text-zinc-455 text-[9px] font-bold px-3 py-1 rounded-md">Malayalam</button>
                                 </div>
                               </div>
                             </div>
@@ -1407,24 +1407,24 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             <div className="flex items-center justify-between">
                               <div className="space-y-0.5">
                                 <div className="flex items-center gap-1.5">
-                                  <Sparkles className="w-3.5 h-3.5 text-[#e01e41]" />
-                                  <span className="text-[10px] font-heading font-black text-zinc-900 dark:text-white">Active Offline AI</span>
+                                  <Sparkles className="w-4 h-4 text-[#e01e41]" />
+                                  <span className="text-[11.5px] font-heading font-black text-zinc-900 dark:text-white">Active Offline AI</span>
                                 </div>
-                                <div className="text-[7.5px] text-zinc-455 font-bold pl-5 leading-normal">
+                                <div className="text-[9px] text-zinc-455 font-bold pl-5 leading-normal">
                                   Correct stutters, repetitions, and grammar offline.
                                 </div>
                               </div>
                               {/* Sliding Toggle Switch (Flashes glow when ON) */}
                               <div 
                                 className={cn(
-                                  "w-7 h-4.5 rounded-full p-0.5 transition-colors duration-300 cursor-pointer shrink-0 flex items-center relative",
+                                  "w-8 h-5 rounded-full p-0.5 transition-colors duration-300 cursor-pointer shrink-0 flex items-center relative",
                                   aiActive ? "bg-[#e01e41] shadow-[0_0_8px_rgba(224,30,65,0.45)]" : "bg-zinc-200 dark:bg-zinc-800"
                                 )}
                               >
                                 <motion.div 
-                                  animate={{ x: aiActive ? 10 : 0 }}
+                                  animate={{ x: aiActive ? 12 : 0 }}
                                   transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                                  className="w-3.5 h-3.5 rounded-full bg-white shadow-sm z-10" 
+                                  className="w-4 h-4 rounded-full bg-white shadow-sm z-10" 
                                 />
                               </div>
                             </div>
@@ -1432,8 +1432,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             <div className="h-px bg-zinc-150 dark:bg-zinc-855" />
 
                             {/* Section 3: Fast Mode / Smart Mode Switcher */}
-                            <div className="bg-[#f0ece5] dark:bg-zinc-950 p-0.5 rounded-lg relative flex items-center w-full">
-                              <div className="grid grid-cols-2 w-full text-center relative z-10 text-[8px] font-extrabold">
+                            <div className="bg-[#f0ece5] dark:bg-zinc-955 p-0.5 rounded-lg relative flex items-center w-full">
+                              <div className="grid grid-cols-2 w-full text-center relative z-10 text-[9px] font-extrabold">
                                 <span className={cn("py-1 transition-colors duration-200", modeActive === "fast" ? "text-zinc-900 dark:text-white font-[800]" : "text-zinc-455")}>Fast Mode</span>
                                 <span className={cn("py-1 transition-colors duration-200", modeActive === "smart" ? "text-zinc-900 dark:text-white font-[800]" : "text-zinc-455")}>Smart Mode</span>
                               </div>
@@ -1448,14 +1448,14 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             {/* Section 4: Basic Offline Ready Block */}
-                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center justify-between shadow-sm">
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center justify-between shadow-sm">
                               <div className="space-y-0.5 min-w-0 leading-tight">
-                                <div className="text-[8.5px] font-heading font-black text-zinc-900 dark:text-white">Basic Offline Ready</div>
-                                <p className="text-[6.5px] text-zinc-450 font-semibold leading-normal truncate max-w-[200px]">
+                                <div className="text-[10px] font-heading font-black text-zinc-900 dark:text-white">Basic Offline Ready</div>
+                                <p className="text-[8px] text-zinc-450 font-semibold leading-normal truncate max-w-[280px]">
                                   Private Offline AI model is not included in this build. Basic offline cleanup is still available.
                                 </p>
                               </div>
-                              <span className="bg-[#f3efea] dark:bg-zinc-950 text-zinc-850 dark:text-white text-[7px] font-black px-2 py-0.5 rounded-md shrink-0">
+                              <span className="bg-[#f3efea] dark:bg-zinc-950 text-zinc-850 dark:text-white text-[8px] font-black px-2.5 py-0.5 rounded-md shrink-0">
                                 Basic
                               </span>
                             </div>
@@ -1477,7 +1477,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     background: "rgba(250, 250, 250, 0.7)"
                                   }
                             }
-                            className="border p-3 rounded-2xl shadow-sm relative min-h-[75px] flex flex-col justify-between transition-all duration-305"
+                            className="border p-3.5 rounded-2xl shadow-sm relative min-h-[85px] flex flex-col justify-between transition-all duration-300"
                           >
                             
                             {/* Glow pulse overlay on text box activation */}
@@ -1491,14 +1491,14 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             )}
 
                             {/* Dictation Box Header */}
-                            <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-455 border-b border-zinc-100 dark:border-zinc-855 pb-1.5 mb-1.5 shrink-0">
+                            <div className="flex justify-between items-center text-[8.5px] font-bold text-zinc-455 border-b border-zinc-100 dark:border-zinc-855 pb-1.5 mb-1.5 shrink-0">
                               <span className="flex items-center gap-1.5">
                                 <span className={cn("w-1.5 h-1.5 rounded-full block", aiActive ? "bg-[#e01e41] animate-pulse" : "bg-zinc-400")} />
                                 <span className={cn("transition-colors duration-300", aiActive ? "text-[#e01e41] font-black" : "")}>
                                   {aiActive ? "✦ Offline AI Cleaned" : "Direct Speech (No Cleanup)"}
                                 </span>
                               </span>
-                              <span className="uppercase tracking-widest text-[6px]">Live Output</span>
+                              <span className="uppercase tracking-widest text-[6.5px]">Live Output</span>
                             </div>
 
                             {/* Main text box showing Pop transcription */}
@@ -1508,7 +1508,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   ? { filter: "blur(1px)", opacity: 0.6 }
                                   : { filter: "blur(0px)", opacity: 1 }
                               }
-                              className="text-[9px] font-semibold leading-relaxed text-[#1c1b19] dark:text-zinc-200 flex-grow pr-5 min-h-[28px]"
+                              className="text-[10.5px] font-semibold leading-relaxed text-[#1c1b19] dark:text-zinc-200 flex-grow pr-5 min-h-[30px]"
                             >
                               {demoText ? (
                                 <span>{demoText}</span>
@@ -1523,20 +1523,20 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </motion.div>
 
                             {/* Status label at bottom of text area */}
-                            <div className="mt-1.5 flex justify-between items-center text-[7px] font-extrabold shrink-0 border-t border-zinc-100 dark:border-zinc-855 pt-1.5 text-zinc-455">
+                            <div className="mt-1.5 flex justify-between items-center text-[8px] font-extrabold shrink-0 border-t border-zinc-100 dark:border-zinc-855 pt-1.5 text-zinc-455">
                               <span>Auto-Correction Demo</span>
                               <AnimatePresence mode="wait">
                                 {correctionState === "typing" && (
-                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-555 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-[#e01e41]" /> listening... speak now</motion.span>
+                                  <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-555 flex items-center gap-1.5"><Mic className="w-3 h-3 animate-pulse text-[#e01e41]" /> listening... speak now</motion.span>
                                 )}
                                 {correctionState === "waiting" && (
                                   <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-600 font-black">raw transcription populated</motion.span>
                                 )}
                                 {correctionState === "correcting" && (
-                                  <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline AI...</motion.span>
+                                  <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1.5"><Sparkles className="w-3 h-3 animate-spin" /> executing offline AI...</motion.span>
                                 )}
                                 {correctionState === "clean" && (
-                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-655 font-black flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> corrected & finalized offline!</motion.span>
+                                  <motion.span key="clean" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-emerald-655 font-black flex items-center gap-1.5"><Check className="w-3 h-3 text-emerald-500" /> corrected & finalized offline!</motion.span>
                                 )}
                               </AnimatePresence>
                             </div>
@@ -1550,28 +1550,28 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                   if (step.image === "dictionary_anim") {
                     return (
-                      /* CUSTOM ANIMATED DICTIONARY VIEW (Step 5) - Focused (No sidebar!) */
+                      /* CUSTOM ANIMATED DICTIONARY VIEW (Step 5) - Focused (No sidebar!) Enlarged to fit frame layout */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-955 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
-                        <div className="space-y-[3%] w-full max-w-[420px] mx-auto scale-[0.88] md:scale-95 origin-center">
+                        <div className="space-y-[3%] w-full max-w-[520px] mx-auto origin-center">
                           
                           {/* Dictionary Card */}
-                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 p-3 rounded-2xl space-y-3 relative overflow-hidden transition-all duration-305 shadow-sm">
+                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 p-4 rounded-2xl space-y-4.5 relative overflow-hidden transition-all duration-305 shadow-sm">
                             
                             {/* Title */}
-                            <div className="text-[10px] font-heading font-black text-zinc-900 dark:text-white leading-none">
+                            <div className="text-[11.5px] font-heading font-black text-zinc-900 dark:text-white leading-none">
                               Dictionary
                             </div>
 
-                            {/* Add word pair inputs (replicates screenshot exactly) */}
-                            <div className="flex items-center gap-1.5 shrink-0">
+                            {/* Add word pair inputs (replicates screenshot exactly) - enlarged */}
+                            <div className="flex items-center gap-2 shrink-0">
                               {/* Misheard Input with red border focus */}
                               <div 
                                 className={cn(
-                                  "relative border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-950 flex-grow max-w-[155px] shadow-sm transition-colors",
+                                  "relative border rounded-lg px-2.5 py-2 bg-white dark:bg-zinc-950 flex-grow max-w-[190px] shadow-sm transition-colors",
                                   misheardVal && !dictAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-800"
                                 )}
                               >
-                                <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", misheardVal ? "text-zinc-800 dark:text-zinc-250" : "text-zinc-400")}>
+                                <span className={cn("text-[10.5px] transition-all font-semibold block leading-none truncate", misheardVal ? "text-zinc-800 dark:text-zinc-250" : "text-zinc-404")}>
                                   {misheardVal || "Misheard word"}
                                 </span>
                               </div>
@@ -1579,11 +1579,11 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               {/* Correct Input with light border */}
                               <div 
                                 className={cn(
-                                  "relative border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-950 flex-grow max-w-[155px] shadow-sm transition-colors",
+                                  "relative border rounded-lg px-2.5 py-2 bg-white dark:bg-zinc-950 flex-grow max-w-[190px] shadow-sm transition-colors",
                                   correctVal && !dictAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-800"
                                 )}
                               >
-                                <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", correctVal ? "text-zinc-800 dark:text-zinc-250" : "text-zinc-405")}>
+                                <span className={cn("text-[10.5px] transition-all font-semibold block leading-none truncate", correctVal ? "text-zinc-800 dark:text-zinc-250" : "text-zinc-405")}>
                                   {correctVal || "Correct word"}
                                 </span>
                               </div>
@@ -1591,15 +1591,15 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               {/* Add Button widget (clicks) */}
                               <motion.button 
                                 animate={{ scale: dictBtnPress ? 0.95 : 1 }}
-                                className="bg-[#1c1b19] dark:bg-zinc-800 hover:bg-[#2b2a26] text-white font-extrabold text-[9px] px-3.5 py-1.5 rounded-lg shrink-0 shadow-sm transition-transform leading-none"
+                                className="bg-[#1c1b19] dark:bg-zinc-800 hover:bg-[#2b2a26] text-white font-extrabold text-[10px] px-4 py-2 rounded-lg shrink-0 shadow-sm transition-transform leading-none"
                               >
                                 Add
                               </motion.button>
                             </div>
 
                             {/* List of custom word mappings */}
-                            <div className="space-y-1.5">
-                              <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wider">
+                            <div className="space-y-2">
+                              <div className="text-[9px] font-black text-zinc-455 uppercase tracking-wider">
                                 Custom Mappings List
                               </div>
 
@@ -1610,7 +1610,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    className="text-[9.5px] text-zinc-405 font-bold py-1 pl-0.5"
+                                    className="text-[10.5px] text-zinc-405 font-bold py-1.5 pl-0.5"
                                   >
                                     No custom words yet.
                                   </motion.div>
@@ -1619,14 +1619,14 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     key="words-list"
                                     initial={{ opacity: 0, y: 5 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-150 dark:border-zinc-855 p-2 rounded-xl flex items-center justify-between shadow-sm"
+                                    className="bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-150 dark:border-zinc-855 p-3 rounded-xl flex items-center justify-between shadow-sm"
                                   >
-                                    <div className="flex items-center gap-2">
-                                      <span className="bg-red-500/10 text-[#e01e41] text-[8px] px-1.5 py-0.5 rounded font-extrabold">parayoo</span>
-                                      <ArrowRight className="w-3.5 h-3.5 text-zinc-400" />
-                                      <span className="bg-emerald-500/10 text-emerald-600 text-[8px] px-1.5 py-0.5 rounded font-extrabold">Parayu</span>
+                                    <div className="flex items-center gap-2.5">
+                                      <span className="bg-red-500/10 text-[#e01e41] text-[9.5px] px-2 py-1 rounded font-extrabold">parayoo</span>
+                                      <ArrowRight className="w-4 h-4 text-zinc-400" />
+                                      <span className="bg-emerald-500/10 text-emerald-600 text-[9.5px] px-2 py-1 rounded font-extrabold">Parayu</span>
                                     </div>
-                                    <Trash2 className="w-3.5 h-3.5 text-zinc-400 cursor-default" />
+                                    <Trash2 className="w-4 h-4 text-zinc-400 cursor-default" />
                                   </motion.div>
                                 )}
                               </AnimatePresence>
@@ -1640,19 +1640,19 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <motion.div 
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl shadow-sm space-y-1.5"
+                                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-xl shadow-sm space-y-2"
                               >
                                 {/* Title bar */}
-                                <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1">
-                                  <span className="flex items-center gap-1 text-[#1f6f63]">
-                                    <Mic className="w-2.5 h-2.5 text-zinc-450 animate-pulse" />
+                                <div className="flex justify-between items-center text-[8px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1.5">
+                                  <span className="flex items-center gap-1.5 text-[#1f6f63]">
+                                    <Mic className="w-3.5 h-3.5 text-zinc-450 animate-pulse" />
                                     <span>Dictation Replacement Demo</span>
                                   </span>
-                                  <span className="uppercase text-[6px]">Scanner</span>
+                                  <span className="uppercase text-[6.5px]">Scanner</span>
                                 </div>
 
                                 {/* Speech transcription container */}
-                                <div className="text-[9px] font-semibold leading-normal min-h-[14px]">
+                                <div className="text-[10.5px] font-semibold leading-normal min-h-[16px]">
                                   {dictDemoState === "untranslated" && (
                                     <span>Welcome to <span className="bg-red-500/10 text-[#e01e41] px-1 rounded font-bold">parayoo</span>.</span>
                                   )}
@@ -1665,12 +1665,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 </div>
 
                                 {/* Status indicator bar */}
-                                <div className="flex justify-between items-center text-[6.5px] font-black text-zinc-455 pt-1 border-t border-zinc-100 dark:border-zinc-855">
+                                <div className="flex justify-between items-center text-[7.5px] font-black text-zinc-455 pt-1.5 border-t border-zinc-100 dark:border-zinc-855">
                                   <span>Spoken input</span>
                                   <AnimatePresence mode="wait">
                                     {dictDemoState === "untranslated" && <span key="unt" className="text-zinc-550">populating raw transcription...</span>}
                                     {dictDemoState === "scanning" && <span key="scan" className="text-[#e01e41] font-extrabold animate-pulse">scanning dictionary matches...</span>}
-                                    {dictDemoState === "translated" && <span key="trans" className="text-emerald-650 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> Auto-replaced!</span>}
+                                    {dictDemoState === "translated" && <span key="trans" className="text-emerald-650 font-extrabold flex items-center gap-0.5"><Check className="w-2.5 h-2.5 text-emerald-500" /> Auto-replaced!</span>}
                                   </AnimatePresence>
                                 </div>
                               </motion.div>
@@ -1702,28 +1702,28 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                   if (step.image === "snippets_anim") {
                     return (
-                      /* CUSTOM ANIMATED SNIPPETS VIEW (Step 6) - Focused (No sidebar!) */
+                      /* CUSTOM ANIMATED SNIPPETS VIEW (Step 6) - Focused (No sidebar!) Enlarged to fit frame */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-955 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
-                        <div className="space-y-[3%] w-full max-w-[440px] mx-auto scale-[0.88] md:scale-95 origin-center">
+                        <div className="space-y-[3%] w-full max-w-[540px] mx-auto origin-center">
                           
                           {/* Snippets Form Card */}
-                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 p-3 rounded-2xl space-y-3 relative overflow-hidden transition-all duration-305 shadow-sm">
+                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 p-4 rounded-2xl space-y-4.5 relative overflow-hidden transition-all duration-305 shadow-sm">
                             
                             {/* Title */}
-                            <div className="text-[10px] font-heading font-black text-zinc-900 dark:text-white leading-none">
+                            <div className="text-[11.5px] font-heading font-black text-zinc-900 dark:text-white leading-none">
                               Snippets
                             </div>
 
-                            {/* Add snippet form inputs */}
-                            <div className="flex items-center gap-1.5 shrink-0">
+                            {/* Add snippet form inputs - enlarged */}
+                            <div className="flex items-center gap-2 shrink-0">
                               {/* Trigger phrase input */}
                               <div 
                                 className={cn(
-                                  "relative border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-950 flex-grow max-w-[155px] shadow-sm transition-colors",
-                                  snipTriggerVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-800"
+                                  "relative border rounded-lg px-2.5 py-2 bg-white dark:bg-zinc-950 flex-grow max-w-[190px] shadow-sm transition-colors",
+                                  snipTriggerVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-808"
                                 )}
                               >
-                                <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", snipTriggerVal ? "text-zinc-800 dark:text-zinc-250" : "text-zinc-400")}>
+                                <span className={cn("text-[10.5px] transition-all font-semibold block leading-none truncate", snipTriggerVal ? "text-zinc-800 dark:text-zinc-250" : "text-zinc-400")}>
                                   {snipTriggerVal || "Trigger phrase"}
                                 </span>
                               </div>
@@ -1731,11 +1731,11 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               {/* Expands to input */}
                               <div 
                                 className={cn(
-                                  "relative border rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-950 flex-grow max-w-[155px] shadow-sm transition-colors",
-                                  snipExpandVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-800"
+                                  "relative border rounded-lg px-2.5 py-2 bg-white dark:bg-zinc-950 flex-grow max-w-[200px] shadow-sm transition-colors",
+                                  snipExpandVal && !snipAdded ? "border-[#e01e41]" : "border-zinc-200 dark:border-zinc-808"
                                 )}
                               >
-                                <span className={cn("text-[9px] transition-all font-semibold block leading-none truncate", snipExpandVal ? "text-zinc-800 dark:text-zinc-250" : "text-zinc-405")}>
+                                <span className={cn("text-[10.5px] transition-all font-semibold block leading-none truncate", snipExpandVal ? "text-zinc-800 dark:text-zinc-250" : "text-zinc-405")}>
                                   {snipExpandVal || "Expands to"}
                                 </span>
                               </div>
@@ -1743,15 +1743,15 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               {/* Add Button */}
                               <motion.button 
                                 animate={{ scale: snipBtnPress ? 0.95 : 1 }}
-                                className="bg-[#1c1b19] dark:bg-zinc-800 hover:bg-[#2b2a26] text-white font-extrabold text-[9px] px-3.5 py-1.5 rounded-lg shrink-0 shadow-sm transition-transform leading-none"
+                                className="bg-[#1c1b19] dark:bg-zinc-800 hover:bg-[#2b2a26] text-white font-extrabold text-[10px] px-4 py-2 rounded-lg shrink-0 shadow-sm transition-transform leading-none"
                               >
                                 Add
                               </motion.button>
                             </div>
 
                             {/* List of active text macro shortcuts */}
-                            <div className="space-y-1.5">
-                              <div className="text-[8px] font-black text-zinc-455 uppercase tracking-wider">
+                            <div className="space-y-2">
+                              <div className="text-[9px] font-black text-zinc-455 uppercase tracking-wider">
                                 Custom Expansion Shortcuts
                               </div>
 
@@ -1762,7 +1762,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    className="text-[9.5px] text-zinc-405 font-bold py-1 pl-0.5"
+                                    className="text-[10.5px] text-zinc-405 font-bold py-1.5 pl-0.5"
                                   >
                                     No text expansion shortcuts yet.
                                   </motion.div>
@@ -1771,18 +1771,18 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     key="snips-list"
                                     initial={{ opacity: 0, y: 5 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-150 dark:border-zinc-855 p-2.5 rounded-xl flex items-center justify-between shadow-sm"
+                                    className="bg-[#faf9f7] dark:bg-zinc-950 border border-zinc-150 dark:border-zinc-855 p-3 rounded-xl flex items-center justify-between shadow-sm"
                                   >
                                     <div className="flex flex-col gap-1 min-w-0 leading-tight">
-                                      <div className="flex items-center gap-1">
-                                        <span className="font-extrabold text-zinc-900 dark:text-white text-[9.5px]">my link</span>
-                                        <ArrowRight className="w-3.5 h-3.5 text-zinc-405 shrink-0" />
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="font-extrabold text-zinc-900 dark:text-white text-[11px]">my link</span>
+                                        <ArrowRight className="w-3.5 h-3.5 text-zinc-455 shrink-0" />
                                       </div>
-                                      <div className="text-[8px] font-bold text-zinc-455 truncate">
+                                      <div className="text-[9.5px] font-bold text-zinc-455 truncate">
                                         calendly.com/dev-demo
                                       </div>
                                     </div>
-                                    <span className="text-[7.5px] font-bold text-zinc-400 bg-zinc-100 hover:bg-zinc-150 px-2.5 py-1 rounded-md shrink-0 cursor-default">
+                                    <span className="text-[8px] font-bold text-zinc-400 bg-zinc-100 hover:bg-zinc-150 px-2.5 py-1 rounded-md shrink-0 cursor-default">
                                       remove
                                     </span>
                                   </motion.div>
@@ -1798,19 +1798,19 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <motion.div 
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl shadow-sm space-y-1.5"
+                                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-805 p-3.5 rounded-xl shadow-sm space-y-2"
                               >
                                 {/* Title bar */}
-                                <div className="flex justify-between items-center text-[7px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1">
-                                  <span className="flex items-center gap-1 text-[#ff8a1f]">
-                                    <Mic className="w-2.5 h-2.5 text-zinc-455 animate-pulse" />
+                                <div className="flex justify-between items-center text-[8px] font-bold text-zinc-450 border-b border-zinc-100 dark:border-zinc-850 pb-1.5">
+                                  <span className="flex items-center gap-1.5 text-[#ff8a1f]">
+                                    <Mic className="w-3.5 h-3.5 text-zinc-455 animate-pulse" />
                                     <span>Macro Shorthand Expansion Demo</span>
                                   </span>
-                                  <span className="uppercase text-[6px]">Detector</span>
+                                  <span className="uppercase text-[6.5px]">Detector</span>
                                 </div>
 
                                 {/* Speech transcription container */}
-                                <div className="text-[8.5px] font-semibold leading-normal min-h-[22px]">
+                                <div className="text-[10.5px] font-semibold leading-normal min-h-[22px]">
                                   {snipDemoState === "unexpanded" && (
                                     <span>Please book a slot through <span className="bg-orange-500/10 text-[#ff8a1f] px-1 rounded font-bold">my link</span>.</span>
                                   )}
@@ -1823,12 +1823,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 </div>
 
                                 {/* Status indicator bar */}
-                                <div className="flex justify-between items-center text-[6.5px] font-black text-zinc-455 pt-1 border-t border-zinc-100 dark:border-zinc-855">
+                                <div className="flex justify-between items-center text-[7.5px] font-black text-zinc-455 pt-1.5 border-t border-zinc-100 dark:border-zinc-855">
                                   <span>Voice command</span>
                                   <AnimatePresence mode="wait">
                                     {snipDemoState === "unexpanded" && <span key="une" className="text-zinc-550">populating raw transcription...</span>}
                                     {snipDemoState === "matching" && <span key="match" className="text-[#ff8a1f] font-extrabold animate-pulse">expanding shortcut trigger...</span>}
-                                    {snipDemoState === "expanded" && <span key="exp" className="text-emerald-655 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> expanded macro successfully!</span>}
+                                    {snipDemoState === "expanded" && <span key="exp" className="text-emerald-655 font-extrabold flex items-center gap-0.5"><Check className="w-2.5 h-2.5 text-emerald-500" /> expanded macro successfully!</span>}
                                   </AnimatePresence>
                                 </div>
                               </motion.div>
@@ -1860,20 +1860,20 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
                   if (step.image === "settings_anim") {
                     return (
-                      /* CUSTOM ANIMATED SETTINGS BRAIN SWITCH VIEW (Step 7) - Focused (No sidebar!) */
+                      /* CUSTOM ANIMATED SETTINGS BRAIN SWITCH VIEW (Step 7) - Focused (No sidebar!) Enlarged to fit frame */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-955 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
-                        <div className="space-y-[3%] w-full max-w-[390px] mx-auto scale-[0.88] md:scale-95 origin-center">
+                        <div className="space-y-[3%] w-full max-w-[500px] mx-auto origin-center">
                           
                           {/* Brain Switch Card */}
-                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-2xl shadow-sm space-y-2.5 flex flex-col overflow-hidden">
+                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 p-4 rounded-2xl shadow-sm space-y-3.5 flex flex-col overflow-hidden">
                             
                             {/* Card Header */}
                             <div className="space-y-0.5 shrink-0">
                               <div className="flex items-center gap-1.5">
-                                <Cpu className="w-3.5 h-3.5 text-[#e01e41]" />
-                                <span className="text-[10px] font-heading font-black text-zinc-900 dark:text-white">Brain Switch</span>
+                                <Cpu className="w-4 h-4 text-[#e01e41]" />
+                                <span className="text-[11.5px] font-heading font-black text-zinc-900 dark:text-white">Brain Switch</span>
                               </div>
-                              <div className="text-[7.5px] text-zinc-450 font-bold pl-5 leading-none">
+                              <div className="text-[9px] text-zinc-450 font-bold pl-5 leading-none">
                                 Choose offline speech models.
                               </div>
                             </div>
@@ -1892,21 +1892,21 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                           ? { scale: 1, borderColor: "#e01e41", boxShadow: "0 0 0 1px #e01e41" }
                                           : { scale: 1, borderColor: "rgba(228,228,231,1)", boxShadow: "0 0 0 0px transparent" }
                                     }
-                                    className="bg-white dark:bg-zinc-950 border rounded-xl py-1.5 px-3.5 flex items-center justify-between transition-all duration-200 cursor-pointer"
+                                    className="bg-white dark:bg-zinc-950 border rounded-xl py-2 px-4 flex items-center justify-between transition-all duration-200 cursor-pointer"
                                   >
                                     <div className="flex items-center min-w-0 leading-none">
-                                      <span className="text-[9.5px] font-black text-zinc-900 dark:text-white">{opt.name}</span>
-                                      <span className="text-[8px] font-bold text-zinc-455 ml-2">{opt.size}</span>
+                                      <span className="text-[11px] font-black text-zinc-900 dark:text-white">{opt.name}</span>
+                                      <span className="text-[9px] font-bold text-zinc-455 ml-2.5">{opt.size}</span>
                                     </div>
                                     <div className="shrink-0 flex items-center">
                                       {opt.rightIcon === "download" && (
-                                        <Download className="w-3 h-3 text-zinc-455" />
+                                        <Download className="w-3.5 h-3.5 text-zinc-455" />
                                       )}
                                       {opt.rightIcon === "green-check" && (
-                                        <Check className="w-3 h-3 text-emerald-600 font-extrabold" />
+                                        <Check className="w-3.5 h-3.5 text-emerald-600 font-extrabold" />
                                       )}
                                       {opt.rightIcon === "red-check" && (
-                                        <Check className="w-3 h-3 text-[#e01e41] font-extrabold" />
+                                        <Check className="w-3.5 h-3.5 text-[#e01e41] font-extrabold" />
                                       )}
                                     </div>
                                   </motion.div>
@@ -1915,22 +1915,22 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             {/* Lower Info detail card */}
-                            <div className="bg-[#faf8f5] dark:bg-zinc-955/50 border border-zinc-150 dark:border-zinc-850 p-3 rounded-xl min-h-[95px] flex flex-col justify-between">
+                            <div className="bg-[#faf8f5] dark:bg-zinc-955/50 border border-zinc-150 dark:border-zinc-850 p-3.5 rounded-xl min-h-[110px] flex flex-col justify-between">
                               <div className="space-y-1">
                                 <div className="flex items-center gap-1.5 leading-none">
-                                  <span className="text-[9.5px] font-black text-zinc-900 dark:text-white">
+                                  <span className="text-[11px] font-black text-zinc-900 dark:text-white">
                                     {brainOptions[selectedBrain].name}
                                   </span>
-                                  <span className="text-[8px] font-bold text-zinc-455">
+                                  <span className="text-[9px] font-bold text-zinc-455">
                                     {brainOptions[selectedBrain].size}
                                   </span>
                                   {brainOptions[selectedBrain].badge && (
-                                    <span className="bg-[#e01e41]/10 text-[#e01e41] text-[6px] font-black px-1.5 py-0.5 rounded tracking-wide scale-90">
+                                    <span className="bg-[#e01e41]/10 text-[#e01e41] text-[6.5px] font-black px-1.5 py-0.5 rounded tracking-wide scale-90">
                                       {brainOptions[selectedBrain].badge}
                                     </span>
                                   )}
                                 </div>
-                                <p className="text-[7.5px] font-semibold text-zinc-650 dark:text-zinc-350 leading-relaxed mt-1">
+                                <p className="text-[9px] font-semibold text-zinc-650 dark:text-zinc-350 leading-relaxed mt-1">
                                   {brainOptions[selectedBrain].desc}
                                 </p>
                               </div>
@@ -1938,16 +1938,16 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <div className="h-px bg-zinc-150 dark:bg-zinc-800 my-1" />
 
                               {/* Status row action */}
-                              <div className="flex justify-between items-center text-[7.5px] font-black text-zinc-455">
+                              <div className="flex justify-between items-center text-[9px] font-black text-zinc-455">
                                 <span>{brainOptions[selectedBrain].status}</span>
                                 {brainOptions[selectedBrain].actionText === "Download" ? (
-                                  <button className="bg-[#ece7df] dark:bg-zinc-800 hover:bg-[#dedad2] text-zinc-850 dark:text-white text-[7.5px] font-extrabold px-2.5 py-1 rounded-md shadow-sm flex items-center gap-0.5 leading-none">
-                                    <Download className="w-2.5 h-2.5" />
+                                  <button className="bg-[#ece7df] dark:bg-zinc-800 hover:bg-[#dedad2] text-zinc-850 dark:text-white text-[8.5px] font-extrabold px-3 py-1 rounded-md shadow-sm flex items-center gap-0.5 leading-none">
+                                    <Download className="w-3 h-3" />
                                     <span>Download</span>
                                   </button>
                                 ) : (
-                                  <button className="bg-[#1c1b19] dark:bg-zinc-800 text-white text-[7.5px] font-extrabold px-2.5 py-1 rounded-md shadow-sm flex items-center gap-0.5 leading-none">
-                                    <Check className="w-2.5 h-2.5 text-emerald-500" />
+                                  <button className="bg-[#1c1b19] dark:bg-zinc-800 text-white text-[8.5px] font-extrabold px-3 py-1 rounded-md shadow-sm flex items-center gap-0.5 leading-none">
+                                    <Check className="w-3 h-3 text-emerald-500" />
                                     <span>Active</span>
                                   </button>
                                 )}
