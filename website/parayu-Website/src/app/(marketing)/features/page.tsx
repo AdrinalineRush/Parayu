@@ -50,19 +50,39 @@ const heroFeatures = [
 
 const spotlightFeatures = [
   {
-    id: "whisper",
-    badge: "Core Engine",
-    title: "On-Device Whisper AI",
-    subtitle: "Four speech brains. One local machine.",
+    id: "brains",
+    badge: "Brain Switch",
+    title: "Switch Your Speech Brain",
+    subtitle: "Four AI brains. Pick the one that fits your hardware.",
     description:
-      "Parayu runs OpenAI's Whisper models directly on your CPU or Apple Silicon GPU via whisper.cpp — no internet, no cloud, no latency. Pick the brain that fits your hardware.",
+      "Parayu ships with four on-device speech brains — from a lightweight, lightning-fast engine to our flagship full-precision powerhouse. Every brain runs 100% offline on your CPU or Apple Silicon GPU. No internet, no cloud, no latency.",
     icon: Brain,
     color: "#e01e41",
     models: [
-      { name: "LOW", size: "190 MB", params: "0.07B", speed: "Fastest" },
-      { name: "MEDIUM", size: "539 MB", params: "0.24B", speed: "Balanced" },
-      { name: "HIGH", size: "844 MB", params: "1.55B", speed: "5-bit Quantized" },
-      { name: "PRO", size: "2.9 GB", params: "1.55B", speed: "Full 16-bit" },
+      {
+        name: "LOW",
+        size: "190 MB",
+        desc: "Lightweight, highly optimized brain that delivers solid accuracy with fast inference speed.",
+        bullets: ["Fastest transcription speed on any device", "Optimized for high-speed bilingual translation", "Extremely low memory footprint"],
+      },
+      {
+        name: "MEDIUM",
+        size: "539 MB",
+        desc: "Balanced brain providing high accuracy, excellent Malayalam understanding, and fast GPU speed.",
+        bullets: ["Enhanced Malayalam vocabulary and accents", "Perfect balance of speed and recognition", "Quantized to 5-bit for native GPU performance"],
+      },
+      {
+        name: "HIGH",
+        size: "844 MB",
+        desc: "State-of-the-art accuracy with deep multilingual heuristics. Ideal for complex vocabularies.",
+        bullets: ["Excellent Malayalam to English translation quality", "Perfect for transcription in noisy environments", "Optimized 5-bit quantization for Apple Silicon GPUs"],
+      },
+      {
+        name: "PRO",
+        size: "2.9 GB",
+        desc: "Our flagship unquantized brain. Full 16-bit float precision with absolute peak recognition.",
+        bullets: ["Zero quality loss — the absolute best accuracy", "Professional-grade Malayalam and English translations", "Fully accelerated on Apple Silicon GPU"],
+      },
     ],
   },
   {
@@ -271,7 +291,7 @@ export default function FeaturesPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-lg md:text-xl text-[#706b61] max-w-2xl mx-auto mb-10 leading-relaxed font-medium"
           >
-            Parayu runs OpenAI Whisper models locally on your machine. Dictate
+            Parayu runs powerful AI speech brains locally on your machine. Dictate
             in any language, paste into any app, and keep every word private —
             all without an internet connection.
           </motion.p>
@@ -347,7 +367,7 @@ export default function FeaturesPage() {
       {/* ============================================================ */}
       <Section className="py-24" size="lg">
         <div className="max-w-6xl mx-auto px-4 space-y-32">
-          {/* --- Spotlight 1: Whisper AI Engine --- */}
+          {/* --- Spotlight 1: Brain Switch --- */}
           {(() => {
             const s = spotlightFeatures[0];
             return (
@@ -369,26 +389,36 @@ export default function FeaturesPage() {
                       Compare plans <ChevronRight className="w-4 h-4" />
                     </Link>
                   </div>
-                  {/* Model Cards */}
-                  <div className="grid grid-cols-2 gap-3">
-                    {s.models!.map((m, i) => (
+                  {/* Brain Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {s.models!.map((m: any, i: number) => (
                       <motion.div
                         key={m.name}
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: i * 0.08 }}
-                        className="rounded-2xl border border-[#e8e5df] bg-[#faf9f7] p-5 hover:shadow-lg hover:border-[#e01e41]/20 transition-all duration-300 group"
+                        className="rounded-2xl border border-[#e8e5df] bg-[#faf9f7] p-5 hover:shadow-lg hover:border-[#e01e41]/20 transition-all duration-300 group flex flex-col"
                       >
-                        <div className="text-[10px] font-black uppercase tracking-widest text-[#e01e41] mb-2">
-                          {m.name}
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-[#e01e41]">
+                            {m.name}
+                          </span>
+                          <span className="text-[10px] font-bold text-[#706b61] bg-white px-2 py-0.5 rounded-full border border-[#e8e5df]">
+                            {m.size}
+                          </span>
                         </div>
-                        <div className="text-xl font-heading font-black text-[#1c1b19] mb-1">
-                          {m.params}
-                        </div>
-                        <div className="text-[11px] text-[#706b61] font-semibold">
-                          {m.size} · {m.speed}
-                        </div>
+                        <p className="text-[12px] font-bold text-[#1c1b19] leading-snug mb-3">
+                          {m.desc}
+                        </p>
+                        <ul className="space-y-1.5 mt-auto">
+                          {m.bullets.map((b: string, bi: number) => (
+                            <li key={bi} className="flex items-start gap-2 text-[11px] text-[#706b61] font-medium">
+                              <Check className="w-3 h-3 text-emerald-500 shrink-0 mt-0.5 stroke-[3]" />
+                              {b}
+                            </li>
+                          ))}
+                        </ul>
                       </motion.div>
                     ))}
                   </div>
