@@ -19,7 +19,8 @@ import {
   Lock,
   ShieldCheck,
   Home,
-  Globe
+  Globe,
+  Calendar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -264,6 +265,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Custom animation states for Step 1: Language selection within surrounding dashboard
+  const [dropdownOpen, setDropdownOpen] = useState(true);
+  const [selectedLang, setSelectedLang] = useState("English");
+  const [langListScrollY, setLangListScrollY] = useState(0);
+  const [langCursor, setLangCursor] = useState({ x: 230, y: 150, opacity: 0, scale: 1 });
+
   // Custom animation states for Step 3: History double-click copy
   const [isCopied, setIsCopied] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
@@ -320,6 +327,75 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Trigger Step 1: Language selection with surrounding dashboard layout animation loops
+  useEffect(() => {
+    if (activeStep !== 0) {
+      setDropdownOpen(true);
+      setSelectedLang("English");
+      setLangListScrollY(0);
+      setLangCursor({ x: 230, y: 150, opacity: 0, scale: 1 });
+      return;
+    }
+
+    const runLangLoop = () => {
+      setDropdownOpen(true);
+      setSelectedLang("English");
+      setLangListScrollY(0);
+      setLangCursor({ x: 230, y: 150, opacity: 0, scale: 1 });
+
+      // 0.8s: Cursor appears
+      const showCursorTimer = setTimeout(() => {
+        setLangCursor(prev => ({ ...prev, opacity: 1, x: 230, y: 120 }));
+      }, 800);
+
+      // 1.5s - 2.8s: List scrolls upwards (simulating list scroll to Malayalam)
+      const scrollTimer = setTimeout(() => {
+        setLangListScrollY(-26); // Shift scroll window upwards
+      }, 1500);
+
+      // 3.0s: Cursor moves directly over Malayalam choice row
+      const moveCursorTimer = setTimeout(() => {
+        setLangCursor(prev => ({ ...prev, x: 220, y: 105 }));
+      }, 3000);
+
+      // 3.6s: Click Malayalam (cursor shrinks, select state changes)
+      const clickTimer = setTimeout(() => {
+        setLangCursor(prev => ({ ...prev, scale: 0.8 }));
+        setSelectedLang("Malayalam");
+      }, 3600);
+
+      // 3.8s: Cursor releases and dropdown menu closes
+      const closeDropdownTimer = setTimeout(() => {
+        setLangCursor(prev => ({ ...prev, scale: 1, opacity: 0 }));
+        setDropdownOpen(false);
+      }, 4000);
+
+      // 6.2s: Reset loop (opens dropdown again)
+      const resetTimer = setTimeout(() => {
+        setDropdownOpen(true);
+        setSelectedLang("English");
+        setLangListScrollY(0);
+      }, 6200);
+
+      return () => {
+        clearTimeout(showCursorTimer);
+        clearTimeout(scrollTimer);
+        clearTimeout(moveCursorTimer);
+        clearTimeout(clickTimer);
+        clearTimeout(closeDropdownTimer);
+        clearTimeout(resetTimer);
+      };
+    };
+
+    const cleanup = runLangLoop();
+    const interval = setInterval(runLangLoop, 7500);
+
+    return () => {
+      cleanup();
+      clearInterval(interval);
+    };
+  }, [activeStep]);
 
   // Trigger double-click copying automation loops for Step 3
   useEffect(() => {
@@ -379,13 +455,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
     }
 
     // Sequence loop simulating real software transcription pop (not typewriter style)
-    // 0s - 1.2s: Silence / Recording (empty text box, flashing mic indicator)
-    // 1.2s: Transcribed raw text block pops in all at once!
-    // 2.2s: Active Offline AI switch slides ON (red)
-    // 2.8s: Mode switcher slides to Smart Mode
-    // 3.4s: Correction animation triggers (blur overlay)
-    // 3.8s: Corrected text block replaces stutter block instantly!
-    // 6.8s: Reset loop
     const runAiLoop = () => {
       setAiActive(false);
       setModeActive("fast");
@@ -492,51 +561,137 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                 {scrollSteps.map((step) => {
                   if (step.image === "languages_anim") {
                     return (
-                      /* CUSTOM ANIMATED LANGUAGE SELECTOR FRAME (Step 1) - Close-up without sidebar */
-                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex items-center justify-center p-[6%]">
+                      /* CUSTOM ANIMATED LANGUAGE SELECTOR FRAME (Step 1) - WITH Sidebar and Dashboard Surrounding Areas */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
                         
-                        {/* High-fidelity dropdown window reproducing user's exact screenshot */}
-                        <div className="w-full max-w-[280px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl flex flex-col overflow-hidden text-zinc-800 dark:text-zinc-200 font-sans p-[4%] gap-[4%] h-[85%]">
-                          
-                          {/* Search bar inside red outline */}
-                          <div className="relative border border-[#e01e41] rounded-xl px-3 py-2 flex items-center gap-2 shrink-0 bg-white dark:bg-zinc-950 shadow-sm">
-                            <Search className="w-3.5 h-3.5 text-zinc-400" />
-                            <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-normal">Search language...</span>
-                          </div>
+                        {/* Sidebar included to make it feel like it belongs to the app */}
+                        <MockSidebar activeView="home" />
 
-                          {/* Scrolling language list moving upwards */}
-                          <div className="flex-grow overflow-hidden relative">
-                            <motion.div
-                              animate={{ y: ["0%", "-68%"] }}
-                              transition={{ 
-                                repeat: Infinity, 
-                                duration: 16, 
-                                ease: "linear"
-                              }}
-                              className="flex flex-col gap-0.5 text-xs font-semibold py-1 pr-1"
-                            >
-                              {[...languageList, ...languageList].map((lang, idx) => (
-                                <div 
-                                  key={idx} 
-                                  className={cn(
-                                    "flex justify-between items-center py-2 px-2.5 rounded-lg",
-                                    lang.highlight ? "text-[#e01e41] font-extrabold bg-[#e01e41]/5" : "text-zinc-700 dark:text-zinc-350"
-                                  )}
-                                >
-                                  <span>{lang.name}</span>
-                                  {lang.beta && (
-                                    <span className="text-[7.5px] font-black uppercase text-zinc-450 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded tracking-wide">
-                                      BETA
-                                    </span>
-                                  )}
-                                </div>
-                              ))}
-                            </motion.div>
-                            
-                            <div className="absolute right-0 top-2 bottom-2 w-1.5 rounded-full bg-zinc-200 dark:bg-zinc-850 flex justify-center py-1">
-                              <div className="w-1 h-8 rounded-full bg-zinc-450 dark:bg-zinc-700" />
+                        {/* Right Content area: Dashboard Header & upper card columns */}
+                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[9.5px] overflow-hidden min-w-0 bg-[#faf9f7] dark:bg-zinc-950 relative">
+                          
+                          {/* Header Bar containing Language button, Date button, and green Ready pill */}
+                          <div className="flex justify-between items-center mb-3 shrink-0 px-1 border-b border-zinc-150 dark:border-zinc-850 pb-2">
+                            {/* Green model status badge */}
+                            <div className="border border-emerald-600/20 bg-emerald-600/5 text-emerald-600 font-extrabold text-[7.5px] px-2 py-0.5 rounded-md flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse block" />
+                              <span>Ready</span>
+                            </div>
+
+                            {/* Dropdown triggers on the right side */}
+                            <div className="flex items-center gap-2">
+                              {/* Language dropdown button mimicking screenshot */}
+                              <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1 rounded-xl shadow-sm text-[8.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1 cursor-default relative">
+                                <span>🌐 {selectedLang}</span>
+                                <ChevronDown className="w-3 h-3 text-zinc-500" />
+                              </div>
+
+                              {/* Date card widget mimicking screenshot */}
+                              <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1 rounded-xl shadow-sm text-[8.5px] font-bold text-zinc-500 flex items-center gap-1 cursor-default">
+                                <Calendar className="w-3 h-3 text-zinc-400" />
+                                <span className="font-extrabold text-zinc-700 dark:text-zinc-300">1 Jul 2026</span>
+                              </div>
                             </div>
                           </div>
+
+                          {/* Top part of Dashboard Cards (Smart Editing & Dictation Volume) */}
+                          <div className="grid grid-cols-2 gap-2.5 px-1 relative z-0">
+                            
+                            {/* Smart Editing Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-2xl flex flex-col justify-between h-[120px] shadow-sm relative">
+                              <div className="text-[7.5px] font-black text-zinc-450 uppercase tracking-wide">Smart Editing</div>
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-purple-500/10 text-purple-650 flex items-center justify-center bg-purple-500/5">
+                                <Pencil className="w-3 h-3" />
+                              </div>
+                              <div className="my-1.5 leading-tight">
+                                <div className="text-[20px] font-heading font-black text-zinc-850 dark:text-zinc-100">42</div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">fixes made by Parayu</div>
+                              </div>
+                            </div>
+
+                            {/* Dictation Volume Card */}
+                            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-2xl flex flex-col justify-between h-[120px] shadow-sm relative">
+                              <div className="text-[7.5px] font-black text-zinc-450 uppercase tracking-wide">Dictation Volume</div>
+                              <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-emerald-500/10 text-emerald-650 flex items-center justify-center bg-emerald-500/5">
+                                <Mic className="w-3 h-3" />
+                              </div>
+                              <div className="my-1.5 leading-tight">
+                                <div className="text-[20px] font-heading font-black text-zinc-850 dark:text-zinc-100">2,518</div>
+                                <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Total words dictated</div>
+                              </div>
+                            </div>
+
+                          </div>
+
+                          {/* Floating Language selection dropdown menu box overlaying dashboard */}
+                          <AnimatePresence>
+                            {dropdownOpen && (
+                              <motion.div 
+                                initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute top-[38px] right-[75px] w-[185px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-800 dark:text-zinc-200 font-sans p-2.5 gap-2 z-50 h-[190px]"
+                              >
+                                
+                                {/* Search bar inside red outline */}
+                                <div className="relative border border-[#e01e41] rounded-lg px-2 py-1.5 flex items-center gap-1.5 shrink-0 bg-white dark:bg-zinc-950 shadow-sm">
+                                  <Search className="w-3 h-3 text-zinc-400" />
+                                  <span className="text-[9px] text-zinc-400 dark:text-zinc-500 font-normal">Search language...</span>
+                                </div>
+
+                                {/* Scrolling list containing options with beta badges */}
+                                <div className="flex-grow overflow-hidden relative">
+                                  <motion.div
+                                    animate={{ y: langListScrollY }}
+                                    transition={{ type: "tween", ease: "easeInOut", duration: 1.2 }}
+                                    className="flex flex-col gap-0.5 text-[9px] font-bold py-0.5 pr-1"
+                                  >
+                                    {languageList.map((lang, idx) => (
+                                      <div 
+                                        key={idx} 
+                                        className={cn(
+                                          "flex justify-between items-center py-1.5 px-2 rounded-lg transition-colors",
+                                          lang.name === selectedLang ? "text-[#e01e41] font-extrabold bg-[#e01e41]/5" : "text-zinc-700 dark:text-zinc-350"
+                                        )}
+                                      >
+                                        <span>{lang.name}</span>
+                                        {lang.beta && (
+                                          <span className="text-[6px] font-black uppercase text-zinc-450 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1 py-0.2 rounded-sm scale-90 origin-right">
+                                            BETA
+                                          </span>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </motion.div>
+
+                                  {/* Custom scrollbar */}
+                                  <div className="absolute right-0 top-1 bottom-1 w-1 rounded-full bg-zinc-100 dark:bg-zinc-850 flex justify-center">
+                                    <div className="w-0.8 h-10 rounded-full bg-zinc-300 dark:bg-zinc-700 mt-1" />
+                                  </div>
+                                </div>
+
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          {/* Cursor indicator simulating selection clicks inside dropdown menu */}
+                          <AnimatePresence>
+                            {dropdownOpen && langCursor.opacity > 0 && (
+                              <motion.div
+                                animate={{ 
+                                  x: langCursor.x, 
+                                  y: langCursor.y, 
+                                  scale: langCursor.scale,
+                                  opacity: langCursor.opacity
+                                }}
+                                transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
+                                className="absolute w-4.5 h-4.5 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
+                              >
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#e01e41]" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
 
                         </div>
                       </div>
@@ -618,12 +773,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad3)" 
+                                    stroke="url(#insightsGrad4)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
@@ -816,7 +971,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     repeatDelay: 1,
                                     ease: "easeInOut"
                                   }}
-                                  className="absolute w-4 h-4 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
+                                  className="absolute w-4.5 h-4.5 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
                                 >
                                   {/* Core clicking point */}
                                   <div className="w-1.5 h-1.5 rounded-full bg-[#e01e41]" />
@@ -849,7 +1004,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                   if (step.image === "offline_ai_anim") {
                     return (
                       /* CUSTOM ANIMATED ACTIVE OFFLINE AI OPTIONS CARD + SPEECH TRANSCRIPTION POP & CLEANUP (Step 4) */
-                      /* Corrected text appears instantly (transcription pop) instead of slow typing, representing local dictation */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-col justify-center p-[4%] select-none font-sans text-zinc-800 dark:text-zinc-250">
                         <div className="space-y-[3%] w-full max-w-[390px] mx-auto scale-[0.88] md:scale-95 origin-center">
                           
@@ -997,7 +1151,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               <span className="uppercase tracking-widest text-[6px]">Live Output</span>
                             </div>
 
-                            {/* Main output text with dynamic morphing transition on correction */}
+                            {/* Main text box showing Pop timing */}
                             <motion.div 
                               animate={
                                 correctionState === "correcting" 
