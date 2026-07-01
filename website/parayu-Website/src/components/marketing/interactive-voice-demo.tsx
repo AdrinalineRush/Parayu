@@ -17,7 +17,9 @@ import {
   Volume2,
   Brain,
   Settings,
-  Flame
+  Flame,
+  Lock,
+  Shield
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -120,357 +122,439 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
         ))}
       </div>
 
-      {/* Mock Desktop Screen Workspace */}
-      <div className="relative w-full rounded-t-3xl border border-border bg-gradient-to-br from-[#eae7e0] via-[#e2ded5] to-[#d8d3c7] dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-900 shadow-xl overflow-hidden flex flex-col h-[460px] p-6 justify-between animate-in fade-in duration-300">
+      {/* Mock Screen Workspace */}
+      <div className={cn(
+        "relative w-full rounded-t-3xl border border-border shadow-xl overflow-hidden flex transition-all duration-300 animate-in fade-in h-[460px]",
+        activeApp === "parayu"
+          ? "bg-[#fcfbfa] dark:bg-zinc-950 flex-row p-0"
+          : "bg-gradient-to-br from-[#eae7e0] via-[#e2ded5] to-[#d8d3c7] dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-900 flex-col p-6 justify-between"
+      )}>
         
-        {/* Floating App Window (Simulating whatever app is currently focused) */}
-        <div className="w-full max-w-2xl mx-auto bg-card border border-border rounded-xl shadow-lg overflow-hidden flex flex-col h-[280px]">
-          
-          {/* Focused App window topbar */}
-          <div className="h-8 border-b border-border flex items-center justify-between px-3 bg-secondary shrink-0">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-              <div className="w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-              <div className="w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-            </div>
-            
-            {/* Dynamic Window Title */}
-            <span className="text-[10px] text-muted-foreground font-mono tracking-tight font-semibold">
-              {activeApp === "parayu" && "Parayu Desktop App - Dashboard"}
-              {activeApp === "notion" && "Notion - 📄 meeting_notes.md"}
-              {activeApp === "slack" && "Slack Workspace - #project-updates"}
-              {activeApp === "vscode" && "VS Code - app.js"}
-              {activeApp === "gmail" && "Gmail - Compose Email"}
-            </span>
-            <div className="w-10" />
-          </div>
+        {activeApp === "parayu" ? (
+          /* ============================================================ */
+          /*  FULL SCREEN PARAYU APP UI                                   */
+          /* ============================================================ */
+          <div className="flex-grow flex h-full font-sans text-xs select-none">
+            {/* Left Sidebar */}
+            <div className="w-[185px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-4 pt-10 flex flex-col justify-between shrink-0 relative">
+              {/* Traffic Light Dots */}
+              <div className="absolute top-4 left-4 flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+              </div>
 
-          {/* Focused App window body content */}
-          <div className="flex-grow p-5 overflow-y-auto flex flex-col bg-background">
-            
-            {/* Parayu UI */}
-            {activeApp === "parayu" && (
-              <div className="flex-grow flex -mx-5 -my-5 h-full bg-[#fcfbfa] dark:bg-zinc-950 font-sans text-xs select-none">
-                
-                {/* Left Sidebar */}
-                <div className="w-[155px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-3.5 flex flex-col justify-between shrink-0">
-                  <div className="space-y-4">
-                    {/* Logo & Brand */}
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 shadow-sm">
-                        <img src="/logo.png" alt="Parayu Logo" className="w-full h-full object-contain" />
-                      </div>
-                      <span className="font-heading font-extrabold text-[15px] tracking-tight text-[#1c1b19] dark:text-white">Parayu</span>
-                    </div>
-
-                    {/* Nav Items */}
-                    <div className="space-y-1 relative">
-                      {/* Active item dashboard */}
-                      <div className="relative flex items-center gap-2.5 px-3.5 py-2 rounded-lg bg-[#e01e41]/5 text-[#e01e41] font-bold text-[11px] cursor-default before:content-[''] before:absolute before:left-[6px] before:top-1/2 before:-translate-y-1/2 before:w-[3px] before:height-[16px] before:rounded-full before:bg-gradient-to-b before:from-[#e81f3a] before:to-[#a02bb0]">
-                        <Brain className="w-4.5 h-4.5" />
-                        <span>Home</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
-                        <FileText className="w-4.5 h-4.5" />
-                        <span>Parayu History</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
-                        <Volume2 className="w-4.5 h-4.5" />
-                        <span>Dictionary</span>
-                      </div>
-
-                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
-                        <Keyboard className="w-4.5 h-4.5" />
-                        <span>Snippets</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
-                        <FileText className="w-4.5 h-4.5" />
-                        <span>Pro Writing</span>
-                        <span className="ml-auto text-[8px] font-extrabold px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600">PRO</span>
-                      </div>
-
-                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
-                        <Settings className="w-4.5 h-4.5" />
-                        <span>Settings</span>
-                      </div>
-                    </div>
+              <div className="space-y-5">
+                {/* Logo & Brand */}
+                <div className="flex items-center gap-2 pt-2">
+                  <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 shadow-sm border border-zinc-200">
+                    <img src="/logo.png" alt="Parayu Logo" className="w-full h-full object-contain" />
                   </div>
+                  <span className="font-heading font-black text-lg tracking-tight text-[#1c1b19] dark:text-white">Parayu</span>
+                </div>
 
-                  {/* Sign In Pro Card */}
-                  <div className="bg-white dark:bg-zinc-850 border border-[#e8e5df] dark:border-zinc-800 rounded-xl p-2.5 shadow-sm flex flex-col gap-1.5 shrink-0 my-3">
-                    <div className="w-6 h-6 rounded-lg bg-[#e01e41]/10 text-[#e01e41] flex items-center justify-center shrink-0">
-                      <Sparkles className="w-3.5 h-3.5" />
-                    </div>
-                    <div className="text-[10px] font-bold text-[#1c1b19] dark:text-white mt-1 leading-none">Sign in to Parayu</div>
-                    <div className="text-[8px] text-[#706b61] dark:text-zinc-500 leading-tight">Access your account and saved settings.</div>
-                    <button className="w-full py-1.5 border border-[#e8e5df] dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[#e01e41] hover:bg-[#e01e41]/5 rounded-lg text-[9px] font-bold transition-all">Sign In</button>
+                {/* Nav Items */}
+                <div className="space-y-1 relative">
+                  <div className="relative flex items-center gap-2.5 px-3.5 py-2 rounded-lg bg-[#fdeef1] text-[#e01e41] font-extrabold text-[12px] cursor-default before:content-[''] before:absolute before:left-[6px] before:top-1/2 before:-translate-y-1/2 before:w-[3px] before:height-[16px] before:rounded-full before:bg-[#e01e41]">
+                    <Brain className="w-4 h-4" />
+                    <span>Home</span>
                   </div>
                   
-                  {/* Account state */}
-                  <div className="flex flex-col gap-1 border-t border-[#e8e5df] dark:border-zinc-800 pt-2 shrink-0">
-                    <div className="flex items-center gap-2 text-[10px]">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#e81f3a] to-[#ff9b3d] text-white flex items-center justify-center font-bold shadow-sm">U</div>
-                      <div className="min-w-0 leading-tight">
-                        <div className="font-bold text-[#1c1b19] dark:text-zinc-350 truncate">Guest User</div>
-                        <div className="text-[9px] text-[#706b61] dark:text-zinc-500 font-medium">Free</div>
-                      </div>
+                  <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-bold text-[12px] hover:bg-[#faf9f7] dark:hover:bg-zinc-850 cursor-default transition-all">
+                    <FileText className="w-4 h-4" />
+                    <span>Parayu History</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-bold text-[12px] hover:bg-[#faf9f7] dark:hover:bg-zinc-850 cursor-default transition-all">
+                    <Volume2 className="w-4 h-4" />
+                    <span>Dictionary</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-bold text-[12px] hover:bg-[#faf9f7] dark:hover:bg-zinc-850 cursor-default transition-all">
+                    <Keyboard className="w-4 h-4" />
+                    <span>Snippets</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-bold text-[12px] hover:bg-[#faf9f7] dark:hover:bg-zinc-850 cursor-default transition-all">
+                    <FileText className="w-4 h-4" />
+                    <span>Pro Writing</span>
+                    <span className="ml-auto text-[8px] font-black px-1.5 py-0.5 rounded-full bg-purple-500/10 text-[#a02bb0]">PRO</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-bold text-[12px] hover:bg-[#faf9f7] dark:hover:bg-zinc-850 cursor-default transition-all">
+                    <Settings className="w-4 h-4" />
+                    <span>Settings</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-bold text-[12px] hover:bg-[#faf9f7] dark:hover:bg-zinc-850 cursor-default transition-all">
+                    <Shield className="w-4 h-4" />
+                    <span>Admin</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Enterprise Plan Card */}
+              <div className="bg-white dark:bg-zinc-850 border border-[#e8e5df] dark:border-zinc-800 rounded-xl p-3 shadow-sm flex flex-col gap-2 shrink-0 my-2">
+                <div className="w-6 h-6 rounded-lg bg-purple-100 dark:bg-purple-950/30 text-purple-600 flex items-center justify-center shrink-0">
+                  <Lock className="w-3.5 h-3.5" />
+                </div>
+                <div className="text-[11px] font-black text-[#1c1b19] dark:text-white leading-none">Enterprise Plan</div>
+                <div className="text-[9px] text-[#706b61] dark:text-zinc-450 leading-tight">Team-wide volumes active. Contact your IT administrator.</div>
+                <button className="w-full py-1.5 border border-zinc-200 dark:border-zinc-850 text-[#e01e41] hover:bg-[#e01e41]/5 rounded-lg text-[9px] font-black transition-all bg-white dark:bg-zinc-950 shadow-sm">License details</button>
+              </div>
+              
+              {/* Account profile & dropdown */}
+              <div className="flex flex-col gap-1 border-t border-[#e8e5df] dark:border-zinc-800 pt-3.5 shrink-0">
+                <div className="flex items-center justify-between text-[11px] cursor-default p-1 hover:bg-zinc-150/40 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-[#ff5b5b] text-white flex items-center justify-center font-extrabold shadow-sm">DD</div>
+                    <div className="min-w-0 leading-tight">
+                      <div className="font-extrabold text-[#1c1b19] dark:text-zinc-300 truncate">Dev Demo</div>
+                      <div className="text-[9px] text-[#706b61] dark:text-zinc-500 font-bold">Enterprise</div>
                     </div>
-                    <span className="text-[9px] text-[#706b61] dark:text-zinc-500 pl-1 mt-1">Parayu v1.0.0</span>
+                  </div>
+                  <span className="text-[#706b61]">▾</span>
+                </div>
+                <span className="text-[9px] text-[#706b61] dark:text-zinc-500 pl-1 mt-1 font-semibold">Parayu v0.1.0</span>
+              </div>
+            </div>
+
+            {/* Right Main Panel Content */}
+            <div className="flex-grow p-6 overflow-y-auto space-y-5 flex flex-col justify-start bg-[#fcfbfa] dark:bg-zinc-950 select-none">
+              
+              {/* Header row with Toolbar */}
+              <div className="flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl md:text-2xl font-heading font-black text-[#1c1b19] dark:text-white leading-tight">
+                    Insights
+                  </h2>
+                  <div className="w-5 h-5 rounded-full bg-[#e01e41] flex items-center justify-center text-white">
+                    <Sparkles className="w-3 h-3 fill-white stroke-none" />
                   </div>
                 </div>
 
-                {/* Right Content Area simulating Parayu main panel */}
-                <div className="flex-grow p-4 overflow-y-auto space-y-4 flex flex-col justify-start bg-[#fcfbfa] dark:bg-zinc-950 select-none">
-                  {/* Title Bar inside the app */}
-                  <div className="flex justify-between items-start shrink-0">
-                    <div>
-                      <h3 className="text-sm font-heading font-black text-[#1c1b19] dark:text-white leading-tight">
-                        Good morning, Adarsh <span className="inline-block animate-bounce">👋</span>
-                      </h3>
-                      <p className="text-[9px] text-[#706b61] dark:text-zinc-400 font-medium">Here&apos;s your dictation overview</p>
+                {/* Right controls */}
+                <div className="flex items-center gap-2">
+                  {/* Language Selection Pill */}
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[10px] font-bold text-[#1c1b19] dark:text-white flex items-center gap-1.5">
+                    <span>🌐 Malayalam</span>
+                    <span className="text-zinc-400">▾</span>
+                  </div>
+
+                  {/* Timezone Pill */}
+                  <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm text-[10px] font-bold text-[#706b61] dark:text-zinc-400 flex items-center gap-1.5">
+                    <span>📅 1 Jul 2026 · 5:55 am</span>
+                    <span className="text-zinc-350 text-[9px] font-normal font-sans">Asia/Calcutta</span>
+                  </div>
+
+                  {/* Tab switches */}
+                  <div className="bg-[#ebe7df] dark:bg-zinc-800 p-0.5 rounded-full flex gap-0.5">
+                    <div className="bg-white dark:bg-zinc-950 text-[#1c1b19] dark:text-white px-3 py-1.5 rounded-full text-[10px] font-extrabold shadow-sm">
+                      Your Usage
                     </div>
-                    {/* Active Brain Badge */}
-                    <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-2 py-0.5 rounded-full text-[9px] font-bold">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span>PRO Brain Active</span>
+                    <div className="text-[#706b61] dark:text-zinc-400 px-3 py-1.5 rounded-full text-[10px] font-bold cursor-default">
+                      Your Voice
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* KPI metrics row */}
+              <div className="flex items-center gap-2.5 shrink-0">
+                <span className="bg-[#f6f4f0] dark:bg-zinc-900 px-3 py-1.5 rounded-lg border border-[#e8e5df] dark:border-zinc-800 text-[11px] font-extrabold text-[#1c1b19] dark:text-white">
+                  {step === "completed" ? "1,672" : "1,648"} <span className="text-[#706b61] font-semibold ml-0.5">words</span>
+                </span>
+                <span className="bg-[#f6f4f0] dark:bg-zinc-900 px-3 py-1.5 rounded-lg border border-[#e8e5df] dark:border-zinc-800 text-[11px] font-extrabold text-[#1c1b19] dark:text-white">
+                  104 <span className="text-[#706b61] font-semibold ml-0.5">wpm</span>
+                </span>
+                <span className="bg-[#f6f4f0] dark:bg-zinc-900 px-3 py-1.5 rounded-lg border border-[#e8e5df] dark:border-zinc-800 text-[11px] font-extrabold text-[#1c1b19] dark:text-white">
+                  33 <span className="text-[#706b61] font-semibold ml-0.5">fixes</span>
+                </span>
+                <span className="bg-[#1f6f63]/10 dark:bg-emerald-950/20 px-3 py-1.5 rounded-lg border border-[#1f6f63]/25 text-[11px] font-extrabold text-[#1f6f63] dark:text-emerald-400">
+                  Model ready
+                </span>
+              </div>
+
+              {/* Grid content layout */}
+              <div className="grid grid-cols-3 gap-4 flex-grow min-h-0">
+                {/* 1. Typing Speed Card */}
+                <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-4 rounded-2xl flex flex-col justify-between shadow-sm relative group hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-extrabold text-[#706b61] dark:text-zinc-500 uppercase tracking-wide">Typing Speed</span>
+                    <span className="text-[#e81f3a]"><Cpu className="w-3.5 h-3.5" /></span>
+                  </div>
+
+                  {/* Semicircular Speed Gauge */}
+                  <div className="relative w-full flex justify-center mt-2">
+                    <svg viewBox="0 0 170 96" className="w-[125px] h-[70px]">
+                      <path
+                        d="M 15 85 A 70 70 0 0 1 155 85"
+                        fill="none"
+                        stroke="#ebe7df"
+                        strokeWidth="12"
+                        strokeLinecap="round"
+                      />
+                      {/* Arc sweep path for 104 WPM (104/160 = 65% sweep) */}
+                      <path
+                        d="M 15 85 A 70 70 0 0 1 112 20"
+                        fill="none"
+                        stroke="url(#gaugeGradMain)"
+                        strokeWidth="12"
+                        strokeLinecap="round"
+                      />
+                      <defs>
+                        <linearGradient id="gaugeGradMain" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#e81f3a" />
+                          <stop offset="60%" stopColor="#d81d54" />
+                          <stop offset="100%" stopColor="#a02bb0" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-end pb-2">
+                      <span className="text-lg font-heading font-black leading-none text-[#1c1b19] dark:text-white">104</span>
+                      <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase mt-0.5">wpm</span>
                     </div>
                   </div>
 
-                  {/* KPI Row (4 pills) */}
-                  <div className="grid grid-cols-4 gap-2 shrink-0">
-                    {/* Pill 1: Words */}
-                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 rounded-xl shadow-sm">
-                      <div className="w-7 h-7 rounded-lg bg-[#e01e41]/10 text-[#e01e41] flex items-center justify-center shrink-0">
-                        <Mic className="w-3.5 h-3.5" />
-                      </div>
-                      <div className="min-w-0 leading-tight">
-                        <div className="text-[11px] font-black text-[#1c1b19] dark:text-white">
-                          {step === "completed" ? "14,844" : "14,820"}
-                        </div>
-                        <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Words</div>
-                      </div>
-                    </div>
-                    {/* Pill 2: WPM */}
-                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 rounded-xl shadow-sm">
-                      <div className="w-7 h-7 rounded-lg bg-[#a02bb0]/10 text-[#a02bb0] flex items-center justify-center shrink-0">
-                        <Cpu className="w-3.5 h-3.5" />
-                      </div>
-                      <div className="min-w-0 leading-tight">
-                        <div className="text-[11px] font-black text-[#1c1b19] dark:text-white">87</div>
-                        <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">WPM</div>
-                      </div>
-                    </div>
-                    {/* Pill 3: Fixes */}
-                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 rounded-xl shadow-sm">
-                      <div className="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-600 flex items-center justify-center shrink-0">
-                        <Sparkles className="w-3.5 h-3.5" />
-                      </div>
-                      <div className="min-w-0 leading-tight">
-                        <div className="text-[11px] font-black text-[#1c1b19] dark:text-white">324</div>
-                        <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Fixes</div>
-                      </div>
-                    </div>
-                    {/* Pill 4: Model */}
-                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 rounded-xl shadow-sm">
-                      <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
-                        <Check className="w-3.5 h-3.5" />
-                      </div>
-                      <div className="min-w-0 leading-tight">
-                        <div className="text-[11px] font-black text-emerald-600">Ready</div>
-                        <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Model</div>
-                      </div>
-                    </div>
+                  {/* Trend Indicator Pill */}
+                  <div className="flex justify-center mt-1">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#1f6f63]/10 text-[#1f6f63] dark:text-emerald-400 text-[10px] font-extrabold">
+                      📈 +18% vs last week
+                    </span>
                   </div>
 
-                  {/* Grid Content: Speed, Integrations, Heatmap */}
-                  <div className="grid grid-cols-5 gap-3 flex-grow min-h-0">
-                    
-                    {/* WPM Gauge Card */}
-                    <div className="col-span-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[115px]">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Typing Speed</span>
-                        <span className="text-[#e01e41]"><Cpu className="w-3 h-3" /></span>
-                      </div>
-                      
-                      {/* Semicircular Gauge SVG */}
-                      <div className="relative w-full flex justify-center mt-1">
-                        <svg viewBox="0 0 170 96" className="w-[100px] h-[55px]">
-                          <path
-                            d="M 15 85 A 70 70 0 0 1 155 85"
-                            fill="none"
-                            stroke="#ebe7df"
-                            strokeWidth="12"
-                            strokeLinecap="round"
-                          />
-                          {/* Fill sweep: calculated for 87 WPM (87/160 = 54% of sweep) */}
-                          <path
-                            d="M 15 85 A 70 70 0 0 1 93 16"
-                            fill="none"
-                            stroke="url(#gaugeGrad)"
-                            strokeWidth="12"
-                            strokeLinecap="round"
-                          />
-                          <defs>
-                            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#e81f3a" />
-                              <stop offset="60%" stopColor="#d81d54" />
-                              <stop offset="100%" stopColor="#a02bb0" />
-                            </linearGradient>
-                          </defs>
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-end pb-1.5">
-                          <span className="text-xs font-heading font-black leading-none text-[#1c1b19] dark:text-white">87</span>
-                          <span className="text-[7px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">wpm</span>
-                        </div>
-                      </div>
+                  <div className="flex justify-between text-[8px] font-bold text-[#706b61] dark:text-zinc-500 border-t border-[#e8e5df] dark:border-zinc-800 pt-2 mt-2">
+                    <span>Target 120 wpm</span>
+                    <span className="text-[#e01e41]">16 to goal</span>
+                  </div>
+                </div>
 
-                      <div className="flex justify-between text-[7px] font-bold text-[#706b61] dark:text-zinc-500 border-t border-[#e8e5df] dark:border-zinc-800 pt-1">
-                        <span>Target 120 wpm</span>
-                        <span className="text-[#e01e41]">33 to goal</span>
+                {/* 2. Smart Editing Card */}
+                <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-4 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-extrabold text-[#706b61] dark:text-zinc-500 uppercase tracking-wide">Smart Editing</span>
+                    <span className="text-purple-650"><Sparkles className="w-3.5 h-3.5" /></span>
+                  </div>
+
+                  <div className="py-2">
+                    <div className="text-3xl font-heading font-black text-[#1c1b19] dark:text-white leading-tight">33</div>
+                    <div className="text-[9px] text-[#706b61] dark:text-zinc-400 font-bold mt-0.5">Fixes made by Parayu</div>
+                  </div>
+
+                  {/* Collapsible Stat Rows mockup */}
+                  <div className="space-y-1">
+                    <div className="bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-[9px] font-bold text-[#1c1b19] dark:text-zinc-350">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-emerald-600">✓</span>
+                        <span>28 corrections</span>
                       </div>
+                      <span className="text-zinc-400">▾</span>
                     </div>
 
-                    {/* App Integration Bar Chart Card */}
-                    <div className="col-span-3 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[115px]">
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Desktop Integration</span>
-                        <span className="text-[7px] font-bold text-[#706b61]">Apps | 3</span>
+                    <div className="bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-[9px] font-bold text-[#1c1b19] dark:text-zinc-350">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-purple-600">📖</span>
+                        <span>5 dictionary</span>
                       </div>
-                      <div className="space-y-1.5 flex-grow flex flex-col justify-center">
-                        {[
-                          { label: "Slack", pct: "45%", w: "w-[45%]", color: "bg-[#e01e41]", initial: "S" },
-                          { label: "VS Code", pct: "30%", w: "w-[30%]", color: "bg-[#7c5cff]", initial: "V" },
-                          { label: "Chrome", pct: "15%", w: "w-[15%]", color: "bg-emerald-500", initial: "C" },
-                        ].map((item) => (
-                          <div key={item.label} className="space-y-0.5">
-                            <div className="flex justify-between items-center text-[8px] font-bold text-zinc-650 dark:text-zinc-400">
-                              <div className="flex items-center gap-1">
-                                <span className={cn("w-3.5 h-3.5 rounded-md flex items-center justify-center text-[6px] text-white font-bold", item.color)}>
-                                  {item.initial}
-                                </span>
-                                <span>{item.label}</span>
-                              </div>
-                              <span>{item.pct}</span>
-                            </div>
-                            <div className="w-full bg-[#f6f4f0] dark:bg-zinc-800 h-1 rounded-full overflow-hidden">
-                              <div className={cn("h-full rounded-full", item.color, item.w)} />
-                            </div>
+                      <span className="text-zinc-400">▾</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Dictation Volume Card */}
+                <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-4 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-extrabold text-[#706b61] dark:text-zinc-500 uppercase tracking-wide">Dictation Volume</span>
+                    <span className="text-emerald-600"><Mic className="w-3.5 h-3.5" /></span>
+                  </div>
+
+                  <div className="py-2">
+                    <div className="text-3xl font-heading font-black text-[#1c1b19] dark:text-white leading-tight">
+                      {step === "completed" ? "1,672" : "1,648"}
+                    </div>
+                    <div className="text-[9px] text-[#706b61] dark:text-zinc-400 font-bold mt-0.5">Total words dictated</div>
+                  </div>
+
+                  {/* Rows */}
+                  <div className="space-y-1">
+                    <div className="bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-[9px] font-bold text-[#1c1b19] dark:text-zinc-350">
+                      <div className="flex items-center gap-1.5">
+                        <span>💻</span>
+                        <span>{step === "completed" ? "1672" : "1648"} words pasted</span>
+                      </div>
+                      <span className="text-zinc-400">▾</span>
+                    </div>
+
+                    <div className="bg-[#fcfbfa] dark:bg-zinc-950 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-[9px] font-bold text-[#1c1b19] dark:text-zinc-350">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>Ready <span className="text-zinc-400 font-medium ml-1">on-device engine</span></span>
+                      </div>
+                      <span className="text-zinc-400">▾</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Row - Integrations & Streaks */}
+              <div className="grid grid-cols-5 gap-4 shrink-0 mt-auto">
+                {/* Desktop Integration List (Spans 3 cols) */}
+                <div className="col-span-3 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-4 rounded-2xl flex flex-col justify-between shadow-sm">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-heading font-black text-xs text-[#1c1b19] dark:text-white">Desktop Integration</h4>
+                    <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Apps Integration | 8</span>
+                  </div>
+                  
+                  <div className="space-y-2 flex-grow flex flex-col justify-center">
+                    {[
+                      { label: "Antigravity", words: 592, pct: "w-[85%]", color: "bg-[#e01e41]", init: "A" },
+                      { label: "Claude", words: 557, pct: "w-[80%]", color: "bg-orange-500", init: "C" },
+                      { 
+                        label: "Parayu Super Dev", 
+                        words: step === "completed" ? 265 : 241, 
+                        pct: step === "completed" ? "w-[42%]" : "w-[35%]", 
+                        color: "bg-blue-500", 
+                        init: "P" 
+                      },
+                      { label: "Finder", words: 139, pct: "w-[20%]", color: "bg-cyan-500", init: "F" },
+                    ].map((item) => (
+                      <div key={item.label} className="space-y-1">
+                        <div className="flex justify-between items-center text-[9px] font-bold text-zinc-700 dark:text-zinc-350">
+                          <div className="flex items-center gap-1.5">
+                            <span className={cn("w-4 h-4 rounded-md text-white font-extrabold flex items-center justify-center text-[8px]", item.color)}>
+                              {item.init}
+                            </span>
+                            <span>{item.label}</span>
                           </div>
-                        ))}
+                          <span>{item.words} words</span>
+                        </div>
+                        <div className="w-full bg-[#f6f4f0] dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                          <div className={cn("h-full rounded-full transition-all duration-500", item.color, item.pct)} />
+                        </div>
                       </div>
-                    </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2 Day Streak Heatmap Card (Spans 2 cols) */}
+                <div className="col-span-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-4 rounded-2xl flex flex-col justify-between shadow-sm">
+                  <div className="flex justify-between items-center mb-1">
+                    <h4 className="font-heading font-black text-xs text-[#1c1b19] dark:text-white flex items-center gap-1">
+                      <Flame className="w-4 h-4 text-[#e01e41] fill-[#e01e41]" />
+                      <span>2 day streak</span>
+                    </h4>
+                    <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Longest | 2 days</span>
                   </div>
 
-                  {/* Heatmap Row & Quick Note Panel */}
-                  <div className="grid grid-cols-5 gap-3 shrink-0">
-                    {/* Heatmap Grid Calendar */}
-                    <div className="col-span-3 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[85px]">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase flex items-center gap-0.5">
-                          <Flame className="w-3 h-3 text-[#e01e41] fill-[#e01e41]" />
-                          <span>12 day streak</span>
-                        </span>
-                        <span className="text-[7px] font-bold text-[#706b61]">Longest | 18 days</span>
-                      </div>
-                      
-                      {/* Small mock contribution heatmap calendar grid */}
-                      <div className="flex justify-center my-1.5 overflow-hidden">
-                        <div className="grid grid-cols-14 gap-[3px]">
-                          {Array.from({ length: 70 }).map((_, idx) => {
-                            // Assign mock intensity level (0 to 4)
-                            let lvl = 0;
-                            if (idx > 50) {
-                              lvl = [0, 1, 2, 4, 3, 2, 4, 3, 1, 4, 2, 0, 4, 3, 4, 2, 1, 4, 4][idx % 19];
-                            } else if (idx > 20) {
-                              lvl = [0, 1, 0, 2, 0, 1, 3, 0, 2, 0, 1, 0][idx % 12];
-                            }
-                            
-                            return (
-                              <div
-                                key={idx}
-                                className={cn(
-                                  "w-[6px] h-[6px] rounded-[1px]",
-                                  lvl === 0 && "bg-[#ebe7df] dark:bg-zinc-800",
-                                  lvl === 1 && "bg-[#e01e41]/20",
-                                  lvl === 2 && "bg-[#e01e41]/40",
-                                  lvl === 3 && "bg-[#e01e41]/75",
-                                  lvl === 4 && "bg-[#e01e41]"
-                                )}
-                              />
-                            );
-                          })}
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-between text-[6px] font-bold text-[#706b61] uppercase tracking-wide">
-                        <span>Less</span>
-                        <div className="flex gap-[3px] items-center">
-                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#ebe7df] dark:bg-zinc-800" />
-                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e01e41]/20" />
-                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e01e41]/40" />
-                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e01e41]/75" />
-                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e01e41]" />
-                        </div>
-                        <span>More</span>
-                      </div>
-                    </div>
+                  {/* Sized 7x21 cells mock contribution heatmap grid */}
+                  <div className="flex justify-center my-2 overflow-hidden">
+                    <div className="grid grid-cols-21 gap-[3px]">
+                      {Array.from({ length: 147 }).map((_, idx) => {
+                        // Make cells look real
+                        let lvl = 0;
+                        if (idx === 145) {
+                          // Today is selected/highlighted active streak day
+                          lvl = 4;
+                        } else if (idx === 144) {
+                          lvl = 3;
+                        } else if (idx > 130) {
+                          lvl = [0, 1, 0, 2, 0, 1, 3, 0, 2, 0, 1, 0, 4, 0, 3, 2, 0][idx % 17];
+                        } else if (idx > 80) {
+                          lvl = [0, 1, 0, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 2, 1][idx % 15];
+                        }
+                        
+                        const isSelectedToday = idx === 145;
 
-                    {/* Quick Dictation Panel */}
-                    <div className="col-span-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[85px] relative overflow-hidden">
-                      <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Quick Dictation Note</div>
-                      <div className="text-[9px] text-[#1c1b19] dark:text-zinc-200 leading-normal pr-0.5 py-0.5 flex-grow overflow-y-auto font-medium">
-                        {typedText ? (
-                          <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{typedText}</motion.span>
-                        ) : (
-                          <span className="text-zinc-400 dark:text-zinc-500 italic">Dictated text will type here...</span>
-                        )}
-                        {step !== "completed" && step !== "idle" && (
-                          <motion.span
-                            animate={{ opacity: [1, 0, 1] }}
-                            transition={{ repeat: Infinity, duration: 0.8 }}
-                            className="inline-block w-1 h-3 ml-0.5 bg-primary"
+                        return (
+                          <div
+                            key={idx}
+                            className={cn(
+                              "w-[6.5px] h-[6.5px] rounded-[1px] transition-all",
+                              lvl === 0 && "bg-[#ebe7df] dark:bg-zinc-800",
+                              lvl === 1 && "bg-[#e81f3a]/15",
+                              lvl === 2 && "bg-[#e81f3a]/40",
+                              lvl === 3 && "bg-[#e81f3a]/70",
+                              lvl === 4 && "bg-[#e81f3a]",
+                              isSelectedToday && "ring-1 ring-[#1c1b19] dark:ring-white scale-110"
+                            )}
                           />
-                        )}
-                      </div>
+                        );
+                      })}
                     </div>
                   </div>
 
+                  <div className="flex justify-between text-[7px] font-bold text-[#706b61] uppercase tracking-wider pt-1.5 border-t border-[#e8e5df] dark:border-zinc-800">
+                    <span>Less</span>
+                    <div className="flex gap-[3px] items-center">
+                      <div className="w-[5px] h-[5px] rounded-[1px] bg-[#ebe7df] dark:bg-zinc-800" />
+                      <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e81f3a]/15" />
+                      <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e81f3a]/40" />
+                      <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e81f3a]/70" />
+                      <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e81f3a]" />
+                    </div>
+                    <span>More</span>
+                  </div>
                 </div>
               </div>
-            )}
 
-            {/* Notion UI */}
-            {activeApp === "notion" && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-zinc-400 dark:text-zinc-500 text-xs font-semibold">
-                  <span>Work</span> <span>/</span> <span className="text-zinc-600 dark:text-zinc-400 font-bold">Meeting Notes</span>
+            </div>
+          </div>
+        ) : (
+          /* ============================================================ */
+          /*  FLOATING EXTERNAL APP WINDOWS (Notion, Slack, VS Code, Gmail) */
+          /* ============================================================ */
+          <>
+            <div className="w-full max-w-2xl mx-auto bg-card border border-border rounded-xl shadow-lg overflow-hidden flex flex-col h-[280px]">
+              
+              {/* Focused App window topbar */}
+              <div className="h-8 border-b border-border flex items-center justify-between px-3 bg-secondary shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
                 </div>
-                <h1 className="text-xl font-heading font-black text-foreground">✦ Project Timeline Sync</h1>
-                <div className="text-sm text-foreground font-medium leading-relaxed min-h-[100px] border-l-2 border-border pl-4 py-1 relative">
-                  {typedText ? (
-                    <motion.span 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }} 
-                      transition={{ duration: 0.2 }}
-                    >
-                      {typedText}
-                    </motion.span>
-                  ) : (
-                    <span className="text-zinc-400 dark:text-zinc-500 italic">Click the trigger button below to listen to voice dictation input...</span>
-                  )}
-                  {step !== "completed" && step !== "idle" && (
-                    <motion.span
-                      animate={{ opacity: [1, 0, 1] }}
-                      transition={{ repeat: Infinity, duration: 0.8 }}
-                      className="inline-block w-1.5 h-4 ml-0.5 bg-primary align-middle"
-                    />
-                  )}
-                </div>
+                
+                {/* Dynamic Window Title */}
+                <span className="text-[10px] text-muted-foreground font-mono tracking-tight font-semibold">
+                  {activeApp === "notion" && "Notion - 📄 meeting_notes.md"}
+                  {activeApp === "slack" && "Slack Workspace - #project-updates"}
+                  {activeApp === "vscode" && "VS Code - app.js"}
+                  {activeApp === "gmail" && "Gmail - Compose Email"}
+                </span>
+                <div className="w-10" />
               </div>
-            )}
+
+              {/* Focused App window body content */}
+              <div className="flex-grow p-5 overflow-y-auto flex flex-col bg-background">
+                {/* Notion UI */}
+                {activeApp === "notion" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 text-zinc-400 dark:text-zinc-500 text-xs font-semibold">
+                      <span>Work</span> <span>/</span> <span className="text-zinc-600 dark:text-zinc-400 font-bold">Meeting Notes</span>
+                    </div>
+                    <h1 className="text-xl font-heading font-black text-foreground">✦ Project Timeline Sync</h1>
+                    <div className="text-sm text-foreground font-medium leading-relaxed min-h-[100px] border-l-2 border-border pl-4 py-1 relative">
+                      {typedText ? (
+                        <motion.span 
+                          initial={{ opacity: 0 }} 
+                          animate={{ opacity: 1 }} 
+                          transition={{ duration: 0.2 }}
+                        >
+                          {typedText}
+                        </motion.span>
+                      ) : (
+                        <span className="text-zinc-400 dark:text-zinc-500 italic">Click the trigger button below to listen to voice dictation input...</span>
+                      )}
+                      {step !== "completed" && step !== "idle" && (
+                        <motion.span
+                          animate={{ opacity: [1, 0, 1] }}
+                          transition={{ repeat: Infinity, duration: 0.8 }}
+                          className="inline-block w-1.5 h-4 ml-0.5 bg-primary align-middle"
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
 
             {/* Slack UI */}
             {activeApp === "slack" && (
@@ -580,6 +664,8 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
           </div>
         </div>
+      </>
+    )}
 
         {/* Simulated Floating Parayu Overlay Window (Floating at the bottom of the desktop) */}
         <div className="relative flex justify-center pb-2 select-none">
