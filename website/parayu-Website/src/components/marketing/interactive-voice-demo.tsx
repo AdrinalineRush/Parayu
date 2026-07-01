@@ -150,100 +150,209 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
             
             {/* Parayu UI */}
             {activeApp === "parayu" && (
-              <div className="flex-grow flex -mx-5 -my-5 h-full bg-[#fcfbfa] dark:bg-zinc-950 font-sans text-xs">
+              <div className="flex-grow flex -mx-5 -my-5 h-full bg-[#fcfbfa] dark:bg-zinc-950 font-sans text-xs select-none">
+                
                 {/* Left Sidebar */}
-                <div className="w-[140px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-3 flex flex-col justify-between shrink-0">
+                <div className="w-[155px] bg-[#f6f4f0] dark:bg-zinc-900 border-r border-[#e8e5df] dark:border-zinc-800 p-3.5 flex flex-col justify-between shrink-0">
                   <div className="space-y-4">
                     {/* Logo & Brand */}
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-[#e01e41] flex items-center justify-center text-white font-black text-xs">
-                        P
+                      <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 shadow-sm">
+                        <img src="/logo.png" alt="Parayu Logo" className="w-full h-full object-contain" />
                       </div>
-                      <span className="font-heading font-black text-[13px] tracking-tight dark:text-white">Parayu</span>
+                      <span className="font-heading font-extrabold text-[15px] tracking-tight text-[#1c1b19] dark:text-white">Parayu</span>
                     </div>
 
                     {/* Nav Items */}
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 px-2 py-1 rounded bg-[#e01e41]/10 text-[#e01e41] font-bold text-[11px] cursor-default">
-                        <Brain className="w-3.5 h-3.5" />
-                        <span>Dashboard</span>
+                    <div className="space-y-1 relative">
+                      {/* Active item dashboard */}
+                      <div className="relative flex items-center gap-2.5 px-3.5 py-2 rounded-lg bg-[#e01e41]/5 text-[#e01e41] font-bold text-[11px] cursor-default before:content-[''] before:absolute before:left-[6px] before:top-1/2 before:-translate-y-1/2 before:w-[3px] before:height-[16px] before:rounded-full before:bg-gradient-to-b before:from-[#e81f3a] before:to-[#a02bb0]">
+                        <Brain className="w-4.5 h-4.5" />
+                        <span>Home</span>
                       </div>
-                      <div className="flex items-center gap-2 px-2 py-1 rounded text-zinc-500 dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40">
-                        <FileText className="w-3.5 h-3.5" />
-                        <span>History</span>
+                      
+                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
+                        <FileText className="w-4.5 h-4.5" />
+                        <span>Parayu History</span>
                       </div>
-                      <div className="flex items-center gap-2 px-2 py-1 rounded text-zinc-500 dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40">
-                        <Code className="w-3.5 h-3.5" />
+                      
+                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
+                        <Volume2 className="w-4.5 h-4.5" />
+                        <span>Dictionary</span>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
+                        <Keyboard className="w-4.5 h-4.5" />
+                        <span>Snippets</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
+                        <FileText className="w-4.5 h-4.5" />
                         <span>Pro Writing</span>
+                        <span className="ml-auto text-[8px] font-extrabold px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600">PRO</span>
                       </div>
-                      <div className="flex items-center gap-2 px-2 py-1 rounded text-zinc-500 dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40">
-                        <Settings className="w-3.5 h-3.5" />
+
+                      <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[#706b61] dark:text-zinc-400 font-semibold text-[11px] hover:bg-zinc-150/40 cursor-pointer transition-all">
+                        <Settings className="w-4.5 h-4.5" />
                         <span>Settings</span>
                       </div>
                     </div>
                   </div>
+
+                  {/* Sign In Pro Card */}
+                  <div className="bg-white dark:bg-zinc-850 border border-[#e8e5df] dark:border-zinc-800 rounded-xl p-2.5 shadow-sm flex flex-col gap-1.5 shrink-0 my-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#e01e41]/10 text-[#e01e41] flex items-center justify-center shrink-0">
+                      <Sparkles className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="text-[10px] font-bold text-[#1c1b19] dark:text-white mt-1 leading-none">Sign in to Parayu</div>
+                    <div className="text-[8px] text-[#706b61] dark:text-zinc-500 leading-tight">Access your account and saved settings.</div>
+                    <button className="w-full py-1.5 border border-[#e8e5df] dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[#e01e41] hover:bg-[#e01e41]/5 rounded-lg text-[9px] font-bold transition-all">Sign In</button>
+                  </div>
                   
                   {/* Account state */}
-                  <div className="flex items-center gap-1.5 border-t border-[#e8e5df] dark:border-zinc-800 pt-2 text-[10px]">
-                    <div className="w-4 h-4 rounded-full bg-[#7c5cff] text-white flex items-center justify-center font-black">A</div>
-                    <span className="font-bold text-zinc-700 dark:text-zinc-350 truncate">Adarsh</span>
+                  <div className="flex flex-col gap-1 border-t border-[#e8e5df] dark:border-zinc-800 pt-2 shrink-0">
+                    <div className="flex items-center gap-2 text-[10px]">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#e81f3a] to-[#ff9b3d] text-white flex items-center justify-center font-bold shadow-sm">U</div>
+                      <div className="min-w-0 leading-tight">
+                        <div className="font-bold text-[#1c1b19] dark:text-zinc-350 truncate">Guest User</div>
+                        <div className="text-[9px] text-[#706b61] dark:text-zinc-500 font-medium">Free</div>
+                      </div>
+                    </div>
+                    <span className="text-[9px] text-[#706b61] dark:text-zinc-500 pl-1 mt-1">Parayu v1.0.0</span>
                   </div>
                 </div>
 
-                {/* Right Content */}
-                <div className="flex-grow p-4 overflow-y-auto space-y-4">
-                  {/* Greeting */}
-                  <div className="flex justify-between items-center">
+                {/* Right Content Area simulating Parayu main panel */}
+                <div className="flex-grow p-4 overflow-y-auto space-y-4 flex flex-col justify-start bg-[#fcfbfa] dark:bg-zinc-950 select-none">
+                  {/* Title Bar inside the app */}
+                  <div className="flex justify-between items-start shrink-0">
                     <div>
-                      <h4 className="font-heading font-black text-xs text-[#1c1b19] dark:text-white leading-tight">Welcome back, Adarsh</h4>
-                      <p className="text-[9px] text-zinc-400 dark:text-zinc-500 font-medium">All local speech brains ready.</p>
+                      <h3 className="text-sm font-heading font-black text-[#1c1b19] dark:text-white leading-tight">
+                        Good morning, Adarsh <span className="inline-block animate-bounce">👋</span>
+                      </h3>
+                      <p className="text-[9px] text-[#706b61] dark:text-zinc-400 font-medium">Here&apos;s your dictation overview</p>
                     </div>
                     {/* Active Brain Badge */}
-                    <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-2 py-0.5 rounded-full text-[9px] font-bold">
+                    <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-2 py-0.5 rounded-full text-[9px] font-bold">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       <span>PRO Brain Active</span>
                     </div>
                   </div>
 
-                  {/* KPI Grid */}
-                  <div className="grid grid-cols-4 gap-2">
-                    <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-2 rounded-xl text-center">
-                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Total Words</div>
-                      <div className="text-xs font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">
-                        {step === "completed" ? "14,844" : "14,820"}
+                  {/* KPI Row (4 pills) */}
+                  <div className="grid grid-cols-4 gap-2 shrink-0">
+                    {/* Pill 1: Words */}
+                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 rounded-xl shadow-sm">
+                      <div className="w-7 h-7 rounded-lg bg-[#e01e41]/10 text-[#e01e41] flex items-center justify-center shrink-0">
+                        <Mic className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="min-w-0 leading-tight">
+                        <div className="text-[11px] font-black text-[#1c1b19] dark:text-white">
+                          {step === "completed" ? "14,844" : "14,820"}
+                        </div>
+                        <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Words</div>
                       </div>
                     </div>
-                    <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-2 rounded-xl text-center">
-                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Speed</div>
-                      <div className="text-xs font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">87 WPM</div>
+                    {/* Pill 2: WPM */}
+                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 rounded-xl shadow-sm">
+                      <div className="w-7 h-7 rounded-lg bg-[#a02bb0]/10 text-[#a02bb0] flex items-center justify-center shrink-0">
+                        <Cpu className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="min-w-0 leading-tight">
+                        <div className="text-[11px] font-black text-[#1c1b19] dark:text-white">87</div>
+                        <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">WPM</div>
+                      </div>
                     </div>
-                    <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-2 rounded-xl text-center">
-                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Fixes Made</div>
-                      <div className="text-xs font-heading font-black text-[#1c1b19] dark:text-white mt-0.5">324</div>
+                    {/* Pill 3: Fixes */}
+                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 rounded-xl shadow-sm">
+                      <div className="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-600 flex items-center justify-center shrink-0">
+                        <Sparkles className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="min-w-0 leading-tight">
+                        <div className="text-[11px] font-black text-[#1c1b19] dark:text-white">324</div>
+                        <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Fixes</div>
+                      </div>
                     </div>
-                    <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-2 rounded-xl text-center">
-                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Streak</div>
-                      <div className="text-xs font-heading font-black text-[#e01e41] dark:text-rose-400 mt-0.5 flex items-center justify-center gap-0.5">
-                        <Flame className="w-3.5 h-3.5 fill-[#e01e41] stroke-[#e01e41]" />
-                        <span>12d</span>
+                    {/* Pill 4: Model */}
+                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 rounded-xl shadow-sm">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Check className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="min-w-0 leading-tight">
+                        <div className="text-[11px] font-black text-emerald-600">Ready</div>
+                        <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Model</div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Visual Row with Heatmap & Quick note */}
-                  <div className="grid grid-cols-5 gap-3">
-                    {/* WPM / Integrations Visual */}
-                    <div className="col-span-3 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-3 rounded-xl flex flex-col justify-between h-[105px]">
-                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2">Desktop Integration</div>
-                      <div className="space-y-1.5">
+                  {/* Grid Content: Speed, Integrations, Heatmap */}
+                  <div className="grid grid-cols-5 gap-3 flex-grow min-h-0">
+                    
+                    {/* WPM Gauge Card */}
+                    <div className="col-span-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[115px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Typing Speed</span>
+                        <span className="text-[#e01e41]"><Cpu className="w-3 h-3" /></span>
+                      </div>
+                      
+                      {/* Semicircular Gauge SVG */}
+                      <div className="relative w-full flex justify-center mt-1">
+                        <svg viewBox="0 0 170 96" className="w-[100px] h-[55px]">
+                          <path
+                            d="M 15 85 A 70 70 0 0 1 155 85"
+                            fill="none"
+                            stroke="#ebe7df"
+                            strokeWidth="12"
+                            strokeLinecap="round"
+                          />
+                          {/* Fill sweep: calculated for 87 WPM (87/160 = 54% of sweep) */}
+                          <path
+                            d="M 15 85 A 70 70 0 0 1 93 16"
+                            fill="none"
+                            stroke="url(#gaugeGrad)"
+                            strokeWidth="12"
+                            strokeLinecap="round"
+                          />
+                          <defs>
+                            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%" stopColor="#e81f3a" />
+                              <stop offset="60%" stopColor="#d81d54" />
+                              <stop offset="100%" stopColor="#a02bb0" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-end pb-1.5">
+                          <span className="text-xs font-heading font-black leading-none text-[#1c1b19] dark:text-white">87</span>
+                          <span className="text-[7px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">wpm</span>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between text-[7px] font-bold text-[#706b61] dark:text-zinc-500 border-t border-[#e8e5df] dark:border-zinc-800 pt-1">
+                        <span>Target 120 wpm</span>
+                        <span className="text-[#e01e41]">33 to goal</span>
+                      </div>
+                    </div>
+
+                    {/* App Integration Bar Chart Card */}
+                    <div className="col-span-3 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[115px]">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Desktop Integration</span>
+                        <span className="text-[7px] font-bold text-[#706b61]">Apps | 3</span>
+                      </div>
+                      <div className="space-y-1.5 flex-grow flex flex-col justify-center">
                         {[
-                          { label: "Slack", pct: "45%", w: "w-[45%]", color: "bg-[#e01e41]" },
-                          { label: "VS Code", pct: "30%", w: "w-[30%]", color: "bg-[#7c5cff]" },
-                          { label: "Chrome", pct: "15%", w: "w-[15%]", color: "bg-emerald-500" },
+                          { label: "Slack", pct: "45%", w: "w-[45%]", color: "bg-[#e01e41]", initial: "S" },
+                          { label: "VS Code", pct: "30%", w: "w-[30%]", color: "bg-[#7c5cff]", initial: "V" },
+                          { label: "Chrome", pct: "15%", w: "w-[15%]", color: "bg-emerald-500", initial: "C" },
                         ].map((item) => (
                           <div key={item.label} className="space-y-0.5">
-                            <div className="flex justify-between text-[9px] font-bold text-zinc-600 dark:text-zinc-400">
-                              <span>{item.label}</span>
+                            <div className="flex justify-between items-center text-[8px] font-bold text-zinc-650 dark:text-zinc-400">
+                              <div className="flex items-center gap-1">
+                                <span className={cn("w-3.5 h-3.5 rounded-md flex items-center justify-center text-[6px] text-white font-bold", item.color)}>
+                                  {item.initial}
+                                </span>
+                                <span>{item.label}</span>
+                              </div>
                               <span>{item.pct}</span>
                             </div>
                             <div className="w-full bg-[#f6f4f0] dark:bg-zinc-800 h-1 rounded-full overflow-hidden">
@@ -253,11 +362,66 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                         ))}
                       </div>
                     </div>
+                  </div>
+
+                  {/* Heatmap Row & Quick Note Panel */}
+                  <div className="grid grid-cols-5 gap-3 shrink-0">
+                    {/* Heatmap Grid Calendar */}
+                    <div className="col-span-3 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[85px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase flex items-center gap-0.5">
+                          <Flame className="w-3 h-3 text-[#e01e41] fill-[#e01e41]" />
+                          <span>12 day streak</span>
+                        </span>
+                        <span className="text-[7px] font-bold text-[#706b61]">Longest | 18 days</span>
+                      </div>
+                      
+                      {/* Small mock contribution heatmap calendar grid */}
+                      <div className="flex justify-center my-1.5 overflow-hidden">
+                        <div className="grid grid-cols-14 gap-[3px]">
+                          {Array.from({ length: 70 }).map((_, idx) => {
+                            // Assign mock intensity level (0 to 4)
+                            let lvl = 0;
+                            if (idx > 50) {
+                              lvl = [0, 1, 2, 4, 3, 2, 4, 3, 1, 4, 2, 0, 4, 3, 4, 2, 1, 4, 4][idx % 19];
+                            } else if (idx > 20) {
+                              lvl = [0, 1, 0, 2, 0, 1, 3, 0, 2, 0, 1, 0][idx % 12];
+                            }
+                            
+                            return (
+                              <div
+                                key={idx}
+                                className={cn(
+                                  "w-[6px] h-[6px] rounded-[1px]",
+                                  lvl === 0 && "bg-[#ebe7df] dark:bg-zinc-800",
+                                  lvl === 1 && "bg-[#e01e41]/20",
+                                  lvl === 2 && "bg-[#e01e41]/40",
+                                  lvl === 3 && "bg-[#e01e41]/75",
+                                  lvl === 4 && "bg-[#e01e41]"
+                                )}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between text-[6px] font-bold text-[#706b61] uppercase tracking-wide">
+                        <span>Less</span>
+                        <div className="flex gap-[3px] items-center">
+                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#ebe7df] dark:bg-zinc-800" />
+                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e01e41]/20" />
+                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e01e41]/40" />
+                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e01e41]/75" />
+                          <div className="w-[5px] h-[5px] rounded-[1px] bg-[#e01e41]" />
+                        </div>
+                        <span>More</span>
+                      </div>
+                    </div>
 
                     {/* Quick Dictation Panel */}
-                    <div className="col-span-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-850 p-3 rounded-xl flex flex-col justify-between h-[105px] relative overflow-hidden">
-                      <div className="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Quick Dictation Note</div>
-                      <div className="text-[10px] text-zinc-700 dark:text-zinc-350 leading-relaxed font-semibold pr-1 py-1 flex-grow overflow-y-auto">
+                    <div className="col-span-2 bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between h-[85px] relative overflow-hidden">
+                      <div className="text-[8px] font-bold text-[#706b61] dark:text-zinc-500 uppercase">Quick Dictation Note</div>
+                      <div className="text-[9px] text-[#1c1b19] dark:text-zinc-200 leading-normal pr-0.5 py-0.5 flex-grow overflow-y-auto font-medium">
                         {typedText ? (
                           <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{typedText}</motion.span>
                         ) : (
@@ -267,12 +431,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                           <motion.span
                             animate={{ opacity: [1, 0, 1] }}
                             transition={{ repeat: Infinity, duration: 0.8 }}
-                            className="inline-block w-1.5 h-3.5 ml-0.5 bg-primary"
+                            className="inline-block w-1 h-3 ml-0.5 bg-primary"
                           />
                         )}
                       </div>
                     </div>
                   </div>
+
                 </div>
               </div>
             )}
