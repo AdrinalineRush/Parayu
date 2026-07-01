@@ -23,7 +23,9 @@ import {
   Calendar,
   Plus,
   Trash2,
-  ArrowRight
+  ArrowRight,
+  Download,
+  Cpu
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -98,7 +100,7 @@ const scrollSteps = [
     color: "#0ea5e9",
     tab: "Settings",
     icon: Settings,
-    image: "settings.png"
+    image: "settings_anim" // Custom animated brain selector toggle + detail viewer WITH sidebar
   }
 ];
 
@@ -141,6 +143,54 @@ const sidebarMenuItems = [
   { view: "screenwriting", label: "Pro Writing", icon: Pencil, showBadge: true },
   { view: "settings", label: "Settings", icon: Settings, showBadge: false },
   { view: "admin", label: "Admin", icon: ShieldCheck, showBadge: false }
+];
+
+// Brain features metadata for the Step 7 Switch simulation
+const brainOptions = [
+  {
+    id: "low",
+    name: "LOW",
+    size: "190 MB",
+    badge: "RECOMMENDED",
+    desc: "Lightweight, highly optimized model that delivers solid accuracy with fast inference speed.",
+    status: "NEEDS DOWNLOAD",
+    actionText: "Download",
+    rightIcon: "download",
+    cursorY: 52
+  },
+  {
+    id: "medium",
+    name: "MEDIUM",
+    size: "539 MB",
+    badge: "MALAYALAM OPTIMIZED",
+    desc: "Specifically fine-tuned for regional Malayalam speech translation, providing enhanced voice parsing.",
+    status: "NEEDS DOWNLOAD",
+    actionText: "Download",
+    rightIcon: "download",
+    cursorY: 82
+  },
+  {
+    id: "high",
+    name: "HIGH",
+    size: "844 MB",
+    badge: "MULTILINGUAL",
+    desc: "High-fidelity multilingual model supporting major Indian and European languages completely offline.",
+    status: "INSTALLED",
+    actionText: "Select Model",
+    rightIcon: "green-check",
+    cursorY: 112
+  },
+  {
+    id: "pro",
+    name: "PRO",
+    size: "2.9 GB",
+    badge: "FULL FLOAT 16",
+    desc: "Maximum accuracy model running in full Float 16. Requires dedicated GPU hardware for optimal speed.",
+    status: "INSTALLED",
+    actionText: "Select Model",
+    rightIcon: "red-check",
+    cursorY: 142
+  }
 ];
 
 // Custom Sidebar Component replicating macOS side card structure exactly (de-congested formatting)
@@ -302,6 +352,11 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
   const [snipCursor, setSnipCursor] = useState({ x: 260, y: 140, opacity: 0, scale: 1 });
   const [snipDemoText, setSnipDemoText] = useState("");
   const [snipDemoState, setSnipDemoState] = useState("silent"); // "silent" | "unexpanded" | "matching" | "expanded"
+
+  // Custom animation states for Step 7: Brain Switch selection selector loop
+  const [selectedBrain, setSelectedBrain] = useState(0); // 0: LOW, 1: MEDIUM, 2: HIGH, 3: PRO
+  const [brainBtnPress, setBrainBtnPress] = useState(false);
+  const [brainCursor, setBrainCursor] = useState({ x: 300, y: 52, opacity: 0, scale: 1 });
 
   // Mouse coordinate values for premium interactive 3D parallax tilt
   const x = useMotionValue(0);
@@ -631,16 +686,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
       return;
     }
 
-    // Timed sequence loop:
-    // 0s - 0.5s: Silent rest state
-    // 0.5s: Cursor appears over Trigger Input. Types "my link"
-    // 1.8s: Cursor moves to Expands to Input. Types "calendly.com/dev-demo"
-    // 3.0s: Cursor moves over black 'Add' button.
-    // 3.4s: Add button clicked (button scales, list row pops in)
-    // 4.2s: Dictation box pops up unexpanded block: "Please book a slot through my link."
-    // 5.2s: Scan triggers, highlights trigger phrase.
-    // 5.7s: Text replaces/expands instantly to: "Please book a slot through calendly.com/dev-demo."
-    // 8.5s: Reset loop.
     const runSnipLoop = () => {
       setSnipTriggerVal("");
       setSnipExpandVal("");
@@ -717,6 +762,125 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
 
     const cleanup = runSnipLoop();
     const interval = setInterval(runSnipLoop, 9000);
+
+    return () => {
+      cleanup();
+      clearInterval(interval);
+    };
+  }, [activeStep]);
+
+  // Trigger Step 7: Brain Switch toggling and description cards updates loop animation
+  useEffect(() => {
+    if (activeStep !== 6) {
+      setSelectedBrain(0);
+      setBrainBtnPress(false);
+      setBrainCursor({ x: 300, y: 52, opacity: 0, scale: 1 });
+      return;
+    }
+
+    // Sequence loop:
+    // 0s: LOW (190MB) is active. Cursor hidden.
+    // 1.5s: Cursor appears, moves to MEDIUM (539MB).
+    // 2.0s: Clicks MEDIUM. Selected brain updates. Lower details card updates.
+    // 3.4s: Cursor moves to HIGH (844MB).
+    // 3.9s: Clicks HIGH.
+    // 5.3s: Cursor moves to PRO (2.9GB).
+    // 5.8s: Clicks PRO.
+    // 7.2s: Cursor moves to LOW (190MB).
+    // 7.7s: Clicks LOW.
+    // 9.5s: Loop resets.
+    const runBrainLoop = () => {
+      setSelectedBrain(0);
+      setBrainBtnPress(false);
+      setBrainCursor({ x: 300, y: 52, opacity: 0, scale: 1 });
+
+      const cursorShowTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, opacity: 1, x: 260, y: 52 }));
+      }, 600);
+
+      // Transition 1: Select MEDIUM
+      const cursorMediumTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, x: 260, y: 82 }));
+      }, 1500);
+
+      const clickMediumTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, scale: 0.85 }));
+        setBrainBtnPress(true);
+        setSelectedBrain(1);
+      }, 2000);
+
+      const releaseMediumTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, scale: 1 }));
+        setBrainBtnPress(false);
+      }, 2200);
+
+      // Transition 2: Select HIGH
+      const cursorHighTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, x: 260, y: 112 }));
+      }, 3400);
+
+      const clickHighTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, scale: 0.85 }));
+        setBrainBtnPress(true);
+        setSelectedBrain(2);
+      }, 3900);
+
+      const releaseHighTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, scale: 1 }));
+        setBrainBtnPress(false);
+      }, 4100);
+
+      // Transition 3: Select PRO
+      const cursorProTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, x: 260, y: 142 }));
+      }, 5300);
+
+      const clickProTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, scale: 0.85 }));
+        setBrainBtnPress(true);
+        setSelectedBrain(3);
+      }, 5800);
+
+      const releaseProTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, scale: 1 }));
+        setBrainBtnPress(false);
+      }, 6000);
+
+      // Transition 4: Return to LOW
+      const cursorLowTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, x: 260, y: 52 }));
+      }, 7200);
+
+      const clickLowTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, scale: 0.85 }));
+        setBrainBtnPress(true);
+        setSelectedBrain(0);
+      }, 7700);
+
+      const releaseLowTimer = setTimeout(() => {
+        setBrainCursor(prev => ({ ...prev, scale: 1 }));
+        setBrainBtnPress(false);
+      }, 7900);
+
+      return () => {
+        clearTimeout(cursorShowTimer);
+        clearTimeout(cursorMediumTimer);
+        clearTimeout(clickMediumTimer);
+        clearTimeout(releaseMediumTimer);
+        clearTimeout(cursorHighTimer);
+        clearTimeout(clickHighTimer);
+        clearTimeout(releaseHighTimer);
+        clearTimeout(cursorProTimer);
+        clearTimeout(clickProTimer);
+        clearTimeout(releaseProTimer);
+        clearTimeout(cursorLowTimer);
+        clearTimeout(clickLowTimer);
+        clearTimeout(releaseLowTimer);
+      };
+    };
+
+    const cleanup = runBrainLoop();
+    const interval = setInterval(runBrainLoop, 9500);
 
     return () => {
       cleanup();
@@ -833,7 +997,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 {/* Search bar inside red outline */}
                                 <div className="relative border border-[#e01e41] rounded-lg px-2 py-1.5 flex items-center gap-1.5 shrink-0 bg-white dark:bg-zinc-950 shadow-sm">
                                   <Search className="w-3 h-3 text-zinc-400" />
-                                  <span className="text-[9.5px] text-zinc-400 dark:text-zinc-500 font-normal">Search language...</span>
+                                  <span className="text-[9.5px] text-zinc-400 dark:text-zinc-505 font-normal">Search language...</span>
                                 </div>
 
                                 {/* Scrolling list containing options with beta badges */}
@@ -917,7 +1081,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             </div>
 
                             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-xl flex items-center gap-2 shadow-sm min-w-0">
-                              <div className="w-7 h-7 rounded-full bg-purple-500/5 text-purple-650 flex items-center justify-center shrink-0">
+                              <div className="w-7 h-7 rounded-full bg-purple-500/5 text-purple-655 flex items-center justify-center shrink-0">
                                 <Clock className="w-3.5 h-3.5" />
                               </div>
                               <div className="min-w-0 leading-tight">
@@ -970,12 +1134,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     transition={{ duration: 1.2, ease: "easeOut" }}
                                     d="M 15 85 A 70 70 0 0 1 112 20" 
                                     fill="none" 
-                                    stroke="url(#insightsGrad7)" 
+                                    stroke="url(#insightsGrad8)" 
                                     strokeWidth="12" 
                                     strokeLinecap="round" 
                                   />
                                   <defs>
-                                    <linearGradient id="insightsGrad7" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="insightsGrad8" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#e81f3a" />
                                       <stop offset="100%" stopColor="#a02bb0" />
                                     </linearGradient>
@@ -1039,7 +1203,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                 <div className="text-[19px] font-heading font-black text-[#1c1b19] dark:text-white">
                                   <Counter from={1900} to={2068} active={activeStep === 1} />
                                 </div>
-                                <div className="text-[7.5px] text-zinc-450 font-bold mt-0.5">Total words dictated</div>
+                                <div className="text-[7.5px] text-zinc-455 font-bold mt-0.5">Total words dictated</div>
                               </div>
 
                               <div className="space-y-1 text-[8.5px] font-bold">
@@ -1091,7 +1255,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             {/* Dropdown replica */}
                             <div className="bg-white dark:bg-zinc-900 border border-[#e8e5df] dark:border-zinc-800 px-2.5 py-1 rounded-lg shadow-sm text-[8.5px] font-black text-[#1c1b19] dark:text-white flex items-center gap-1 cursor-default">
                               <span>🌐 English</span>
-                              <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
+                              <ChevronDown className="w-3.5 h-3.5 text-zinc-505" />
                             </div>
                           </div>
 
@@ -1217,7 +1381,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05)"
                                   }
                             }
-                            className="bg-white dark:bg-zinc-900 border p-3 rounded-2xl space-y-3 relative overflow-hidden transition-all duration-350"
+                            className="bg-white dark:bg-zinc-900 border p-3 rounded-2xl space-y-3 relative overflow-hidden transition-all duration-300"
                           >
                             
                             {/* Radial Glow pulse sweeping when AI activates */}
@@ -1338,7 +1502,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                             )}
 
                             {/* Dictation Box Header */}
-                            <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-455 border-b border-zinc-100 dark:border-zinc-850 pb-1.5 mb-1.5 shrink-0">
+                            <div className="flex justify-between items-center text-[7.5px] font-bold text-zinc-455 border-b border-zinc-100 dark:border-zinc-855 pb-1.5 mb-1.5 shrink-0">
                               <span className="flex items-center gap-1.5">
                                 <span className={cn("w-1.5 h-1.5 rounded-full block", aiActive ? "bg-[#e01e41] animate-pulse" : "bg-zinc-400")} />
                                 <span className={cn("transition-colors duration-300", aiActive ? "text-[#e01e41] font-black" : "")}>
@@ -1377,7 +1541,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <motion.span key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-555 flex items-center gap-1"><Mic className="w-2.5 h-2.5 animate-pulse text-[#e01e41]" /> listening... speak now</motion.span>
                                 )}
                                 {correctionState === "waiting" && (
-                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-600 font-black">raw transcription populated</motion.span>
+                                  <motion.span key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-zinc-605 font-black">raw transcription populated</motion.span>
                                 )}
                                 {correctionState === "correcting" && (
                                   <motion.span key="correcting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#e01e41] font-black flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 animate-spin" /> executing offline AI...</motion.span>
@@ -1458,7 +1622,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   key="words-list"
                                   initial={{ opacity: 0, y: 5 }}
                                   animate={{ opacity: 1, y: 0 }}
-                                  className="bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 p-2 rounded-xl flex items-center justify-between shadow-sm max-w-[280px]"
+                                  className="bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-855 p-2 rounded-xl flex items-center justify-between shadow-sm max-w-[280px]"
                                 >
                                   <div className="flex items-center gap-2">
                                     <span className="bg-red-500/10 text-[#e01e41] text-[8px] px-1.5 py-0.5 rounded font-extrabold">parayoo</span>
@@ -1501,12 +1665,12 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   </div>
 
                                   {/* Status indicator bar */}
-                                  <div className="flex justify-between items-center text-[6.5px] font-black text-zinc-450 pt-1 border-t border-zinc-100 dark:border-zinc-850">
+                                  <div className="flex justify-between items-center text-[6.5px] font-black text-zinc-455 pt-1 border-t border-zinc-100 dark:border-zinc-850">
                                     <span>Spoken input</span>
                                     <AnimatePresence mode="wait">
-                                      {dictDemoState === "untranslated" && <span key="unt" className="text-zinc-500">populating raw transcription...</span>}
+                                      {dictDemoState === "untranslated" && <span key="unt" className="text-zinc-550">populating raw transcription...</span>}
                                       {dictDemoState === "scanning" && <span key="scan" className="text-[#e01e41] font-extrabold animate-pulse">scanning dictionary matches...</span>}
-                                      {dictDemoState === "translated" && <span key="trans" className="text-emerald-600 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> Auto-replaced!</span>}
+                                      {dictDemoState === "translated" && <span key="trans" className="text-emerald-650 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> Auto-replaced!</span>}
                                     </AnimatePresence>
                                   </div>
                                 </motion.div>
@@ -1542,7 +1706,6 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                   if (step.image === "snippets_anim") {
                     return (
                       /* CUSTOM ANIMATED SNIPPETS VIEW (Step 6) - Replicates screenshot with new useful example */
-                      /* Setup: types trigger "my link" -> expands to "calendly.com/dev-demo". Payoff: expands pop dynamically */
                       <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
                         
                         {/* Sidebar with active tab active */}
@@ -1582,7 +1745,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                               </span>
                             </div>
 
-                            {/* Add Button (scales down/clicks) */}
+                            {/* Add Button (clicks) */}
                             <motion.button 
                               animate={{ scale: snipBtnPress ? 0.95 : 1 }}
                               className="bg-[#1c1b19] dark:bg-zinc-800 hover:bg-[#2b2a26] text-white font-extrabold text-[9px] px-3.5 py-1.5 rounded-lg shrink-0 shadow-sm transition-transform leading-none"
@@ -1615,13 +1778,13 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   <div className="flex flex-col gap-1 min-w-0 leading-tight">
                                     <div className="flex items-center gap-1">
                                       <span className="font-extrabold text-zinc-900 dark:text-white text-[9.5px]">my link</span>
-                                      <ArrowRight className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                                      <ArrowRight className="w-3.5 h-3.5 text-zinc-405 shrink-0" />
                                     </div>
                                     <div className="text-[8px] font-bold text-zinc-450 truncate">
                                       calendly.com/dev-demo
                                     </div>
                                   </div>
-                                  <span className="text-[7.5px] font-bold text-zinc-400 bg-zinc-100 hover:bg-zinc-150 px-2.5 py-1 rounded-md shrink-0 cursor-default">
+                                  <span className="text-[7.5px] font-bold text-zinc-400 bg-zinc-105 hover:bg-zinc-150 px-2.5 py-1 rounded-md shrink-0 cursor-default">
                                     remove
                                   </span>
                                 </motion.div>
@@ -1664,7 +1827,7 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                     <AnimatePresence mode="wait">
                                       {snipDemoState === "unexpanded" && <span key="une" className="text-zinc-500">populating raw transcription...</span>}
                                       {snipDemoState === "matching" && <span key="match" className="text-[#ff8a1f] font-extrabold animate-pulse">expanding shortcut trigger...</span>}
-                                      {snipDemoState === "expanded" && <span key="exp" className="text-emerald-650 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> expanded macro successfully!</span>}
+                                      {snipDemoState === "expanded" && <span key="exp" className="text-emerald-655 font-extrabold flex items-center gap-0.5"><Check className="w-2 h-2 text-emerald-500" /> expanded macro successfully!</span>}
                                     </AnimatePresence>
                                   </div>
                                 </motion.div>
@@ -1684,6 +1847,140 @@ export function InteractiveVoiceDemo({ className }: { className?: string }) {
                                   opacity: snipCursor.opacity
                                 }}
                                 transition={{ type: "tween", ease: "easeInOut", duration: 0.6 }}
+                                className="absolute w-4.5 h-4.5 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
+                              >
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#e01e41]" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                        </div>
+
+                      </div>
+                    );
+                  }
+
+                  if (step.image === "settings_anim") {
+                    return (
+                      /* CUSTOM ANIMATED SETTINGS BRAIN SWITCH VIEW (Step 7) - Full macOS App Interface simulation */
+                      /* Cycles selection LOW -> MEDIUM -> HIGH -> PRO, updating details card values dynamically */
+                      <div key={step.id} className="h-full w-full shrink-0 overflow-hidden relative bg-[#fcfbfa] dark:bg-zinc-950 flex flex-row">
+                        
+                        {/* Sidebar with active tab active */}
+                        <MockSidebar activeView="settings" />
+
+                        {/* Right Content area: Settings panel with Brain Switch card */}
+                        <div className="flex-grow flex flex-col p-[3%] font-sans text-zinc-800 dark:text-zinc-250 select-none text-[9px] overflow-hidden min-w-0 bg-[#faf9f7] dark:bg-zinc-950 relative">
+                          
+                          {/* Title */}
+                          <div className="text-[12px] font-heading font-black text-zinc-900 dark:text-white mb-2 shrink-0">
+                            Settings
+                          </div>
+
+                          {/* Brain Switch Card replicating screenshot layout */}
+                          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-2xl shadow-sm space-y-2 flex-grow flex flex-col overflow-hidden max-h-[305px]">
+                            
+                            {/* Card Header */}
+                            <div className="space-y-0.5 shrink-0">
+                              <div className="flex items-center gap-1.5">
+                                <Cpu className="w-3.5 h-3.5 text-[#e01e41]" />
+                                <span className="text-[10px] font-heading font-black text-zinc-900 dark:text-white">Brain Switch</span>
+                              </div>
+                              <div className="text-[7.5px] text-zinc-450 font-bold pl-5 leading-none">
+                                Choose offline speech models.
+                              </div>
+                            </div>
+
+                            {/* Brain Options list (LOW, MEDIUM, HIGH, PRO) */}
+                            <div className="space-y-1 shrink-0">
+                              {brainOptions.map((opt, idx) => {
+                                const isSelected = selectedBrain === idx;
+                                return (
+                                  <motion.div
+                                    key={opt.id}
+                                    animate={
+                                      isSelected && brainBtnPress
+                                        ? { scale: 0.98, borderColor: "#e01e41" }
+                                        : isSelected
+                                          ? { scale: 1, borderColor: "#e01e41", boxShadow: "0 0 0 1px #e01e41" }
+                                          : { scale: 1, borderColor: "rgba(228,228,231,1)", boxShadow: "0 0 0 0px transparent" }
+                                    }
+                                    className="bg-white dark:bg-zinc-950 border rounded-xl py-1 px-3 flex items-center justify-between transition-all duration-200 cursor-pointer"
+                                  >
+                                    <div className="flex items-center min-w-0 leading-none">
+                                      <span className="text-[9.5px] font-black text-zinc-900 dark:text-white">{opt.name}</span>
+                                      <span className="text-[8px] font-bold text-zinc-450 ml-2">{opt.size}</span>
+                                    </div>
+                                    <div className="shrink-0 flex items-center">
+                                      {opt.rightIcon === "download" && (
+                                        <Download className="w-3 h-3 text-zinc-450" />
+                                      )}
+                                      {opt.rightIcon === "green-check" && (
+                                        <Check className="w-3 h-3 text-emerald-600 font-extrabold" />
+                                      )}
+                                      {opt.rightIcon === "red-check" && (
+                                        <Check className="w-3 h-3 text-[#e01e41] font-extrabold" />
+                                      )}
+                                    </div>
+                                  </motion.div>
+                                );
+                              })}
+                            </div>
+
+                            {/* Lower Info detail card explaining model features (Morphs details dynamically) */}
+                            <div className="bg-[#faf8f5] dark:bg-zinc-950/50 border border-zinc-150 dark:border-zinc-850 p-2.5 rounded-xl flex-grow flex flex-col justify-between min-h-[90px]">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-1.5 leading-none">
+                                  <span className="text-[9.5px] font-black text-zinc-900 dark:text-white">
+                                    {brainOptions[selectedBrain].name}
+                                  </span>
+                                  <span className="text-[8px] font-bold text-zinc-450">
+                                    {brainOptions[selectedBrain].size}
+                                  </span>
+                                  {brainOptions[selectedBrain].badge && (
+                                    <span className="bg-[#e01e41]/10 text-[#e01e41] text-[6px] font-black px-1.5 py-0.5 rounded tracking-wide scale-90">
+                                      {brainOptions[selectedBrain].badge}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-[7.5px] font-semibold text-zinc-650 dark:text-zinc-350 leading-relaxed mt-1">
+                                  {brainOptions[selectedBrain].desc}
+                                </p>
+                              </div>
+
+                              <div className="h-px bg-zinc-150 dark:bg-zinc-800 my-1" />
+
+                              {/* Status row action */}
+                              <div className="flex justify-between items-center text-[7.5px] font-black text-zinc-450">
+                                <span>{brainOptions[selectedBrain].status}</span>
+                                {brainOptions[selectedBrain].actionText === "Download" ? (
+                                  <button className="bg-[#ece7df] dark:bg-zinc-800 hover:bg-[#dedad2] text-zinc-850 dark:text-white text-[7.5px] font-extrabold px-2.5 py-1 rounded-md shadow-sm flex items-center gap-0.5 leading-none">
+                                    <Download className="w-2.5 h-2.5" />
+                                    <span>Download</span>
+                                  </button>
+                                ) : (
+                                  <button className="bg-[#1c1b19] dark:bg-zinc-800 text-white text-[7.5px] font-extrabold px-2.5 py-1 rounded-md shadow-sm flex items-center gap-0.5 leading-none">
+                                    <Check className="w-2.5 h-2.5 text-emerald-500" />
+                                    <span>Active</span>
+                                  </button>
+                                )}
+                              </div>
+
+                            </div>
+
+                          </div>
+
+                          {/* Cursor indicator simulating selection clicks inside options */}
+                          <AnimatePresence>
+                            {brainCursor.opacity > 0 && (
+                              <motion.div
+                                animate={{ 
+                                  x: brainCursor.x, 
+                                  y: brainCursor.y, 
+                                  scale: brainCursor.scale,
+                                  opacity: brainCursor.opacity
+                                }}
+                                transition={{ type: "tween", ease: "easeInOut", duration: 0.5 }}
                                 className="absolute w-4.5 h-4.5 rounded-full bg-[#e01e41]/35 border border-[#e01e41] z-50 pointer-events-none flex items-center justify-center"
                               >
                                 <div className="w-1.5 h-1.5 rounded-full bg-[#e01e41]" />
